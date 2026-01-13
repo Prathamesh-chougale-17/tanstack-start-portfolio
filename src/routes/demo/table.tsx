@@ -11,7 +11,6 @@ import {
 } from '@tanstack/react-table'
 import { compareItems, rankItem } from '@tanstack/match-sorter-utils'
 
-
 import type {
   Column,
   ColumnDef,
@@ -58,8 +57,8 @@ const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   // Only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
-      rowA.columnFiltersMeta[columnId]?.itemRank,
-      rowB.columnFiltersMeta[columnId]?.itemRank,
+      rowA.columnFiltersMeta[columnId].itemRank,
+      rowB.columnFiltersMeta[columnId].itemRank,
     )
   }
 

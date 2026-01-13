@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { createImageOptions, generateImage } from '@tanstack/ai'
-import { openaiImage } from '@tanstack/ai-openai'
+import { geminiImage } from '@tanstack/ai-gemini'
 
 export const Route = createFileRoute('/demo/api/ai/image')({
   server: {
@@ -21,10 +21,10 @@ export const Route = createFileRoute('/demo/api/ai/image')({
           )
         }
 
-        if (!process.env.OPENAI_API_KEY) {
+        if (!process.env.GEMINI_API_KEY) {
           return new Response(
             JSON.stringify({
-              error: 'OPENAI_API_KEY is not configured',
+              error: 'GEMINI_API_KEY is not configured',
             }),
             {
               status: 500,
@@ -35,7 +35,8 @@ export const Route = createFileRoute('/demo/api/ai/image')({
 
         try {
           const options = createImageOptions({
-            adapter: openaiImage('gpt-image-1'),
+            adapter: geminiImage('gemini-2.0-flash-preview-image-generation'),
+            prompt: prompt,
           })
 
           const result = await generateImage({

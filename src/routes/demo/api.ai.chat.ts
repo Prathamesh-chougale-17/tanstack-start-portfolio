@@ -61,7 +61,7 @@ export const Route = createFileRoute('/demo/api/ai/chat')({
             anthropic: () =>
               anthropicText((model || 'claude-haiku-4-5') as any),
             openai: () => openaiText((model || 'gpt-4o') as any),
-            gemini: () => geminiText((model || 'gemini-2.0-flash-exp') as any),
+            gemini: () => geminiText('gemini-2.5-flash-preview-09-2025'),
             ollama: () => ollamaText((model || 'mistral:7b') as any),
           }
 
