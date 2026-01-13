@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { ChefHat, Clock, Users, Gauge } from 'lucide-react'
+import { ChefHat, Clock, Gauge, Users } from 'lucide-react'
 import { Streamdown } from 'streamdown'
 
 import type { Recipe } from './api.ai.structured'

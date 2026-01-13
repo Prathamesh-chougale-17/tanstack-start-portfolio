@@ -7,7 +7,7 @@ export function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false)
   const [isTranscribing, setIsTranscribing] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const chunksRef = useRef<Blob[]>([])
+  const chunksRef = useRef<Array<Blob>>([])
 
   const startRecording = useCallback(async () => {
     try {

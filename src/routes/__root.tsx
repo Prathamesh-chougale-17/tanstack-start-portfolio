@@ -15,11 +15,11 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import StoreDevtools from '../lib/demo-store-devtools'
 
-import { getLocale, shouldRedirect } from '@/paraglide/runtime'
 
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
+import { getLocale, shouldRedirect } from '@/paraglide/runtime'
 
 interface MyRouterContext {
   queryClient: QueryClient

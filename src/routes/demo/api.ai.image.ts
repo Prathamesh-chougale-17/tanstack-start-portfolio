@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { generateImage, createImageOptions } from '@tanstack/ai'
+import { createImageOptions, generateImage } from '@tanstack/ai'
 import { openaiImage } from '@tanstack/ai-openai'
 
 export const Route = createFileRoute('/demo/api/ai/image')({
