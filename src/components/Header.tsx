@@ -1,10 +1,5 @@
 import { Link } from '@tanstack/react-router'
 
-import TanChatAIAssistant from './demo-AIAssistant.tsx'
-
-import ParaglideLocaleSwitcher from './LocaleSwitcher.tsx'
-
-import { useState } from 'react'
 import {
   ChefHat,
   ChevronDown,
@@ -22,6 +17,10 @@ import {
   Table,
   X,
 } from 'lucide-react'
+import { useState } from 'react'
+import TanChatAIAssistant from './demo-AIAssistant.tsx'
+
+import ParaglideLocaleSwitcher from './LocaleSwitcher.tsx'
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)

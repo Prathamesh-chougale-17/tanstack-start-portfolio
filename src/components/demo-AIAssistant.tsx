@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { useStore } from '@tanstack/react-store'
 import { Store } from '@tanstack/store'
 
-import { Send, X, ChevronRight, BotIcon } from 'lucide-react'
+import { BotIcon, ChevronRight, Send, X } from 'lucide-react'
 import { Streamdown } from 'streamdown'
 
-import { useGuitarRecommendationChat } from '@/lib/demo-ai-hook'
-import type { ChatMessages } from '@/lib/demo-ai-hook'
-
 import GuitarRecommendation from './demo-GuitarRecommendation'
+import type { ChatMessages } from '@/lib/demo-ai-hook'
+import { useGuitarRecommendationChat } from '@/lib/demo-ai-hook'
 
 export const showAIAssistant = new Store(false)
 
@@ -46,11 +45,11 @@ function Messages({ messages }: { messages: ChatMessages }) {
               return (
                 <div key={index} className="flex items-start gap-2 px-4">
                   {role === 'assistant' ? (
-                    <div className="w-6 h-6 rounded-lg bg-linear-to-r from-orange-500 to-red-600 flex items-center justify-center text-xs font-medium text-white flex-shrink-0">
+                    <div className="w-6 h-6 rounded-lg bg-linear-to-r from-orange-500 to-red-600 flex items-center justify-center text-xs font-medium text-white shrink-0">
                       AI
                     </div>
                   ) : (
-                    <div className="w-6 h-6 rounded-lg bg-gray-700 flex items-center justify-center text-xs font-medium text-white flex-shrink-0">
+                    <div className="w-6 h-6 rounded-lg bg-gray-700 flex items-center justify-center text-xs font-medium text-white shrink-0">
                       Y
                     </div>
                   )}
@@ -60,14 +59,10 @@ function Messages({ messages }: { messages: ChatMessages }) {
                 </div>
               )
             }
-            if (
-              part.type === 'tool-call' &&
-              part.name === 'recommendGuitar' &&
-              part.output
-            ) {
+            if (part.type === 'tool-call' && part.output) {
               return (
                 <div key={part.id} className="max-w-[80%] mx-auto">
-                  <GuitarRecommendation id={String(part.output?.id)} />
+                  <GuitarRecommendation id={String(part.output.id)} />
                 </div>
               )
             }
@@ -97,7 +92,7 @@ export default function AIAssistant() {
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-0 left-full ml-2 w-[700px] h-[600px] bg-gray-900 rounded-lg shadow-xl border border-orange-500/20 flex flex-col">
+        <div className="absolute bottom-0 left-full ml-2 w-175 h-150 bg-gray-900 rounded-lg shadow-xl border border-orange-500/20 flex flex-col">
           <div className="flex items-center justify-between p-3 border-b border-orange-500/20">
             <h3 className="font-semibold text-white">AI Assistant</h3>
             <button
