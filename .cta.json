@@ -1,0 +1,26 @@
+{
+  "projectName": "demo",
+  "mode": "file-router",
+  "typescript": true,
+  "packageManager": "bun",
+  "tailwind": true,
+  "addOnOptions": {},
+  "git": true,
+  "version": 1,
+  "framework": "react-cra",
+  "chosenAddOns": [
+    "eslint",
+    "nitro",
+    "start",
+    "ai",
+    "compiler",
+    "form",
+    "oRPC",
+    "shadcn",
+    "t3env",
+    "table",
+    "tanstack-query",
+    "paraglide",
+    "store"
+  ]
+}
