@@ -70,7 +70,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
-          {children}
+          <main className="mx-auto px-4 sm:px-6 md:px-8">{children}</main>
           <Footer />
           <TanStackDevtools
             config={{

@@ -7,16 +7,17 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { orpc } from '@/orpc/client'
+import * as m from '@/paraglide/messages'
 
 export function ContactForm() {
   const contactMutation = useMutation({
     mutationFn: orpc.submitContact.call,
     onSuccess: (data) => {
-      toast.success(data.message || 'Message sent successfully!')
+      toast.success(data.message || m.contact_form_success())
       form.reset()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Failed to send message. Please try again.')
+      toast.error(error.message || m.contact_form_error())
     },
   })
 
@@ -37,7 +38,7 @@ export function ContactForm() {
   return (
     <Card className="animate-fade-in-right">
       <CardContent className="pt-6">
-        <h2 className="mb-6 font-bold text-2xl">Get in Touch</h2>
+        <h2 className="mb-6 font-bold text-2xl">{m.contact_form_title()}</h2>
 
         <form
           className="space-y-4"
@@ -68,7 +69,7 @@ export function ContactForm() {
               return (
                 <div className="space-y-2">
                   <label className="font-medium text-sm" htmlFor="name">
-                    Name
+                    {m.contact_form_name_label()}
                   </label>
                   <Input
                     aria-invalid={isInvalid}
@@ -78,7 +79,7 @@ export function ContactForm() {
                     name={field.name}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="John Doe"
+                    placeholder={m.contact_form_name_placeholder()}
                     value={field.state.value}
                   />
                   {isInvalid && (
@@ -111,7 +112,7 @@ export function ContactForm() {
               return (
                 <div className="space-y-2">
                   <label className="font-medium text-sm" htmlFor="email">
-                    Email
+                    {m.contact_form_email_label()}
                   </label>
                   <Input
                     aria-invalid={isInvalid}
@@ -121,7 +122,7 @@ export function ContactForm() {
                     name={field.name}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="john@example.com"
+                    placeholder={m.contact_form_email_placeholder()}
                     type="email"
                     value={field.state.value}
                   />
@@ -155,7 +156,7 @@ export function ContactForm() {
               return (
                 <div className="space-y-2">
                   <label className="font-medium text-sm" htmlFor="subject">
-                    Subject
+                    {m.contact_form_subject_label()}
                   </label>
                   <Input
                     aria-invalid={isInvalid}
@@ -165,7 +166,7 @@ export function ContactForm() {
                     name={field.name}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter message subject"
+                    placeholder={m.contact_form_subject_placeholder()}
                     value={field.state.value}
                   />
                   {isInvalid && (
@@ -200,7 +201,7 @@ export function ContactForm() {
               return (
                 <div className="space-y-2">
                   <label className="font-medium text-sm" htmlFor="message">
-                    Message
+                    {m.contact_form_message_label()}
                   </label>
                   <Textarea
                     aria-invalid={isInvalid}
@@ -210,7 +211,7 @@ export function ContactForm() {
                     name={field.name}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Write your message here..."
+                    placeholder={m.contact_form_message_placeholder()}
                     rows={4}
                     value={field.state.value}
                   />
@@ -229,7 +230,7 @@ export function ContactForm() {
             disabled={isPending}
             type="submit"
           >
-            {isPending ? 'Sending...' : 'Send Message'}
+            {isPending ? 'Sending...' : m.contact_form_submit()}
           </Button>
         </form>
       </CardContent>

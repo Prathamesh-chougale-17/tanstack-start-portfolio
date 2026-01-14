@@ -1,4 +1,5 @@
 import { LeetcodeRating } from './leetcode-rating'
+import * as m from '@/paraglide/messages'
 
 type StatItemProps = {
   value: string
@@ -15,11 +16,10 @@ function StatItem({ value, label }: StatItemProps) {
 }
 
 export function StatsSection() {
-  const title = 'Statistics'
+  const title = m.aboutSection_statsTitle()
   const statItems: Array<{ label: string; value: string }> = [
-    { label: 'Years of Experience', value: '2+' },
-    { label: 'Projects Completed', value: '20+' },
-    { label: 'Open Source Contributions', value: '5+' },
+    { label: m.about_stats_statItems_0_label(), value: m.about_stats_statItems_0_value() },
+    { label: m.about_stats_statItems_1_label(), value: m.about_stats_statItems_1_value() },
   ]
 
   return (

@@ -1,21 +1,24 @@
 import { Mail } from 'lucide-react'
 import { Icons } from '@/components/icons'
+import * as m from '@/paraglide/messages'
 
 export function SocialLinks() {
+  // Social links can be built from messages, but we keep them hardcoded for now
+  // as they're specific URLs that don't need translation
   const socials = [
     {
-      name: 'GitHub',
-      url: 'https://github.com/Prathamesh-chougale-17',
+      name: m.contact_socials_links_3_label(),
+      url: m.contact_socials_links_3_url(),
       Icon: Icons.gitHub,
     },
     {
-      name: 'LinkedIn',
-      url: 'https://www.linkedin.com/in/prathamesh-chougale-44a17b257/',
+      name: m.contact_socials_links_2_label(),
+      url: m.contact_socials_links_2_url(),
       Icon: Icons.linkedin,
     },
     {
-      name: 'Twitter',
-      url: 'https://x.com/NotPrathamesh17',
+      name: m.contact_socials_links_1_label(),
+      url: m.contact_socials_links_1_url(),
       Icon: Icons.x,
     },
     {

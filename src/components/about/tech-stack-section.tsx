@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Icons } from '@/components/icons'
+import * as m from '@/paraglide/messages'
 
 type TechSkill = {
   name: string
@@ -8,19 +9,22 @@ type TechSkill = {
 }
 
 export function TechStackSection() {
-  const title = 'Tech Stack'
-  const skills: TechSkill[] = [
-    { name: 'React', level: 5, Icon: Icons.react },
-    { name: 'TypeScript', level: 5, Icon: Icons.typescript },
-    { name: 'Next.js', level: 5, Icon: Icons.nextjs },
-    { name: 'Node.js', level: 4, Icon: Icons.nodejs },
-    { name: 'Tailwind CSS', level: 5, Icon: Icons.tailwindcss },
-    { name: 'Python', level: 3, Icon: Icons.python },
-    { name: 'Docker', level: 3, Icon: Icons.docker },
-    { name: 'Git/GitHub', level: 5, Icon: Icons.gitHub },
-    { name: 'Databases', level: 4, Icon: Icons.database },
-    { name: 'Arch Linux', level: 3, Icon: Icons.arch },
-  ]
+  const title = m.aboutSection_techStackTitle()
+  
+  // Build skills array from Paraglide messages
+  const skills: TechSkill[] = Array.from({ length: 10 }, (_, i) => {
+    const nameKey = `about_techSkills_${i}_name` as keyof typeof m
+    const levelKey = `about_techSkills_${i}_level` as keyof typeof m
+    const iconKey = `about_techSkills_${i}_icon` as keyof typeof m
+    
+    const iconName = (m[iconKey] as () => string)()
+    
+    return {
+      name: (m[nameKey] as () => string)(),
+      level: Number((m[levelKey] as () => string)()),
+      Icon: Icons[iconName as keyof typeof Icons] || Icons.react,
+    }
+  })
 
   return (
     <section className="mb-16">

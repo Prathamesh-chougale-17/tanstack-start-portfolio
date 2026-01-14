@@ -1,9 +1,9 @@
 import { SocialLinks } from './social-links'
+import * as m from '@/paraglide/messages'
 
 export function ThoughtSection() {
-  const thoughtTitle = "Let's Connect"
-  const thoughtText =
-    "Open to discussing new opportunities, collaborations, and exciting projects. Feel free to reach out!"
+  const thoughtTitle = m.contact_thoughtTitle()
+  const thoughtText = m.contact_thoughtText()
 
   return (
     <section className="mb-16 text-center">

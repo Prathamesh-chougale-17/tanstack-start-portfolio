@@ -1,3 +1,5 @@
+import * as m from '@/paraglide/messages'
+
 type WorkExperience = {
   title: string
   company: string
@@ -6,30 +8,15 @@ type WorkExperience = {
 }
 
 export function ExperienceTimeline() {
-  const title = 'Experience'
-  const experiences: Array<WorkExperience> = [
-    {
-      title: 'Software Trainee Intern',
-      company: 'HSBC',
-      period: 'Jan 2025 - Mar 2025',
-      description:
-        'Developed a full-stack internal web application to consolidate team updates and organizational data into a unified dashboard. Improved internal visibility and collaboration using React.js and Java.',
-    },
-    {
-      title: 'Full Stack Developer',
-      company: 'RDM',
-      period: 'Jun 2024 - Present',
-      description:
-        'Built scalable web applications and APIs using React, Next.js, and Node.js. Optimized performance and enhanced user experience across multiple projects.',
-    },
-    {
-      title: 'Open Source Contributor',
-      company: 'Next.js SaaS Starter',
-      period: '2024 - Present',
-      description:
-        'Contributed to Next.js SaaS Starter (12k+ stars) by improving developer experience and fixing production-grade issues.',
-    },
-  ]
+  const title = m.aboutSection_experienceTitle()
+  
+  // Build experiences array from Paraglide messages
+  const experiences: Array<WorkExperience> = Array.from({ length: 3 }, (_, i) => ({
+    title: (m[`about_experiences_${i}_title` as keyof typeof m] as () => string)(),
+    company: (m[`about_experiences_${i}_company` as keyof typeof m] as () => string)(),
+    period: (m[`about_experiences_${i}_period` as keyof typeof m] as () => string)(),
+    description: (m[`about_experiences_${i}_description` as keyof typeof m] as () => string)(),
+  }))
 
   return (
     <section>

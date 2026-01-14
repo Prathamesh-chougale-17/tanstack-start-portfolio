@@ -3,7 +3,6 @@ import { AchievementsSection } from '@/components/home/achievements-section'
 import { HeroSection } from '@/components/home/hero-section'
 import { ProjectsSection } from '@/components/home/projects-section'
 import { Icons } from '@/components/icons'
-import { Footer } from '@/components/layout/footer'
 import * as m from '@/paraglide/messages'
 
 export const Route = createFileRoute('/')({
@@ -70,7 +69,7 @@ function PortfolioHome() {
   ]
 
   return (
-    <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+    <>
       <HeroSection
         company={m.hero_company()}
         companyLink={m.hero_companyLink()}
@@ -88,6 +87,6 @@ function PortfolioHome() {
         projects={projects.slice(0, 3)}
         title={m.homeSection_projectSectionTitle()}
       />
-    </main>
+    </>
   )
 }

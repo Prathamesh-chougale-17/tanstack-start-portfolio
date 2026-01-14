@@ -1,12 +1,18 @@
 import { Badge } from '@/components/ui/badge'
+import * as m from '@/paraglide/messages'
 
 export function HeroSection() {
-  const title = 'About Me'
-  const image = '/profile.webp'
-  const subtitle = 'Full Stack Developer | Open Source Contributor | Problem Solver'
-  const description =
-    "I'm a passionate full-stack developer with a strong foundation in computer science and hands-on experience building scalable web applications. My journey includes developing enterprise dashboards for HSBC, leading hackathon teams, and contributing to open source projects."
-  const skills = ['React', 'Next.js', 'TypeScript', 'Node.js', 'MongoDB']
+  const title = m.about_hero_title()
+  const image = m.about_hero_image()
+  const subtitle = m.about_hero_subtitle()
+  const description = m.about_hero_description()
+  const skills = [
+    m.about_hero_skills_0(),
+    m.about_hero_skills_1(),
+    m.about_hero_skills_2(),
+    m.about_hero_skills_3(),
+    m.about_hero_skills_4(),
+  ]
 
   return (
     <section className="mb-16">
