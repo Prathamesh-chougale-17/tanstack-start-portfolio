@@ -9,14 +9,27 @@ type WorkExperience = {
 
 export function ExperienceTimeline() {
   const title = m.aboutSection_experienceTitle()
-  
+
   // Build experiences array from Paraglide messages
-  const experiences: Array<WorkExperience> = Array.from({ length: 3 }, (_, i) => ({
-    title: (m[`about_experiences_${i}_title` as keyof typeof m] as () => string)(),
-    company: (m[`about_experiences_${i}_company` as keyof typeof m] as () => string)(),
-    period: (m[`about_experiences_${i}_period` as keyof typeof m] as () => string)(),
-    description: (m[`about_experiences_${i}_description` as keyof typeof m] as () => string)(),
-  }))
+  const experiences: Array<WorkExperience> = Array.from(
+    { length: 3 },
+    (_, i) => ({
+      title: (
+        m[`about_experiences_${i}_title` as keyof typeof m] as () => string
+      )(),
+      company: (
+        m[`about_experiences_${i}_company` as keyof typeof m] as () => string
+      )(),
+      period: (
+        m[`about_experiences_${i}_period` as keyof typeof m] as () => string
+      )(),
+      description: (
+        m[
+          `about_experiences_${i}_description` as keyof typeof m
+        ] as () => string
+      )(),
+    }),
+  )
 
   return (
     <section>

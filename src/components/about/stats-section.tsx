@@ -18,8 +18,14 @@ function StatItem({ value, label }: StatItemProps) {
 export function StatsSection() {
   const title = m.aboutSection_statsTitle()
   const statItems: Array<{ label: string; value: string }> = [
-    { label: m.about_stats_statItems_0_label(), value: m.about_stats_statItems_0_value() },
-    { label: m.about_stats_statItems_1_label(), value: m.about_stats_statItems_1_value() },
+    {
+      label: m.about_stats_statItems_0_label(),
+      value: m.about_stats_statItems_0_value(),
+    },
+    {
+      label: m.about_stats_statItems_1_label(),
+      value: m.about_stats_statItems_1_value(),
+    },
   ]
 
   return (

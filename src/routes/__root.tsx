@@ -20,6 +20,7 @@ import { baseLocale, getLocale, shouldRedirect } from '@/paraglide/runtime'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
+import { ChatButton } from '@/components/layout/chat-button'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -72,9 +73,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <Navbar />
           <main className="mx-auto px-4 sm:px-6 md:px-8">{children}</main>
           <Footer />
+          <ChatButton />
           <TanStackDevtools
             config={{
-              position: 'bottom-right',
+              position: 'bottom-left',
             }}
             plugins={[
               {

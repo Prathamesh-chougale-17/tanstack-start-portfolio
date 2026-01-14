@@ -21,6 +21,7 @@ import { Route as DemoI18nRouteImport } from './routes/demo.i18n'
 import { Route as DemoAiStructuredRouteImport } from './routes/demo/ai-structured'
 import { Route as DemoAiImageRouteImport } from './routes/demo/ai-image'
 import { Route as DemoAiChatRouteImport } from './routes/demo/ai-chat'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as DemoGuitarsIndexRouteImport } from './routes/demo/guitars/index'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
@@ -99,6 +100,11 @@ const DemoAiImageRoute = DemoAiImageRouteImport.update({
 const DemoAiChatRoute = DemoAiChatRouteImport.update({
   id: '/demo/ai-chat',
   path: '/demo/ai-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/chat': typeof ApiChatRoute
   '/demo/ai-chat': typeof DemoAiChatRoute
   '/demo/ai-image': typeof DemoAiImageRoute
   '/demo/ai-structured': typeof DemoAiStructuredRoute
@@ -236,6 +243,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/chat': typeof ApiChatRoute
   '/demo/ai-chat': typeof DemoAiChatRoute
   '/demo/ai-image': typeof DemoAiImageRoute
   '/demo/ai-structured': typeof DemoAiStructuredRoute
@@ -270,6 +278,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/chat': typeof ApiChatRoute
   '/demo/ai-chat': typeof DemoAiChatRoute
   '/demo/ai-image': typeof DemoAiImageRoute
   '/demo/ai-structured': typeof DemoAiStructuredRoute
@@ -305,6 +314,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/projects'
     | '/api/$'
+    | '/api/chat'
     | '/demo/ai-chat'
     | '/demo/ai-image'
     | '/demo/ai-structured'
@@ -338,6 +348,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/projects'
     | '/api/$'
+    | '/api/chat'
     | '/demo/ai-chat'
     | '/demo/ai-image'
     | '/demo/ai-structured'
@@ -371,6 +382,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/projects'
     | '/api/$'
+    | '/api/chat'
     | '/demo/ai-chat'
     | '/demo/ai-image'
     | '/demo/ai-structured'
@@ -405,6 +417,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ProjectsRoute: typeof ProjectsRoute
   ApiSplatRoute: typeof ApiSplatRoute
+  ApiChatRoute: typeof ApiChatRoute
   DemoAiChatRoute: typeof DemoAiChatRoute
   DemoAiImageRoute: typeof DemoAiImageRoute
   DemoAiStructuredRoute: typeof DemoAiStructuredRoute
@@ -517,6 +530,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/ai-chat'
       fullPath: '/demo/ai-chat'
       preLoaderRoute: typeof DemoAiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/$': {
@@ -661,6 +681,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ProjectsRoute: ProjectsRoute,
   ApiSplatRoute: ApiSplatRoute,
+  ApiChatRoute: ApiChatRoute,
   DemoAiChatRoute: DemoAiChatRoute,
   DemoAiImageRoute: DemoAiImageRoute,
   DemoAiStructuredRoute: DemoAiStructuredRoute,
