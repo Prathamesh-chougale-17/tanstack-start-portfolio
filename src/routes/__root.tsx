@@ -7,8 +7,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
-import Header from '../components/Header'
-
 import AiDevtools from '../lib/ai-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
@@ -20,6 +18,8 @@ import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import { baseLocale, getLocale, shouldRedirect } from '@/paraglide/runtime'
 import { ThemeProvider } from '@/providers/theme-provider'
+import { Navbar } from '@/components/layout/navbar'
+import { Footer } from '@/components/layout/footer'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -60,12 +60,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   // Use baseLocale as fallback during SSR when locale isn't set yet
-  let lang: string
-  try {
-    lang = getLocale()
-  } catch {
-    lang = baseLocale
-  }
+  const lang = getLocale()
 
   return (
     <html lang={lang}>
@@ -74,8 +69,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Header />
+          <Navbar />
           {children}
+          <Footer />
           <TanStackDevtools
             config={{
               position: 'bottom-right',

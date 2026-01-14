@@ -1,4 +1,4 @@
-import { Link, useRouterState } from '@tanstack/react-router'
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useCallback, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import type { MouseEvent } from 'react'
@@ -26,6 +26,7 @@ export const AnimatedLink = ({
 }: AnimatedLinkProps) => {
   const linkRef = useRef<HTMLAnchorElement>(null)
   const router = useRouterState()
+  const navigate = useNavigate()
   const pathname = router.location.pathname
 
   // Check if this link is active
@@ -44,7 +45,9 @@ export const AnimatedLink = ({
         return
       }
 
+      // Check if browser supports View Transitions API
       if (!linkRef.current) {
+        // Fallback: let TanStack Router handle navigation normally
         return
       }
 
@@ -61,8 +64,8 @@ export const AnimatedLink = ({
 
       const transition = document.startViewTransition(() => {
         flushSync(() => {
-          // TanStack Router will handle navigation via Link component
-          linkRef.current?.click()
+          // Use navigate hook to trigger navigation
+          navigate({ to: href as any })
         })
       })
 
@@ -82,7 +85,7 @@ export const AnimatedLink = ({
         },
       )
     },
-    [onClick],
+    [onClick, navigate, href],
   )
 
   return (

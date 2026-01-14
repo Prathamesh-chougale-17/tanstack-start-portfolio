@@ -3,7 +3,6 @@ import { AchievementsSection } from '@/components/home/achievements-section'
 import { HeroSection } from '@/components/home/hero-section'
 import { ProjectsSection } from '@/components/home/projects-section'
 import { Icons } from '@/components/icons'
-import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import * as m from '@/paraglide/messages'
 
@@ -71,28 +70,24 @@ function PortfolioHome() {
   ]
 
   return (
-    <>
-      <Navbar />
-      <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-        <HeroSection
-          company={m.hero_company()}
-          companyLink={m.hero_companyLink()}
-          description={m.hero_description()}
-          image={m.hero_image()}
-          intro={m.hero_intro()}
-          name={m.hero_name()}
-          title={m.hero_title()}
-        />
-        <AchievementsSection
-          achievements={achievements.slice(0, 3)}
-          title={m.homeSection_achievementSectionTitle()}
-        />
-        <ProjectsSection
-          projects={projects.slice(0, 3)}
-          title={m.homeSection_projectSectionTitle()}
-        />
-      </main>
-      <Footer />
-    </>
+    <main className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+      <HeroSection
+        company={m.hero_company()}
+        companyLink={m.hero_companyLink()}
+        description={m.hero_description()}
+        image={m.hero_image()}
+        intro={m.hero_intro()}
+        name={m.hero_name()}
+        title={m.hero_title()}
+      />
+      <AchievementsSection
+        achievements={achievements.slice(0, 3)}
+        title={m.homeSection_achievementSectionTitle()}
+      />
+      <ProjectsSection
+        projects={projects.slice(0, 3)}
+        title={m.homeSection_projectSectionTitle()}
+      />
+    </main>
   )
 }

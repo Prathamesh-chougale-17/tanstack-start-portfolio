@@ -7,7 +7,7 @@ import * as m from '@/paraglide/messages'
 export function Navbar() {
   // Build nav items from Paraglide messages
   const navItems = [
-    { title: m.navItems_0_title(), href: '/home' },
+    { title: m.navItems_0_title(), href: '/' },
     { title: m.navItems_1_title(), href: '/projects' },
     { title: m.navItems_2_title(), href: '/about' },
     { title: m.navItems_3_title(), href: '/contact' },
@@ -20,7 +20,7 @@ export function Navbar() {
         <div className="flex items-center">
           <AnimatedLink
             className="items-center space-x-2 md:flex"
-            href="/home"
+            href="/"
             showActiveIndicator={false}
           >
             <img

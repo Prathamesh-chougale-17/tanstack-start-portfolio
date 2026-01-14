@@ -7,7 +7,7 @@ type WorkExperience = {
 
 export function ExperienceTimeline() {
   const title = 'Experience'
-  const experiences: WorkExperience[] = [
+  const experiences: Array<WorkExperience> = [
     {
       title: 'Software Trainee Intern',
       company: 'HSBC',
