@@ -1,4 +1,5 @@
 import { ExternalLink, Github } from 'lucide-react'
+import type { Project } from '@/types/project'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import type { Project } from '@/types/project'
 
 type ProjectCardProps = {
   project: Project
@@ -47,7 +47,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       </CardContent>
       <CardFooter className="flex justify-between">
         {project.githubLink && (
-          <Button asChild size="sm" variant="outline">
+          <Button size="sm" variant="outline">
             <a
               className="flex items-center gap-2"
               href={project.githubLink}
@@ -60,7 +60,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           </Button>
         )}
         {project.liveLink && (
-          <Button asChild size="sm" variant="ghost">
+          <Button size="sm" variant="ghost">
             <a
               className="flex items-center gap-2"
               href={project.liveLink}

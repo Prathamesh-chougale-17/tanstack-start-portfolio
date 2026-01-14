@@ -34,7 +34,7 @@ export function LeetcodeRating() {
     )
   }
 
-  if (error || !data?.success || !data.contestRating) {
+  if (error || !data.success || !data.contestRating) {
     return (
       <div className="text-center">
         <div className="font-bold text-4xl text-primary">1850</div>
@@ -43,7 +43,7 @@ export function LeetcodeRating() {
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger>
                   <AlertCircle size={16} />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -66,7 +66,7 @@ export function LeetcodeRating() {
         <div>LeetCode Rating</div>
         <AnimatedLink
           className="flex items-center gap-1"
-          to={`https://leetcode.com/${username}`}
+          href={`https://leetcode.com/${username}`}
         >
           <Icons.leetcode className="h-4 w-4 text-gray-600 transition-colors duration-200 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200" />
         </AnimatedLink>

@@ -1,4 +1,5 @@
 import { ExternalLink, Github } from 'lucide-react'
+import type { Project } from '@/types/home'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import type { Project } from '@/types/home'
 
 export function ProjectCard({
   title,
@@ -44,7 +44,6 @@ export function ProjectCard({
       <CardFooter className="relative z-10 flex gap-2">
         {githubLink && (
           <Button
-            asChild
             className="border-primary/50 transition-all hover:bg-primary/10 hover:text-primary"
             size="sm"
             variant="outline"
@@ -61,7 +60,6 @@ export function ProjectCard({
         )}
         {liveLink && (
           <Button
-            asChild
             className="bg-primary/90 shadow-sm transition-colors hover:bg-primary hover:shadow-blue-400/30 hover:shadow-md"
             size="sm"
             variant="default"

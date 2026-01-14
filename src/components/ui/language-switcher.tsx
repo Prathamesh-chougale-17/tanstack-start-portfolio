@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getLocale, setLocale, locales } from '@/paraglide/runtime'
+import { getLocale, locales, setLocale } from '@/paraglide/runtime'
 
 const localeNames = {
   en: 'English',
@@ -29,7 +29,7 @@ export function LanguageSwitcher() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Button
           aria-label="Select language"
           className="gap-2"
