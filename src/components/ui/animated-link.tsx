@@ -1,6 +1,7 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { type MouseEvent, useCallback, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { flushSync } from 'react-dom'
+import type { MouseEvent } from 'react'
 import { cn } from '@/lib/utils'
 
 type AnimatedLinkProps = {
@@ -44,11 +45,6 @@ export const AnimatedLink = ({
       }
 
       if (!linkRef.current) {
-        return
-      }
-
-      // Check if View Transitions API is supported
-      if (!document.startViewTransition) {
         return
       }
 
@@ -108,7 +104,7 @@ export const AnimatedLink = ({
           {/* Active indicator - bottom border with gradient */}
           <span
             className={cn(
-              '-bottom-1 absolute left-0 h-0.5 bg-gradient-to-r from-primary via-purple-500 to-primary transition-all duration-300',
+              '-bottom-1 absolute left-0 h-0.5 bg-linear-to-r from-primary via-purple-500 to-primary transition-all duration-300',
               isActive ? 'w-full' : 'w-0 group-hover:w-full',
             )}
           />
