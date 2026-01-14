@@ -15,6 +15,11 @@ const config = defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    watch: {
+      ignored: ['**/project.inlang/messages/**'],
+    },
+  },
   plugins: [
     devtools(),
     paraglideVitePlugin({

@@ -18,7 +18,8 @@ import StoreDevtools from '../lib/demo-store-devtools'
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
-import { getLocale, shouldRedirect } from '@/paraglide/runtime'
+import { baseLocale, getLocale, shouldRedirect } from '@/paraglide/runtime'
+import { ThemeProvider } from '@/providers/theme-provider'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -58,28 +59,38 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  // Use baseLocale as fallback during SSR when locale isn't set yet
+  let lang: string
+  try {
+    lang = getLocale()
+  } catch {
+    lang = baseLocale
+  }
+
   return (
-    <html lang={getLocale()}>
+    <html lang={lang}>
       <head>
         <HeadContent />
       </head>
       <body>
-        <Header />
-        {children}
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            AiDevtools,
-            TanStackQueryDevtools,
-            StoreDevtools,
-          ]}
-        />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Header />
+          {children}
+          <TanStackDevtools
+            config={{
+              position: 'bottom-right',
+            }}
+            plugins={[
+              {
+                name: 'Tanstack Router',
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+              AiDevtools,
+              TanStackQueryDevtools,
+              StoreDevtools,
+            ]}
+          />
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>

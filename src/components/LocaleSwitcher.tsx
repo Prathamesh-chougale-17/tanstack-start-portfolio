@@ -2,7 +2,12 @@
 // - Paraglide docs: https://inlang.com/m/gerre34r/library-inlang-paraglideJs
 // - Router example: https://github.com/TanStack/router/tree/main/examples/react/i18n-paraglide#switching-locale
 import { getLocale, locales, setLocale } from '@/paraglide/runtime'
-import { m } from '@/paraglide/messages'
+
+const localeNames: Record<string, string> = {
+  en: 'English',
+  hi: 'हिंदी',
+  mr: 'मराठी',
+}
 
 export default function ParaglideLocaleSwitcher() {
   const currentLocale = getLocale()
@@ -15,10 +20,10 @@ export default function ParaglideLocaleSwitcher() {
         alignItems: 'center',
         color: 'inherit',
       }}
-      aria-label={m.language_label()}
+      aria-label="Language"
     >
       <span style={{ opacity: 0.85 }}>
-        {m.current_locale({ locale: currentLocale })}
+        {localeNames[currentLocale] || currentLocale}
       </span>
       <div style={{ display: 'flex', gap: '0.25rem' }}>
         {locales.map((locale) => (

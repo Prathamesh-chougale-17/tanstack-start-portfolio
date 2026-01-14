@@ -30,7 +30,13 @@ export const APP = {
 
 // PWA/service worker constants
 export const CACHE_NAME = 'portfolio-v1'
-export const STATIC_ASSETS = ['/', '/about', '/projects', '/contact', '/offline']
+export const STATIC_ASSETS = [
+  '/',
+  '/about',
+  '/projects',
+  '/contact',
+  '/offline',
+]
 
 export const SITEMAP = {
   defaultChangeFreq: 'weekly',
