@@ -41,6 +41,10 @@ export const Route = createFileRoute('/about')({
         property: 'og:image',
         content: '/profile.webp',
       },
+      {
+        property: 'og:url',
+        content: 'https://prathamesh-chougale.vercel.app/about',
+      },
       // Twitter Card tags
       {
         name: 'twitter:card',
@@ -58,6 +62,10 @@ export const Route = createFileRoute('/about')({
       {
         name: 'twitter:image',
         content: '/profile.webp',
+      },
+      {
+        name: 'twitter:url',
+        content: 'https://prathamesh-chougale.vercel.app/about',
       },
     ],
   }),

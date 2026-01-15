@@ -10,16 +10,17 @@ import { orpc } from '@/orpc/client'
 import * as m from '@/paraglide/messages'
 
 export function ContactForm() {
-  const contactMutation = useMutation({
-    mutationFn: orpc.submitContact.call,
-    onSuccess: (data) => {
-      toast.success(data.message || m.contact_form_success())
-      form.reset()
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || m.contact_form_error())
-    },
-  })
+  const contactMutation = useMutation(
+    orpc.submitContact.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(data.message || m.contact_form_success())
+        form.reset()
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || m.contact_form_error())
+      },
+    }),
+  )
 
   const form = useForm({
     defaultValues: {
