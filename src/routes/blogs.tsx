@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Outlet, createFileRoute, useMatch } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import type { Blog } from '@/types/blog'
 import { BlogFilters } from '@/components/blogs/blog-filters'
@@ -8,7 +8,7 @@ import { getAllBlogs } from '@/lib/get-blogs'
 import * as m from '@/paraglide/messages'
 
 export const Route = createFileRoute('/blogs')({
-  component: BlogsPage,
+  component: BlogsLayout,
   head: () => ({
     meta: [
       {
@@ -49,7 +49,24 @@ export const Route = createFileRoute('/blogs')({
   }),
 })
 
-function BlogsPage() {
+// Layout component that handles both parent and child routes
+function BlogsLayout() {
+  // Check if we're on a child route (blogs/$slug)
+  const childMatch = useMatch({
+    from: '/blogs/$slug',
+    shouldThrow: false,
+  })
+
+  // If we're on a child route, render the Outlet (child component)
+  if (childMatch) {
+    return <Outlet />
+  }
+
+  // Otherwise, render the blogs listing page
+  return <BlogsListPage />
+}
+
+function BlogsListPage() {
   const allBlogs = getAllBlogs()
   const [filteredBlogs, setFilteredBlogs] = useState<Array<Blog>>(allBlogs)
 
