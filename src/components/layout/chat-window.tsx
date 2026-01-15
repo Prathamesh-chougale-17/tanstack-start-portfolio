@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Check, Copy, Send, Trash2, X } from 'lucide-react'
-import { Streamdown } from 'streamdown'
+import Markdown from 'react-markdown'
 import { toast } from 'sonner'
 
 import type { ChatMessages } from '@/lib/portfolio-chat-hook'
@@ -153,9 +153,9 @@ function Messages({
                       return (
                         <div
                           key={index}
-                          className="prose dark:prose-invert prose-sm max-w-none"
+                          className="prose dark:prose-invert prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
                         >
-                          <Streamdown>{part.content}</Streamdown>
+                          <Markdown>{part.content}</Markdown>
                         </div>
                       )
                     }
