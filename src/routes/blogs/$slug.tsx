@@ -21,6 +21,18 @@ type SerializableFrontmatter = {
   image?: string
 }
 
+// Helper function to extract text from React nodes
+function extractTextFromNode(node: any): string {
+  if (typeof node === 'string') return node
+  if (typeof node === 'number') return String(node)
+  if (!node) return ''
+  if (Array.isArray(node)) return node.map(extractTextFromNode).join('')
+  if (typeof node === 'object' && node.props?.children) {
+    return extractTextFromNode(node.props.children)
+  }
+  return String(node)
+}
+
 export const Route = createFileRoute('/blogs/$slug')({
   component: BlogPost,
   loader: async ({ params }) => {
@@ -32,7 +44,7 @@ export const Route = createFileRoute('/blogs/$slug')({
 
     // Extract only serializable TOC data
     const toc: Array<SerializableTOCItem> = page.data.toc.map((item) => ({
-      title: typeof item.title === 'string' ? item.title : String(item.title),
+      title: extractTextFromNode(item.title),
       url: item.url,
       depth: item.depth,
     }))

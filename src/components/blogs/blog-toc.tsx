@@ -1,12 +1,25 @@
 import * as Base from 'fumadocs-core/toc'
 import { useRef } from 'react'
 
+type SerializableTOCItem = {
+  title: string
+  url: string
+  depth: number
+}
+
 type BlogTOCProps = {
-  items: Base.TOCItemType[]
+  items: Array<SerializableTOCItem>
 }
 
 export function BlogTOC({ items }: BlogTOCProps) {
   const viewRef = useRef<HTMLDivElement>(null)
+
+  // Convert serializable items back to Fumadocs TOC format
+  const tocItems: Array<Base.TOCItemType> = items.map((item) => ({
+    title: item.title,
+    url: item.url,
+    depth: item.depth,
+  }))
 
   return (
     <div className="hidden lg:block">
@@ -15,7 +28,7 @@ export function BlogTOC({ items }: BlogTOCProps) {
           <div className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             On This Page
           </div>
-          <Base.AnchorProvider toc={items}>
+          <Base.AnchorProvider toc={tocItems}>
             <div className="space-y-2 border-l">
               {items.map((item) => (
                 <Base.TOCItem
