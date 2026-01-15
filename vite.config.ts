@@ -8,6 +8,8 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import tailwindcss from '@tailwindcss/vite'
 import { nitro } from 'nitro/vite'
+import mdx from 'fumadocs-mdx/vite'
+import * as MdxConfig from './source.config'
 
 const config = defineConfig({
   resolve: {
@@ -39,6 +41,7 @@ const config = defineConfig({
         plugins: ['babel-plugin-react-compiler'],
       },
     }),
+    mdx(MdxConfig),
   ],
 })
 
