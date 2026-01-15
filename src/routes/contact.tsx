@@ -5,6 +5,58 @@ import { ThoughtSection } from '@/components/contact/thought-section'
 
 export const Route = createFileRoute('/contact')({
   component: ContactPage,
+  head: () => ({
+    meta: [
+      {
+        title: 'Contact | Prathamesh Chougale - Get In Touch',
+      },
+      {
+        name: 'description',
+        content:
+          "Get in touch with Prathamesh Chougale for collaboration opportunities, project inquiries, or just to say hello. I'm always open to discussing new projects and innovative ideas in web development.",
+      },
+      {
+        name: 'keywords',
+        content:
+          'Contact Prathamesh, Hire React Developer, Full Stack Developer Contact, Collaboration, Web Development Services, Freelance Developer',
+      },
+      // Open Graph tags
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        property: 'og:title',
+        content: 'Contact Prathamesh Chougale',
+      },
+      {
+        property: 'og:description',
+        content:
+          "Let's collaborate! Reach out for web development projects, consulting, or professional opportunities.",
+      },
+      {
+        property: 'og:image',
+        content: '/profile.webp',
+      },
+      // Twitter Card tags
+      {
+        name: 'twitter:card',
+        content: 'summary',
+      },
+      {
+        name: 'twitter:title',
+        content: 'Contact Prathamesh Chougale',
+      },
+      {
+        name: 'twitter:description',
+        content: 'Get in touch for collaboration and project inquiries.',
+      },
+      {
+        name: 'twitter:image',
+        content: '/profile.webp',
+      },
+    ],
+  }),
 })
 
 function ContactPage() {

@@ -7,6 +7,59 @@ import * as m from '@/paraglide/messages'
 
 export const Route = createFileRoute('/')({
   component: PortfolioHome,
+  head: () => ({
+    meta: [
+      {
+        title: 'Prathamesh Chougale | Software Engineer at RDM',
+      },
+      {
+        name: 'description',
+        content:
+          'Full-stack Software Engineer specializing in React, Next.js, and TypeScript. Winner of Smart India Hackathon and HSBC Hackathon 2024. Building scalable web applications with real-world impact.',
+      },
+      {
+        name: 'keywords',
+        content:
+          'Prathamesh Chougale, Software Engineer, React Developer, Next.js, TypeScript, Full Stack Developer, RDM, Smart India Hackathon, HSBC Hackathon',
+      },
+      // Open Graph tags
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        property: 'og:title',
+        content: 'Prathamesh Chougale | Software Engineer',
+      },
+      {
+        property: 'og:description',
+        content:
+          'Full-stack developer building performant, accessible, and scalable web applications. Hackathon winner and open source contributor.',
+      },
+      {
+        property: 'og:image',
+        content: '/profile.webp',
+      },
+      // Twitter Card tags
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        name: 'twitter:title',
+        content: 'Prathamesh Chougale | Software Engineer',
+      },
+      {
+        name: 'twitter:description',
+        content:
+          'Full-stack developer specializing in React, Next.js, and TypeScript. Winner of national hackathons.',
+      },
+      {
+        name: 'twitter:image',
+        content: '/profile.webp',
+      },
+    ],
+  }),
 })
 
 function PortfolioHome() {

@@ -7,6 +7,59 @@ import { getAllProjects } from '@/lib/get-projects'
 
 export const Route = createFileRoute('/projects')({
   component: ProjectsPage,
+  head: () => ({
+    meta: [
+      {
+        title: 'Projects | Prathamesh Chougale - Portfolio',
+      },
+      {
+        name: 'description',
+        content:
+          'Explore my portfolio of innovative projects: Oorja AI (wellness platform), Carbon Track (blockchain supply chain), and Bounty Quest (decentralized rewards). Built with React, Next.js, MongoDB, and AI technologies.',
+      },
+      {
+        name: 'keywords',
+        content:
+          'React Projects, Next.js Portfolio, AI Projects, Blockchain Projects, Oorja AI, Carbon Track, Bounty Quest, Full Stack Projects, TypeScript Projects, MongoDB Projects',
+      },
+      // Open Graph tags
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        property: 'og:title',
+        content: 'Projects - Prathamesh Chougale Portfolio',
+      },
+      {
+        property: 'og:description',
+        content:
+          'Portfolio showcasing AI-powered wellness platforms, blockchain solutions, and decentralized applications built with modern web technologies.',
+      },
+      {
+        property: 'og:image',
+        content: '/profile.webp',
+      },
+      // Twitter Card tags
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        name: 'twitter:title',
+        content: 'Projects - Prathamesh Chougale',
+      },
+      {
+        name: 'twitter:description',
+        content:
+          'Innovative projects combining React, AI, and blockchain technologies.',
+      },
+      {
+        name: 'twitter:image',
+        content: '/profile.webp',
+      },
+    ],
+  }),
 })
 
 function ProjectsPage() {

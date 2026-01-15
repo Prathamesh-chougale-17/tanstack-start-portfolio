@@ -2,7 +2,6 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
-  redirect,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -16,7 +15,7 @@ import StoreDevtools from '../lib/demo-store-devtools'
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
-import { baseLocale, getLocale, shouldRedirect } from '@/paraglide/runtime'
+import { getLocale } from '@/paraglide/runtime'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
@@ -45,13 +44,47 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Prathamesh Chougale | Software Engineer',
+      },
+      // Additional meta tags for better SEO
+      {
+        name: 'author',
+        content: 'Prathamesh Chougale',
+      },
+      {
+        name: 'robots',
+        content: 'index, follow',
       },
     ],
     links: [
       {
         rel: 'stylesheet',
         href: appCss,
+      },
+      {
+        rel: 'icon',
+        href: '/icons/favicon.ico',
+      },
+      {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: '/icons/apple-touch-icon.png',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '32x32',
+        href: '/icons/favicon-32x32.png',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '16x16',
+        href: '/icons/favicon-16x16.png',
+      },
+      {
+        rel: 'manifest',
+        href: '/site.webmanifest',
       },
     ],
   }),
