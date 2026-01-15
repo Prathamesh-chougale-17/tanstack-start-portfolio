@@ -1,11 +1,11 @@
-import { ProjectCard } from '@/components/home/project-card'
 import type { Project } from '@/types/home'
+import { ProjectCard } from '@/components/home/project-card'
 
 export function ProjectsSection({
   projects,
   title,
 }: {
-  projects: Project[]
+  projects: Array<Project>
   title: string
 }) {
   return (

@@ -1,6 +1,6 @@
+import type { HeroSectionProps } from '@/types/home'
 import ClockWidget from '@/components/clock-05'
 import { Badge } from '@/components/ui/badge'
-import type { HeroSectionProps } from '@/types/home'
 
 export function HeroSection({
   name,

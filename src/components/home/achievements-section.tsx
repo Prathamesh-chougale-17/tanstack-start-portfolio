@@ -1,11 +1,11 @@
-import { AchievementCard } from '@/components/home/achievement-card'
 import type { Achievement } from '@/types/home'
+import { AchievementCard } from '@/components/home/achievement-card'
 
 export function AchievementsSection({
   achievements,
   title,
 }: {
-  achievements: Achievement[]
+  achievements: Array<Achievement>
   title: string
 }) {
   return (

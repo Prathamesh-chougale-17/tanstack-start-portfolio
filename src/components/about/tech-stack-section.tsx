@@ -12,7 +12,7 @@ export function TechStackSection() {
   const title = m.aboutSection_techStackTitle()
 
   // Build skills array from Paraglide messages
-  const skills: TechSkill[] = Array.from({ length: 10 }, (_, i) => {
+  const skills: Array<TechSkill> = Array.from({ length: 10 }, (_, i) => {
     const nameKey = `about_techSkills_${i}_name` as keyof typeof m
     const levelKey = `about_techSkills_${i}_level` as keyof typeof m
     const iconKey = `about_techSkills_${i}_icon` as keyof typeof m
@@ -22,7 +22,7 @@ export function TechStackSection() {
     return {
       name: (m[nameKey] as () => string)(),
       level: Number((m[levelKey] as () => string)()),
-      Icon: Icons[iconName as keyof typeof Icons] || Icons.react,
+      Icon: Icons[iconName as keyof typeof Icons],
     }
   })
 
