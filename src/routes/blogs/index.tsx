@@ -1,20 +1,42 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { BlogCard } from '@/components/blogs/blog-card'
 import blogSource from '@/lib/blog-source'
+
+type SerializableBlogPost = {
+  url: string
+  slug: string
+  title: string
+  description: string
+  date: string
+  readTime: string
+  tags: Array<string>
+  image?: string
+}
 
 export const Route = createFileRoute('/blogs/')({
   component: BlogList,
   loader: async () => {
     const pages = await blogSource.getPages()
-    return { posts: pages }
+    // Extract only serializable data
+    const posts: Array<SerializableBlogPost> = pages.map((page) => {
+      const pageData = page.data as any
+      return {
+        url: page.url,
+        slug: page.url.split('/').pop() || '',
+        title: pageData.title || 'Untitled',
+        description: pageData.description || '',
+        date: pageData.date || new Date().toISOString(),
+        readTime: pageData.readTime || '5 min read',
+        tags: pageData.tags || [],
+        image: pageData.image,
+      }
+    })
+    return { posts }
   },
 })
 
-type BlogListLoaderData = { posts: Array<any> }
-
 function BlogList() {
-  const data = Route.useLoaderData() as BlogListLoaderData
-  const posts = data.posts || []
+  const data = Route.useLoaderData()
 
   return (
     <div className="mx-auto max-w-6xl py-12">
@@ -26,7 +48,7 @@ function BlogList() {
         </p>
       </div>
 
-      {posts.length === 0 ? (
+      {data.posts.length === 0 ? (
         <div className="py-12 text-center">
           <p className="text-lg text-muted-foreground">
             No blog posts yet. Check back soon!
@@ -34,24 +56,11 @@ function BlogList() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post: any) => {
-            const frontmatter = post.data as any
-            return (
-              <Link key={post.url} to={post.url} className="block">
-                <BlogCard
-                  post={{
-                    slug: post.url.split('/').pop() || '',
-                    title: frontmatter.title || 'Untitled',
-                    description: frontmatter.description || '',
-                    date: frontmatter.date || new Date().toISOString(),
-                    readTime: frontmatter.readTime || '5 min read',
-                    tags: frontmatter.tags || [],
-                    image: frontmatter.image,
-                  }}
-                />
-              </Link>
-            )
-          })}
+          {data.posts.map((post: any) => (
+            <Link key={post.url} to={post.url} className="block">
+              <BlogCard post={post} />
+            </Link>
+          ))}
         </div>
       )}
     </div>

@@ -1,10 +1,25 @@
+import { Suspense } from 'react'
 import { createFileRoute, notFound } from '@tanstack/react-router'
-import { DocsBody, DocsPage, DocsTitle } from 'fumadocs-ui/layouts/docs/page'
-import defaultMdxComponents from 'fumadocs-ui/mdx'
+import browserCollections from 'fumadocs-mdx:collections/browser'
 import { BlogHero } from '@/components/blogs/blog-hero'
 import { BlogTOC } from '@/components/blogs/blog-toc'
 import { getMDXComponents } from '@/lib/mdx-components'
 import blogSource from '@/lib/blog-source'
+
+type SerializableTOCItem = {
+  title: string
+  url: string
+  depth: number
+}
+
+type SerializableFrontmatter = {
+  title: string
+  description?: string
+  date?: string
+  readTime?: string
+  tags?: Array<string>
+  image?: string
+}
 
 export const Route = createFileRoute('/blogs/$slug')({
   component: BlogPost,
@@ -12,40 +27,73 @@ export const Route = createFileRoute('/blogs/$slug')({
     const page = blogSource.getPage([params.slug])
     if (!page) throw notFound()
 
+    // Preload the client-side content
+    await clientLoader.preload(page.path)
+
+    // Extract only serializable TOC data
+    const toc: Array<SerializableTOCItem> = page.data.toc.map((item) => ({
+      title: typeof item.title === 'string' ? item.title : String(item.title),
+      url: item.url,
+      depth: item.depth,
+    }))
+
+    // Extract only serializable frontmatter
+    const pageData = page.data as any
+    const frontmatter: SerializableFrontmatter = {
+      title: pageData.title || 'Untitled',
+      description: pageData.description,
+      date: pageData.date,
+      readTime: pageData.readTime,
+      tags: pageData.tags,
+      image: pageData.image,
+    }
+
     return {
-      page,
-      toc: page.data.toc,
+      path: page.path,
+      toc,
+      frontmatter,
     }
   },
 })
 
+const clientLoader = browserCollections.blogs.createClientLoader({
+  component({ toc, frontmatter, default: MDX }, props: { className?: string }) {
+    return (
+      <article className={props.className}>
+        <MDX components={getMDXComponents()} />
+      </article>
+    )
+  },
+})
+
 function BlogPost() {
-  const data = Route.useLoaderData() as any
-  const frontmatter = data?.page?.data
+  const data = Route.useLoaderData()
+
+  if (!data) {
+    return (
+      <div className="mx-auto max-w-6xl py-8">
+        <p>Blog post not found</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-6xl py-8">
       <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
         <div>
           <BlogHero
-            title={frontmatter.title || 'Untitled'}
-            description={frontmatter.description || ''}
-            date={frontmatter.date || new Date().toISOString()}
-            readTime={frontmatter.readTime || '5 min read'}
-            tags={frontmatter.tags || []}
-            image={frontmatter.image}
+            title={data.frontmatter.title}
+            description={data.frontmatter.description || ''}
+            date={data.frontmatter.date || new Date().toISOString()}
+            readTime={data.frontmatter.readTime || '5 min read'}
+            tags={data.frontmatter.tags || []}
+            image={data.frontmatter.image}
           />
-          <DocsPage toc={data.toc}>
-            <DocsTitle>{frontmatter.title || 'Untitled'}</DocsTitle>
-            <DocsBody>
-              <data.page.default
-                components={{
-                  ...defaultMdxComponents,
-                  ...getMDXComponents(),
-                }}
-              />
-            </DocsBody>
-          </DocsPage>
+          <Suspense fallback={<div>Loading content...</div>}>
+            {clientLoader.useContent(data.path, {
+              className: 'prose prose-neutral dark:prose-invert max-w-none',
+            })}
+          </Suspense>
         </div>
         <BlogTOC items={data.toc} />
       </div>
