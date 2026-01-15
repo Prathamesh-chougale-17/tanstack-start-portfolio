@@ -20,6 +20,7 @@ import { ThemeProvider } from '@/providers/theme-provider'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { ChatButton } from '@/components/layout/chat-button'
+import { NotFound } from '@/components/not-found'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -33,6 +34,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       document.documentElement.setAttribute('lang', getLocale())
     }
   },
+
+  notFoundComponent: NotFound,
 
   head: () => ({
     meta: [

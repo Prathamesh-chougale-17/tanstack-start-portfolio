@@ -100,7 +100,7 @@ export const sendChatMessage = os
       const systemPrompt = buildSystemPrompt(localeTyped)
 
       // Use TanStack AI with Gemini - non-streaming mode
-      const adapter = geminiText('gemini-2.0-flash')
+      const adapter = geminiText('gemini-2.5-flash-lite-preview-09-2025')
 
       const stream = chat({
         adapter,
@@ -116,9 +116,11 @@ export const sendChatMessage = os
 
       // Collect the full response from the stream
       let fullResponse = ''
+
       for await (const chunk of stream) {
         if (chunk.type === 'content') {
-          fullResponse += chunk.delta || ''
+          const delta = (chunk as any).delta || ''
+          fullResponse += delta
         }
       }
 
