@@ -24,7 +24,9 @@ export const env = createEnv({
     GEMINI_API_KEY: z.string().min(1),
 
     // Optional
-    NODE_ENV: z.string().optional(),
+    NODE_ENV: z
+      .enum(['development', 'production', 'test'])
+      .default('development'),
   },
 
   /**

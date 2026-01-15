@@ -19,6 +19,7 @@ import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { ChatButton } from '@/components/layout/chat-button'
 import { NotFound } from '@/components/not-found'
+import { Toaster } from '@/components/ui/sonner'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -107,6 +108,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <Navbar />
           <main className="mx-auto px-4 sm:px-6 md:px-8">{children}</main>
           <Footer />
+          <Toaster position="bottom-right" closeButton richColors />
           <ChatButton />
           <TanStackDevtools
             config={{
