@@ -14,7 +14,7 @@ type BlogPost = {
   description: string
   date: string
   readTime: string
-  tags: string[]
+  tags: Array<string>
   image?: string
 }
 

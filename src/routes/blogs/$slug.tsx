@@ -83,14 +83,14 @@ function BlogPost() {
 
   if (!data) {
     return (
-      <div className="mx-auto max-w-6xl py-8">
+      <div className="mx-auto">
         <p>Blog post not found</p>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-6xl py-8">
+    <div className="mx-auto">
       <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
         <div>
           <BlogHero

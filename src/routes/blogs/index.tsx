@@ -39,7 +39,7 @@ function BlogList() {
   const data = Route.useLoaderData()
 
   return (
-    <div className="mx-auto max-w-6xl py-12">
+    <div className="mx-auto">
       <div className="mb-8">
         <h1 className="mb-4 text-4xl font-bold">Blog Posts</h1>
         <p className="text-lg text-muted-foreground">
