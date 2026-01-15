@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { WarningCircle } from '@phosphor-icons/react'
-import { AnimatedLink } from '@/components/ui/animated-link'
+import { WarningCircleIcon } from '@phosphor-icons/react'
 import { Icons } from '@/components/icons'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
@@ -44,7 +43,7 @@ export function LeetcodeRating() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <WarningCircle size={16} />
+                  <WarningCircleIcon size={16} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>{error?.message || 'User Not Found'}</p>
@@ -64,12 +63,14 @@ export function LeetcodeRating() {
       </div>
       <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
         <div>LeetCode Rating</div>
-        <AnimatedLink
+        <a
           className="flex items-center gap-1"
+          target="_blank"
+          rel="noopener noreferrer"
           href={`https://leetcode.com/${username}`}
         >
           <Icons.leetcode className="h-4 w-4 text-gray-600 transition-colors duration-200 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200" />
-        </AnimatedLink>
+        </a>
       </div>
       {data.globalRanking && (
         <div className="mt-2 text-muted-foreground text-xs">
