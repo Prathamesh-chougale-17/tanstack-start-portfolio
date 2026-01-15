@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Check, Copy, Loader2, Send, Trash2, X } from 'lucide-react'
+import { Check, Copy, Send, Trash2, X } from 'lucide-react'
 import { Streamdown } from 'streamdown'
 import { toast } from 'sonner'
 
@@ -185,22 +185,6 @@ function Messages({
           </div>
         )
       })}
-
-      {/* Loading indicator */}
-      {isLoading && (
-        <div className="py-2">
-          <div className="flex items-start gap-3">
-            <img
-              alt={text.name}
-              className="rounded-full w-8 h-8 shrink-0"
-              src="/profile.webp"
-            />
-            <div className="bg-muted/50 border border-border rounded-lg p-3">
-              <Loader2 className="h-4 w-4 animate-spin" />
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
@@ -326,11 +310,7 @@ export function ChatWindow({ onClose }: Props) {
             disabled={!input.trim() || isLoading}
             className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-primary hover:text-primary/80 disabled:text-muted-foreground transition-colors focus:outline-none"
           >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
+            <Send className="w-4 h-4" />
           </button>
         </div>
       </form>
