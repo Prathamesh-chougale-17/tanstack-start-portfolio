@@ -11,6 +11,7 @@ export function Navbar() {
     { title: m.navItems_1_title(), href: '/projects' },
     { title: m.navItems_2_title(), href: '/about' },
     { title: m.navItems_3_title(), href: '/contact' },
+    { title: m.navItems_4_title(), href: '/blogs' },
   ]
 
   return (
