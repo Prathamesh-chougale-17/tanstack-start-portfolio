@@ -10,7 +10,7 @@ export type Achievement = {
 export type Project = {
   title: string
   description: string
-  tags: string[]
+  tags: Array<string>
   githubLink?: string
   liveLink?: string
 }

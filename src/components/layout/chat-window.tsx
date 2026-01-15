@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Check, Copy, Send, Trash2, X } from 'lucide-react'
+import { Check, Copy, PaperPlaneRight, Trash, X } from '@phosphor-icons/react'
 import Markdown from 'react-markdown'
 import { toast } from 'sonner'
 
@@ -258,7 +258,7 @@ export function ChatWindow({ onClose }: Props) {
             disabled={messages.length === 0}
             title="Clear chat"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
@@ -310,7 +310,7 @@ export function ChatWindow({ onClose }: Props) {
             disabled={!input.trim() || isLoading}
             className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-primary hover:text-primary/80 disabled:text-muted-foreground transition-colors focus:outline-none"
           >
-            <Send className="w-4 h-4" />
+            <PaperPlaneRight className="w-4 h-4" />
           </button>
         </div>
       </form>

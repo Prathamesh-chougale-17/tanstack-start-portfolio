@@ -1,3 +1,4 @@
+import type { Achievement } from '@/types/home'
 import {
   Card,
   CardContent,
@@ -5,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import type { Achievement } from '@/types/home'
 
 export function AchievementCard({ title, description, Icon }: Achievement) {
   return (

@@ -65,7 +65,7 @@ export const Route = createFileRoute('/projects')({
 function ProjectsPage() {
   const allProjects = getAllProjects()
   const [filteredProjects, setFilteredProjects] =
-    useState<Project[]>(allProjects)
+    useState<Array<Project>>(allProjects)
 
   // Update filtered projects when locale changes
   useEffect(() => {

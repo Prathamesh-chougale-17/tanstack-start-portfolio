@@ -1,5 +1,6 @@
-import { cva, type VariantProps } from 'class-variance-authority'
+import { cva } from 'class-variance-authority'
 import React from 'react'
+import type { VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const widgetVariants = cva('relative flex flex-col whitespace-nowrap', {

@@ -2,7 +2,7 @@ import { ProjectCard } from './project-card'
 import type { Project } from '@/types/project'
 
 type ProjectListProps = {
-  projects: Project[]
+  projects: Array<Project>
 }
 
 export function ProjectList({ projects }: ProjectListProps) {

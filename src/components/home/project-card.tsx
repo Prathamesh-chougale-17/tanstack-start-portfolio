@@ -1,4 +1,4 @@
-import { ExternalLink, Github } from 'lucide-react'
+import { ArrowSquareOutIcon, CodeIcon } from '@phosphor-icons/react'
 import type { Project } from '@/types/home'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -54,7 +54,7 @@ export function ProjectCard({
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Github className="h-4 w-4" /> Code
+              <CodeIcon className="h-4 w-4" /> Code
             </a>
           </Button>
         )}
@@ -70,7 +70,7 @@ export function ProjectCard({
               rel="noopener noreferrer"
               target="_blank"
             >
-              <ExternalLink className="h-4 w-4" /> Demo
+              <ArrowSquareOutIcon className="h-4 w-4" /> Demo
             </a>
           </Button>
         )}

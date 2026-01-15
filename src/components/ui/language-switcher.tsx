@@ -1,4 +1,4 @@
-import { Languages } from 'lucide-react'
+import { TranslateIcon } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -36,7 +36,7 @@ export function LanguageSwitcher() {
           size="icon"
           variant="ghost"
         >
-          <Languages className="h-5 w-5" />
+          <TranslateIcon className="h-5 w-5" />
           <span className="sr-only">Toggle language</span>
         </Button>
       </DropdownMenuTrigger>

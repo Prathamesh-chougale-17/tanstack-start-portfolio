@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { AlertCircle } from 'lucide-react'
+import { WarningCircle } from '@phosphor-icons/react'
 import { AnimatedLink } from '@/components/ui/animated-link'
 import { Icons } from '@/components/icons'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -44,7 +44,7 @@ export function LeetcodeRating() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <AlertCircle size={16} />
+                  <WarningCircle size={16} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>{error?.message || 'User Not Found'}</p>

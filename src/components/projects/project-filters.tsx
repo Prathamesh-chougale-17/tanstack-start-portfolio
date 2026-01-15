@@ -1,7 +1,7 @@
-import { Search } from 'lucide-react'
+import { MagnifyingGlass } from '@phosphor-icons/react'
 import { useState } from 'react'
+import type { Project } from '@/types/project'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -10,11 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { Project } from '@/types/project'
 
 type ProjectFiltersProps = {
-  projects: Project[]
-  onFilteredProjectsChange: (filteredProjects: Project[]) => void
+  projects: Array<Project>
+  onFilteredProjectsChange: (filteredProjects: Array<Project>) => void
 }
 
 export function ProjectFilters({
@@ -23,7 +22,6 @@ export function ProjectFilters({
 }: ProjectFiltersProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTag, setSelectedTag] = useState<string>('all')
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false)
 
   // Get all tags directly (no useMemo)
   const allTags = Array.from(
@@ -33,24 +31,15 @@ export function ProjectFilters({
   // Call filter each time something changes
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
-    handleFilterAfterChange(value, selectedTag, showFeaturedOnly)
+    handleFilterAfterChange(value, selectedTag)
   }
 
-  const handleTagChange = (tag: string) => {
-    setSelectedTag(tag)
-    handleFilterAfterChange(searchQuery, tag, showFeaturedOnly)
+  const handleTagChange = (tag: string | null) => {
+    setSelectedTag(tag || 'all')
+    handleFilterAfterChange(searchQuery, tag || 'all')
   }
 
-  const handleFeaturedChange = (checked: boolean) => {
-    setShowFeaturedOnly(checked)
-    handleFilterAfterChange(searchQuery, selectedTag, checked)
-  }
-
-  const handleFilterAfterChange = (
-    query: string,
-    tag: string,
-    featured: boolean,
-  ) => {
+  const handleFilterAfterChange = (query: string, tag: string) => {
     const filtered = projects.filter((project) => {
       const search = query.toLowerCase()
       const matchesSearch =
@@ -59,9 +48,8 @@ export function ProjectFilters({
         project.tags.some((tagItem) => tagItem.toLowerCase().includes(search))
 
       const matchesTag = tag === 'all' || project.tags.includes(tag)
-      const matchesFeatured = !featured || project.featured
 
-      return matchesSearch && matchesTag && matchesFeatured
+      return matchesSearch && matchesTag
     })
 
     onFilteredProjectsChange(filtered)
@@ -70,7 +58,6 @@ export function ProjectFilters({
   const clearFilters = () => {
     setSearchQuery('')
     setSelectedTag('all')
-    setShowFeaturedOnly(false)
     onFilteredProjectsChange(projects)
   }
 
@@ -79,7 +66,7 @@ export function ProjectFilters({
       <div className="flex-1">
         {/* Search Input */}
         <div className="relative">
-          <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 transform text-muted-foreground" />
+          <MagnifyingGlass className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 transform text-muted-foreground" />
           <Input
             className="w-full pl-10"
             onChange={(e) => handleSearchChange(e.target.value)}
@@ -93,8 +80,8 @@ export function ProjectFilters({
         {/* Tag Filter */}
         <div className="flex items-center gap-2">
           <Select onValueChange={handleTagChange} value={selectedTag}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Filter by tag" />
+            <SelectTrigger className="w-full sm:w-45">
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Tags</SelectItem>
@@ -105,23 +92,6 @@ export function ProjectFilters({
               ))}
             </SelectContent>
           </Select>
-        </div>
-
-        {/* Featured Filter */}
-        <div className="hidden items-center space-x-2 md:flex">
-          <Checkbox
-            checked={showFeaturedOnly}
-            id="featured"
-            onCheckedChange={(checked) =>
-              handleFeaturedChange(checked as boolean)
-            }
-          />
-          <label
-            className="font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            htmlFor="featured"
-          >
-            Featured only
-          </label>
         </div>
 
         {/* Clear Filters */}

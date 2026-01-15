@@ -1,4 +1,4 @@
-import { Moon, Sun } from 'lucide-react'
+import { MoonIcon, SunIcon } from '@phosphor-icons/react'
 import { useTheme } from 'next-themes'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
@@ -74,13 +74,13 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
     >
       {mounted ? (
         theme === 'dark' ? (
-          <Sun className="h-4 w-4 transition-all" />
+          <SunIcon className="h-4 w-4 transition-all" />
         ) : (
-          <Moon className="h-4 w-4 transition-all" />
+          <MoonIcon className="h-4 w-4 transition-all" />
         )
       ) : (
         // Render a neutral icon during SSR to prevent hydration mismatch
-        <Sun className="h-4 w-4 transition-all" />
+        <SunIcon className="h-4 w-4 transition-all" />
       )}
     </Button>
   )

@@ -1,4 +1,4 @@
-import { Menu } from 'lucide-react'
+import { ListIcon } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { AnimatedLink } from '@/components/ui/animated-link'
@@ -22,7 +22,7 @@ export function MobileNav({ navItems }: MobileNavProps) {
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger>
         <Button className="px-0 md:hidden" size="icon" variant="ghost">
-          <Menu className="h-5 w-5" />
+          <ListIcon className="h-5 w-5" />
           <span className="sr-only">Toggle menu</span>
         </Button>
       </SheetTrigger>
