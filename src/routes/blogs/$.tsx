@@ -22,6 +22,49 @@ export const Route = createFileRoute('/blogs/$')({
     await clientLoader.preload(data.path)
     return data
   },
+  head: ({ loaderData }) => {
+    if (!loaderData) {
+      return {
+        title: 'Blogs | Prathamesh Chougale',
+      }
+    }
+    const fm = loaderData.frontmatter
+
+    return {
+      title: `${fm.title} | Prathamesh Chougale`,
+
+      meta: [
+        {
+          name: 'description',
+          content: fm.description,
+        },
+
+        { property: 'og:type', content: 'article' },
+        { property: 'og:title', content: fm.title },
+        { property: 'og:description', content: fm.description },
+        {
+          property: 'og:image',
+          content:
+            'https://prathamesh-chougale.vercel.app/profile.webp',
+        },
+        {
+          property: 'og:url',
+          content: `https://prathamesh-chougale.vercel.app/blogs/${fm.path}`,
+        },
+
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: fm.title },
+        { name: 'twitter:description', content: fm.description },
+        {
+          name: 'twitter:image',
+          content:
+            'https://prathamesh-chougale.vercel.app/profile.webp',
+        },
+      ],
+    }
+  },
+
+
 })
 
 const serverLoader = createServerFn({
@@ -34,6 +77,11 @@ const serverLoader = createServerFn({
 
     return {
       path: page.path,
+      frontmatter: {
+        title: page.data.title,
+        description: page.data.description,
+        path: page.path,
+      },
       pageTree: await source.serializePageTree(source.getPageTree()),
     }
   })
