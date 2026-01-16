@@ -1,6 +1,6 @@
 import { MoonIcon, SunIcon } from '@phosphor-icons/react'
 import { useTheme } from 'next-themes'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { Button } from '@/components/ui/button'
 
@@ -12,7 +12,6 @@ type Props = {
 
 export const AnimatedThemeToggler = ({ className }: Props) => {
   const { theme, setTheme } = useTheme()
-  const buttonRef = useRef<HTMLButtonElement>(null)
   const [mounted, setMounted] = useState(false)
 
   // Fix hydration mismatch by only rendering theme-specific content after mount
@@ -20,68 +19,63 @@ export const AnimatedThemeToggler = ({ className }: Props) => {
     setMounted(true)
   }, [])
 
-  const toggleTheme = useCallback(async () => {
-    if (!buttonRef.current) {
-      return
-    }
+  const toggleTheme = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      const button = e.currentTarget
 
-    const newTheme = theme === 'dark' ? 'light' : 'dark'
+      const newTheme = theme === 'dark' ? 'light' : 'dark'
 
-    // Check if View Transitions API is supported
-    if (!document.startViewTransition) {
-      setTheme(newTheme)
-      return
-    }
+      await document.startViewTransition(() => {
+        flushSync(() => {
+          setTheme(newTheme)
+        })
+      }).ready
 
-    await document.startViewTransition(() => {
-      flushSync(() => {
-        setTheme(newTheme)
-      })
-    }).ready
+      const { top, left, width, height } = button.getBoundingClientRect()
+      const x = left + width / 2
+      const y = top + height / 2
+      const maxRadius = Math.hypot(
+        Math.max(left, window.innerWidth - left),
+        Math.max(top, window.innerHeight - top),
+      )
 
-    const { top, left, width, height } =
-      buttonRef.current.getBoundingClientRect()
-    const x = left + width / 2
-    const y = top + height / 2
-    const maxRadius = Math.hypot(
-      Math.max(left, window.innerWidth - left),
-      Math.max(top, window.innerHeight - top),
-    )
-
-    document.documentElement.animate(
-      {
-        clipPath: [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${maxRadius}px at ${x}px ${y}px)`,
-        ],
-      },
-      {
-        duration: 700,
-        easing: 'ease-in-out',
-        pseudoElement: '::view-transition-new(root)',
-      },
-    )
-  }, [theme, setTheme])
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${maxRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 700,
+          easing: 'ease-in-out',
+          pseudoElement: '::view-transition-new(root)',
+        },
+      )
+    },
+    [theme, setTheme],
+  )
 
   return (
-    <Button
-      aria-label="Toggle theme"
-      className={cn('h-9 w-9 p-0', className)}
-      onClick={toggleTheme}
-      ref={buttonRef}
-      size="sm"
-      variant="ghost"
-    >
-      {mounted ? (
-        theme === 'dark' ? (
-          <SunIcon className="h-4 w-4 transition-all" />
+    <div style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}>
+      <Button
+        aria-label="Toggle theme"
+        className={cn('h-9 w-9 p-0', className)}
+        onClick={toggleTheme}
+        size="sm"
+        variant="ghost"
+      >
+        {mounted ? (
+          theme === 'dark' ? (
+            <SunIcon className="h-4 w-4 transition-all" />
+          ) : (
+            <MoonIcon className="h-4 w-4 transition-all" />
+          )
         ) : (
-          <MoonIcon className="h-4 w-4 transition-all" />
-        )
-      ) : (
-        // Render a neutral icon during SSR to prevent hydration mismatch
-        <SunIcon className="h-4 w-4 transition-all" />
-      )}
-    </Button>
+          // Render a neutral icon during SSR to prevent hydration mismatch
+          <SunIcon className="h-4 w-4 transition-all" />
+        )}
+      </Button>
+    </div>
   )
 }

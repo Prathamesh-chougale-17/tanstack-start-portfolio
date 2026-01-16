@@ -28,30 +28,32 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button
-          aria-label="Select language"
-          className="gap-2"
-          size="icon"
-          variant="ghost"
-        >
-          <TranslateIcon className="h-5 w-5" />
-          <span className="sr-only">Toggle language</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {locales.map((loc) => (
-          <DropdownMenuItem
-            className={`cursor-pointer ${currentLocale === loc ? 'bg-accent' : ''}`}
-            key={loc}
-            onClick={() => handleLocaleChange(loc)}
+    <div style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10 }}>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button
+            aria-label="Select language"
+            className="gap-2"
+            size="icon"
+            variant="ghost"
           >
-            <span className="mr-2">{localeFlags[loc]}</span>
-            {localeNames[loc]}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <TranslateIcon className="h-5 w-5" />
+            <span className="sr-only">Toggle language</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {locales.map((loc) => (
+            <DropdownMenuItem
+              className={`cursor-pointer ${currentLocale === loc ? 'bg-accent' : ''}`}
+              key={loc}
+              onClick={() => handleLocaleChange(loc)}
+            >
+              <span className="mr-2">{localeFlags[loc]}</span>
+              {localeNames[loc]}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }
