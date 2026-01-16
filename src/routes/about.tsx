@@ -82,11 +82,13 @@ export const Route = createFileRoute('/about')({
 
 function AboutPage() {
   return (
-    <main className="py-12">
-      <HeroSection />
-      <StatsSection />
-      <TechStackSection />
-      <ExperienceTimeline />
-    </main>
+    <div className="mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="space-y-20 py-12">
+        <HeroSection />
+        <StatsSection />
+        <TechStackSection />
+        <ExperienceTimeline />
+      </div>
+    </div>
   )
 }

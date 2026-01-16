@@ -130,24 +130,26 @@ function PortfolioHome() {
   ]
 
   return (
-    <>
-      <HeroSection
-        company={m.hero_company()}
-        companyLink={m.hero_companyLink()}
-        description={m.hero_description()}
-        image={m.hero_image()}
-        intro={m.hero_intro()}
-        name={m.hero_name()}
-        title={m.hero_title()}
-      />
-      <AchievementsSection
-        achievements={achievements.slice(0, 3)}
-        title={m.homeSection_achievementSectionTitle()}
-      />
-      <ProjectsSection
-        projects={projects.slice(0, 3)}
-        title={m.homeSection_projectSectionTitle()}
-      />
-    </>
+    <div className="mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="space-y-20">
+        <HeroSection
+          company={m.hero_company()}
+          companyLink={m.hero_companyLink()}
+          description={m.hero_description()}
+          image={m.hero_image()}
+          intro={m.hero_intro()}
+          name={m.hero_name()}
+          title={m.hero_title()}
+        />
+        <AchievementsSection
+          achievements={achievements.slice(0, 3)}
+          title={m.homeSection_achievementSectionTitle()}
+        />
+        <ProjectsSection
+          projects={projects.slice(0, 3)}
+          title={m.homeSection_projectSectionTitle()}
+        />
+      </div>
+    </div>
   )
 }
