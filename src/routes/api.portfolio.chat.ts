@@ -6,6 +6,7 @@ import client from '@/db/client'
 import { insertChatMessage } from '@/db/schema/chat'
 import { env } from '@/env'
 
+/* ------------------ Types ------------------ */
 type Locale = 'en' | 'hi' | 'mr'
 
 const localeNames: Record<Locale, string> = {
@@ -14,54 +15,25 @@ const localeNames: Record<Locale, string> = {
   mr: 'मराठी',
 }
 
-const buildSystemPrompt = (locale: Locale = 'en') => {
+/* ------------------ System Prompt ------------------ */
+const buildSystemPrompt = (locale: Locale) => {
   const languageName = localeNames[locale]
   const scriptNote =
     locale === 'hi' || locale === 'mr' ? ' using Devanagari script' : ''
-  const languageInstruction = `\n\n**IMPORTANT: You MUST respond in ${languageName} language. All your responses should be in ${languageName}${scriptNote}.**\n\n`
 
   return `
-You are Prathamesh Chougale, a Software Engineer at RDM.${languageInstruction}
+You are Prathamesh Chougale, a Software Engineer at RDM.
 
-Always respond as yourself in the first person ("I", "my"), as if having a natural conversation with the user. Never reveal that you're an AI.
+IMPORTANT:
+You MUST reply only in ${languageName}${scriptNote}.
+Always talk in first person ("I", "my").
+Never say you are an AI.
 
 ---
-
-### About Me
-- **Name**: Prathamesh Chougale
-- **Title**: Software Engineer
-- **Company**: RDM (https://rdmtoken.com)
-- **Bio**: Full-stack developer skilled in React, Next.js, Tanstack Start, TRPC, ORPC, Hono and TypeScript. Passionate about building performant, accessible, and scalable web applications with real-world impact.
-- **LeetCode**: prathameshchougale17 (1500+ rating, 300+ problems solved)
-
-### Core Skills & Expertise
-React.js, Tanstack, Next.js, TypeScript, Node.js, MongoDB, PostgreSQL, Tailwind CSS, tRPC, Prisma, Git, Docker
-
-### Major Achievements
-🏆 **Smart India Hackathon Winner**
-Secured Rank 1 in the Smart India Hackathon for developing an innovative real-world solution under national evaluation.
-
-🏆 **HSBC Hackathon Winner 2024**
-Won HSBC Hackathon 2024 by developing a high-impact web-based solution addressing financial workflow challenges.
-
-🏆 **Open Source Contributor**
-Contributed to popular open-source repositories such as Next.js SaaS Starter (12k+ stars), enhancing production-grade SaaS development tools.
-
-### Featured Projects
-- **Oorja AI**: A wellness platform offering personalized mental and physical health assessments (Next.js, MongoDB, AI)
-- **Carbon Track**: Track products from raw materials to delivery using ERC-1155 tokens on Avalanche blockchain
-- **Bounty Quest**: Decentralized task-based rewards system using Solana and Gemini API
-
-### Communication Guidelines
-- Be professional yet friendly
-- Answer questions about my experience, skills, and projects
-- If asked about contact information, direct them to the contact form
-- If you don't know something specific, be honest
-- Keep responses concise but informative
-- Use technical terms when discussing development topics
 `
 }
 
+/* ------------------ Route ------------------ */
 export const Route = createFileRoute('/api/portfolio/chat')({
   server: {
     handlers: {
@@ -73,18 +45,21 @@ export const Route = createFileRoute('/api/portfolio/chat')({
         const abortController = new AbortController()
 
         try {
+          /* ------------------ Read Locale ------------------ */
+          const headerLocale = request.headers.get('x-locale')
+
+          const locale: Locale =
+            headerLocale === 'hi' || headerLocale === 'mr' ? headerLocale : 'en'
+
+          /* ------------------ Read Body ------------------ */
           const body = await request.json()
-          const { messages, locale = 'en' } = body as {
-            messages: Array<{ role: 'user' | 'assistant'; content: string }>
-            locale?: Locale
-          }
 
-          const localeTyped: Locale =
-            locale === 'hi' || locale === 'mr' ? locale : 'en'
+          const messages = body.messages
 
-          /* ------------------ Save user message ------------------ */
+          /* ------------------ Save User Message ------------------ */
           const lastMessage = messages[messages.length - 1]
-          if (lastMessage.role === 'user') {
+
+          if (lastMessage?.role === 'user') {
             const mongoClient = await client.connect()
             const db = mongoClient.db(env.DATABASE_NAME)
 
@@ -95,16 +70,15 @@ export const Route = createFileRoute('/api/portfolio/chat')({
             })
           }
 
-          /* ------------------ Create AI stream ------------------ */
+          /* ------------------ AI Stream ------------------ */
           const stream = chat({
             adapter: geminiText('gemini-2.5-flash-preview-09-2025'),
-            systemPrompts: [buildSystemPrompt(localeTyped)],
+            systemPrompts: [buildSystemPrompt(locale)],
             agentLoopStrategy: maxIterations(5),
             messages,
             abortController,
           })
 
-          /* ------------------ FIXED: Delta-based collection ------------------ */
           let assistantResponse = ''
           let lastLength = 0
 
@@ -123,7 +97,7 @@ export const Route = createFileRoute('/api/portfolio/chat')({
                 yield chunk
               }
 
-              /* ------------------ Save final assistant message ------------------ */
+              /* ------------------ Save Assistant Message ------------------ */
               if (assistantResponse.trim()) {
                 const mongoClient = await client.connect()
                 const db = mongoClient.db(env.DATABASE_NAME)
