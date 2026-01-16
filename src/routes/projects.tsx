@@ -4,6 +4,7 @@ import type { Project } from '@/types/project'
 import { ProjectFilters } from '@/components/projects/project-filters'
 import { ProjectList } from '@/components/projects/project-list'
 import { getAllProjects } from '@/lib/get-projects'
+import * as m from '@/paraglide/messages'
 
 export const Route = createFileRoute('/projects')({
   component: ProjectsPage,
@@ -83,11 +84,11 @@ function ProjectsPage() {
   return (
     <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
       <div>
-        <h1 className="font-bold text-4xl tracking-tight">My Projects</h1>
+        <h1 className="font-bold text-4xl tracking-tight">
+          {m.projectsPage_title()}
+        </h1>
         <p className="mt-2 text-muted-foreground text-lg">
-          Explore my portfolio of projects that combine creativity, engineering,
-          and real-world problem solving using React, Next.js, and AI
-          technologies.
+          {m.projectsPage_description()}
         </p>
       </div>
 
