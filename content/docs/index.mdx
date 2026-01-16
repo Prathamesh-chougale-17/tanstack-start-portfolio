@@ -1,139 +1,21 @@
 ---
-title: Hello World
+title: Blogs
+description: Technical articles and guides about web development, TypeScript, and modern frameworks
 ---
 
-I love Fumadocs
+import { Card, Cards } from 'fumadocs-ui/components/card'
 
----
+## Featured Articles
 
-title: Getting Started with React Server Components
-description: A comprehensive guide to understanding and using React Server Components for better performance
-date: 2025-01-15
-readTime: 8 min read
-tags: [React, Next.js, Performance, Tutorial]
-
----
-
-React Server Components (RSC) have revolutionized how we build React applications. Let's dive deep into what they are and how to use them effectively.
-
-## What are Server Components?
-
-Server Components are a new feature in React that allow components to be rendered on the server. This means:
-
-- They don't ship JavaScript to client
-- They can directly access backend resources (databases, files, etc.)
-- They reduce bundle size sent to browser
-
-## Key Benefits
-
-### 1. Smaller Bundle Size
-
-Since Server Components don't send JavaScript to client, your initial bundle is significantly smaller. This means faster page loads and better performance on slow networks.
-
-### 2. Direct Backend Access
-
-Server Components can directly interact with your database, file system, or other backend services. No need for API routes!
-
-```typescript
-import { db } from '@/lib/db'
-
-async function getUserData(userId: string) {
-  // Direct database access in a component!
-  const user = await db.users.findUnique({
-    where: { id: userId }
-  })
-
-  return user
-}
-
-export default async function UserProfile({ userId }: { userId: string }) {
-  const user = await getUserData(userId)
-
-  return (
-    <div>
-      <h1>{user.name}</h1>
-      <p>{user.email}</p>
-    </div>
-  )
-}
-```
-
-## When to Use Server vs Client Components
-
-### Use Server Components For:
-
-- Data fetching
-- Accessing backend resources
-- Components that don't need interactivity
-- Securing sensitive operations
-
-### Use Client Components For:
-
-- Interactive features (onClick, onChange, etc.)
-- State management with hooks
-- Browser APIs (window, localStorage, etc.)
-- Third-party component libraries
-
-```typescript
-'use client'
-
-import { useState } from 'react'
-
-export function Counter() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(count + 1)}>
-        Increment
-      </button>
-    </div>
-  )
-}
-```
-
-## Best Practices
-
-### 1. Minimize Client Boundaries
-
-Only mark components as client components when absolutely necessary. This keeps most of your app on server.
-
-### 2. Pass Data to Client Components
-
-Fetch data in server components and pass it as props to client components.
-
-```typescript
-// ✅ Good: Server fetches, client displays
-export default async function Page() {
-  const data = await fetchData()
-  return <ClientComponent data={data} />
-}
-
-// ❌ Bad: Client fetches data
-'use client'
-
-export default function Page() {
-  const [data, setData] = useState(null)
-  useEffect(() => {
-    fetchData().then(setData)
-  }, [])
-  return <Display data={data} />
-}
-```
-
-### 3. Leverage Progressive Enhancement
-
-Start with a server-rendered version, then enhance with client-side JavaScript when needed.
-
-## Performance Tips
-
-1. **Cache Server Components**: Use React's caching features to avoid re-rendering
-2. **Stream Responses**: Use streaming to send HTML progressively
-3. **Optimize Images**: Use Next.js Image component for automatic optimization
-
-## Conclusion
-
-Server Components represent a paradigm shift in React development. By understanding when and how to use them, you can build faster, more efficient applications.
-
-Start by identifying which components can be server-rendered, then strategically use client components only for interactivity. Your users will thank you for improved performance!
+<Cards>
+  <Card
+    title="Why I Use oRPC in Most of My Projects"
+    description="A simple explanation of why oRPC became my default choice for building APIs"
+    href="/blogs/why-do-i-use-orpc"
+  />
+  <Card
+    title="Getting Started with React Server Components"
+    description="A comprehensive guide to understanding and using React Server Components for better performance"
+    href="/blogs/react-server-components"
+  />
+</Cards>

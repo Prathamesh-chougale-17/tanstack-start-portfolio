@@ -116,9 +116,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
-          <main className="mx-auto px-4 sm:px-6 md:px-8">
-            <RootProvider>{children}</RootProvider>
-          </main>
+          <RootProvider>{children}</RootProvider>
           <Footer />
           <Toaster position="bottom-right" closeButton richColors />
           <ChatButton />
