@@ -1,10 +1,7 @@
 // Centralized application constants
 // Keep non-sensitive values here. Secrets still belong in env variables.
 
-import { env } from '@/env'
-
-export const SITE_URL =
-  env.NEXT_PUBLIC_SITE_URL || 'https://prathamesh-chougale.vercel.app'
+export const SITE_URL = 'https://prathamesh-chougale.vercel.app'
 
 export const OG_IMAGE = '/icons/og-image.png'
 
@@ -29,7 +26,7 @@ export const APP = {
 }
 
 // PWA/service worker constants
-export const CACHE_NAME = 'portfolio-v1'
+export const CACHE_NAME = 'portfolio-cache-v1'
 export const STATIC_ASSETS = [
   '/',
   '/about',

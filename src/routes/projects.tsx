@@ -81,24 +81,22 @@ function ProjectsPage() {
   }, [allProjects])
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="space-y-8 py-12">
-        <div>
-          <h1 className="font-bold text-4xl tracking-tight">My Projects</h1>
-          <p className="mt-2 text-muted-foreground text-lg">
-            Explore my portfolio of projects that combine creativity,
-            engineering, and real-world problem solving using React, Next.js,
-            and AI technologies.
-          </p>
-        </div>
-
-        <ProjectFilters
-          onFilteredProjectsChange={setFilteredProjects}
-          projects={allProjects}
-        />
-
-        <ProjectList projects={filteredProjects} />
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
+      <div>
+        <h1 className="font-bold text-4xl tracking-tight">My Projects</h1>
+        <p className="mt-2 text-muted-foreground text-lg">
+          Explore my portfolio of projects that combine creativity, engineering,
+          and real-world problem solving using React, Next.js, and AI
+          technologies.
+        </p>
       </div>
+
+      <ProjectFilters
+        onFilteredProjectsChange={setFilteredProjects}
+        projects={allProjects}
+      />
+
+      <ProjectList projects={filteredProjects} />
     </div>
   )
 }

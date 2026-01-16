@@ -15,7 +15,7 @@ export function HeroSection() {
   ]
 
   return (
-    <section className="mb-16">
+    <section className="py-4 space-y-8">
       <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-5">
         <div className="space-y-4 lg:col-span-3">
           <h1 className="animate-fade-in font-bold text-4xl tracking-tight">

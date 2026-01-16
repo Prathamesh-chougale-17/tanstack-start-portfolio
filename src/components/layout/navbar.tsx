@@ -29,6 +29,19 @@ export function NavbarComponent() {
   return (
     <Navbar>
       <NavBody>
+        <div className="flex flex-1 items-center justify-start">
+          <AnimatedLink
+            href="/"
+            className="relative z-10 mr-8 flex items-center space-x-2 px-2 py-1 font-bold text-black dark:text-white"
+            showActiveIndicator={false}
+          >
+            <img
+              src="/icons/android-chrome-192x192.png"
+              alt="Logo"
+              className="h-8 w-8 rounded-full"
+            />
+          </AnimatedLink>
+        </div>
         <div className="flex flex-1 items-center justify-center">
           <NavItems items={navItems} />
         </div>
