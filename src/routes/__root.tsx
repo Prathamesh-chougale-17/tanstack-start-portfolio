@@ -101,7 +101,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
 
-  shellComponent: RootDocument,
+  shellComponent: RootComponent,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {

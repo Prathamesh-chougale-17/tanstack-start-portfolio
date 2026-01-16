@@ -1,0 +1,201 @@
+---
+title: 'Why I Use oRPC in Most of My Projects'
+description: 'A simple explanation of why oRPC became my default choice for building APIs'
+date: 2026-01-16
+author: 'Prathamesh Chougale'
+tags: ['orpc', 'typescript', 'api', 'rpc', 'backend', 'fullstack']
+---
+
+## Introduction
+
+When building modern web apps, the hardest part is not UI or database.  
+It is **communication between frontend and backend**.
+
+After trying REST, GraphQL, and custom API layers, I started using **oRPC**.  
+Today, I use it in many of my projects — small and large.
+
+This post explains **why**.
+
+---
+
+## The Main Problem With Traditional APIs
+
+Most APIs fail in these areas:
+
+- Types are duplicated
+- Backend changes break frontend
+- Too much boilerplate
+- Hard to refactor safely
+- Poor developer experience
+
+Even with REST + OpenAPI or GraphQL, things often feel heavy.
+
+I wanted something:
+
+- Simple
+- Type-safe
+- Easy to scale
+- Easy to refactor
+
+That is where oRPC fits perfectly.
+
+---
+
+## What Is oRPC (In Simple Words)
+
+oRPC is a **type-safe RPC framework** for TypeScript.
+
+You define your API **once**, and:
+
+- Backend gets runtime validation
+- Frontend gets full type inference
+- No manual API contracts
+- No code generation step
+
+Frontend and backend speak the **same language**.
+
+---
+
+## Reason 1: End-to-End Type Safety (No Guessing)
+
+With oRPC:
+
+- Input types
+- Output types
+- Errors
+
+All are shared automatically.
+
+If I change something on the backend:
+
+- TypeScript tells me **exactly** what breaks
+- No runtime surprises
+
+This alone saves **hours of debugging**.
+
+---
+
+## Reason 2: Zero Boilerplate, Maximum Clarity
+
+A typical REST setup needs:
+
+- Routes
+- Controllers
+- DTOs
+- Validators
+- API clients
+
+With oRPC:
+
+- One procedure = one function
+- Validation + types + logic in one place
+
+Less files.  
+Less confusion.  
+Cleaner code.
+
+---
+
+## Reason 3: Refactoring Feels Safe
+
+Refactoring APIs is usually scary.
+
+With oRPC:
+
+- Rename a field → compiler shows all affected places
+- Remove a procedure → frontend fails at build time
+- Change return type → instant feedback
+
+I refactor with confidence instead of fear.
+
+---
+
+## Reason 4: Perfect Fit for Full-Stack TypeScript
+
+If your stack includes:
+
+- TypeScript
+- React
+- Modern backend (Node, Bun, Deno)
+
+oRPC feels **natural**.
+
+No extra mental model.
+No schema syncing.
+No generated clients.
+
+Just TypeScript doing what it does best.
+
+---
+
+## Reason 5: Works Great With Modern Frameworks
+
+oRPC plays very well with:
+
+- Server-first frameworks
+- Edge runtimes
+- Streaming
+- Authentication layers
+
+I can keep business logic clean and framework-agnostic.
+
+---
+
+## Why I Choose oRPC Over REST and GraphQL
+
+### REST
+
+- ❌ Manual contracts
+- ❌ Weak type safety
+- ❌ Easy to break
+
+### GraphQL
+
+- ❌ Extra complexity
+- ❌ Heavy tooling
+- ❌ Overkill for many apps
+
+### oRPC
+
+- ✅ Simple mental model
+- ✅ Strong typing
+- ✅ Fast development
+- ✅ Easy maintenance
+
+---
+
+## When I Use oRPC
+
+I use oRPC for:
+
+- Side projects
+- SaaS products
+- Internal tools
+- APIs shared between multiple apps
+
+If frontend and backend are in TypeScript —  
+oRPC is my default choice.
+
+---
+
+## Final Thoughts
+
+oRPC makes APIs:
+
+- Safer
+- Faster to build
+- Easier to maintain
+- More fun to work with
+
+Instead of fighting API contracts, I focus on **building features**.
+
+That is why I use oRPC in many of my projects —  
+and why I will continue using it.
+
+---
+
+## References
+
+- oRPC Documentation: https://orpc.dev
+- TypeScript Handbook: https://www.typescriptlang.org/docs/
+- RPC vs REST Explanation: https://martinfowler.com/articles/richardsonMaturityModel.html

@@ -14,7 +14,7 @@ import { Suspense } from 'react'
 import { source } from '@/lib/source'
 import { baseOptions } from '@/lib/layout.shared'
 
-export const Route = createFileRoute('/docs/$')({
+export const Route = createFileRoute('/blogs/$')({
   component: Page,
   loader: async ({ params }) => {
     const slugs = params._splat?.split('/') ?? []

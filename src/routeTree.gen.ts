@@ -13,7 +13,7 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DocsSplatRouteImport } from './routes/docs/$'
+import { Route as BlogsSplatRouteImport } from './routes/blogs/$'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
@@ -39,9 +39,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DocsSplatRoute = DocsSplatRouteImport.update({
-  id: '/docs/$',
-  path: '/docs/$',
+const BlogsSplatRoute = BlogsSplatRouteImport.update({
+  id: '/blogs/$',
+  path: '/blogs/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSearchRoute = ApiSearchRouteImport.update({
@@ -72,7 +72,7 @@ export interface FileRoutesByFullPath {
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/search': typeof ApiSearchRoute
-  '/docs/$': typeof DocsSplatRoute
+  '/blogs/$': typeof BlogsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
@@ -83,7 +83,7 @@ export interface FileRoutesByTo {
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/search': typeof ApiSearchRoute
-  '/docs/$': typeof DocsSplatRoute
+  '/blogs/$': typeof BlogsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
@@ -95,7 +95,7 @@ export interface FileRoutesById {
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/search': typeof ApiSearchRoute
-  '/docs/$': typeof DocsSplatRoute
+  '/blogs/$': typeof BlogsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
@@ -108,7 +108,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/api/$'
     | '/api/search'
-    | '/docs/$'
+    | '/blogs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
   fileRoutesByTo: FileRoutesByTo
@@ -119,7 +119,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/api/$'
     | '/api/search'
-    | '/docs/$'
+    | '/blogs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
   id:
@@ -130,7 +130,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/api/$'
     | '/api/search'
-    | '/docs/$'
+    | '/blogs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
   fileRoutesById: FileRoutesById
@@ -142,7 +142,7 @@ export interface RootRouteChildren {
   ProjectsRoute: typeof ProjectsRoute
   ApiSplatRoute: typeof ApiSplatRoute
   ApiSearchRoute: typeof ApiSearchRoute
-  DocsSplatRoute: typeof DocsSplatRoute
+  BlogsSplatRoute: typeof BlogsSplatRoute
   ApiPortfolioChatRoute: typeof ApiPortfolioChatRoute
   ApiRpcSplatRoute: typeof ApiRpcSplatRoute
 }
@@ -177,11 +177,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/docs/$': {
-      id: '/docs/$'
-      path: '/docs/$'
-      fullPath: '/docs/$'
-      preLoaderRoute: typeof DocsSplatRouteImport
+    '/blogs/$': {
+      id: '/blogs/$'
+      path: '/blogs/$'
+      fullPath: '/blogs/$'
+      preLoaderRoute: typeof BlogsSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/search': {
@@ -222,7 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsRoute: ProjectsRoute,
   ApiSplatRoute: ApiSplatRoute,
   ApiSearchRoute: ApiSearchRoute,
-  DocsSplatRoute: DocsSplatRoute,
+  BlogsSplatRoute: BlogsSplatRoute,
   ApiPortfolioChatRoute: ApiPortfolioChatRoute,
   ApiRpcSplatRoute: ApiRpcSplatRoute,
 }
