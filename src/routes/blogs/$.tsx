@@ -60,6 +60,10 @@ export const Route = createFileRoute('/blogs/$')({
           content:
             'https://prathamesh-chougale.vercel.app/profile.webp',
         },
+        {
+          name: 'twitter:url',
+          content: `https://prathamesh-chougale.vercel.app/blogs/${fm.path}`,
+        }
       ],
     }
   },
@@ -75,12 +79,18 @@ const serverLoader = createServerFn({
     const page = source.getPage(slugs)
     if (!page) throw notFound()
 
+    let cleanPath = page.path.replace(/\.mdx$/, '')
+
+    // if last segment is "index", make it null
+    if (cleanPath === 'index') {
+      cleanPath = ""
+    }
     return {
       path: page.path,
       frontmatter: {
         title: page.data.title,
         description: page.data.description,
-        path: page.path,
+        path: cleanPath,
       },
       pageTree: await source.serializePageTree(source.getPageTree()),
     }
