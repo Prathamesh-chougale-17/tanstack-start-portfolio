@@ -93,33 +93,6 @@ function Messages({
 
   return (
     <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4">
-      {/* Welcome message */}
-      <div className="py-2">
-        <div className="flex items-start gap-3">
-          <img
-            alt={text.name}
-            className="rounded-full w-8 h-8 shrink-0"
-            src="/profile.webp"
-          />
-          <div className="flex-1 min-w-0">
-            <div className="bg-muted/50 border border-border rounded-lg p-3 text-sm">
-              {text.welcome}
-            </div>
-            <button
-              onClick={() => onCopy(text.welcome, 'welcome')}
-              className="mt-1 text-muted-foreground hover:text-foreground transition-colors p-1"
-              title="Copy"
-            >
-              {copiedId === 'welcome' ? (
-                <Check className="h-3 w-3" />
-              ) : (
-                <Copy className="h-3 w-3" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Chat messages */}
       {messages.map(({ id, role, parts }) => {
         const isUser = role === 'user'

@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { chat, maxIterations, toServerSentEventsResponse } from '@tanstack/ai'
 import { geminiText } from '@tanstack/ai-gemini'
+import type { StreamChunk } from '@tanstack/ai'
 import client from '@/db/client'
 import { insertChatMessage } from '@/db/schema/chat'
 import { env } from '@/env'
@@ -13,7 +14,6 @@ const localeNames: Record<Locale, string> = {
   mr: 'मराठी',
 }
 
-// Simplified system prompt builder
 const buildSystemPrompt = (locale: Locale = 'en') => {
   const languageName = localeNames[locale]
   const scriptNote =
@@ -31,11 +31,11 @@ Always respond as yourself in the first person ("I", "my"), as if having a natur
 - **Name**: Prathamesh Chougale
 - **Title**: Software Engineer
 - **Company**: RDM (https://rdmtoken.com)
-- **Bio**: Full-stack developer skilled in React, Next.js, and TypeScript. Passionate about building performant, accessible, and scalable web applications with real-world impact.
-- **LeetCode**: prathameshchougale17 (1800+ rating, 400+ problems solved)
+- **Bio**: Full-stack developer skilled in React, Next.js, Tanstack Start, TRPC, ORPC, Hono and TypeScript. Passionate about building performant, accessible, and scalable web applications with real-world impact.
+- **LeetCode**: prathameshchougale17 (1500+ rating, 300+ problems solved)
 
 ### Core Skills & Expertise
-React.js, Next.js, TypeScript, Node.js, MongoDB, PostgreSQL, Tailwind CSS, tRPC, Prisma, Git, Docker
+React.js, Tanstack, Next.js, TypeScript, Node.js, MongoDB, PostgreSQL, Tailwind CSS, tRPC, Prisma, Git, Docker
 
 ### Major Achievements
 🏆 **Smart India Hackathon Winner**
@@ -66,66 +66,87 @@ export const Route = createFileRoute('/api/portfolio/chat')({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // Capture request signal before reading body
-        const requestSignal = request.signal
-
-        // If request is already aborted, return early
-        if (requestSignal.aborted) {
-          return new Response(null, { status: 499 }) // 499 = Client Closed Request
+        if (request.signal.aborted) {
+          return new Response(null, { status: 499 })
         }
 
         const abortController = new AbortController()
 
         try {
           const body = await request.json()
-          const { messages, locale = 'en' } = body
+          const { messages, locale = 'en' } = body as {
+            messages: Array<{ role: 'user' | 'assistant'; content: string }>
+            locale?: Locale
+          }
 
-          const localeTyped = (
+          const localeTyped: Locale =
             locale === 'hi' || locale === 'mr' ? locale : 'en'
-          ) as Locale
 
-          // Store user message in database
-          const userMessage = messages[messages.length - 1]
-          if (userMessage?.role === 'user') {
+          /* ------------------ Save user message ------------------ */
+          const lastMessage = messages[messages.length - 1]
+          if (lastMessage.role === 'user') {
             const mongoClient = await client.connect()
             const db = mongoClient.db(env.DATABASE_NAME)
+
             await insertChatMessage(db, {
               role: 'user',
-              content: userMessage.content,
+              content: lastMessage.content,
               timestamp: new Date(),
             })
           }
 
-          // Build system prompt with locale
-          const systemPrompt = buildSystemPrompt(localeTyped)
-
-          // Use TanStack AI with Gemini
-          const adapter = geminiText('gemini-2.5-flash-lite-preview-09-2025')
-
+          /* ------------------ Create AI stream ------------------ */
           const stream = chat({
-            adapter,
-            systemPrompts: [systemPrompt],
+            adapter: geminiText('gemini-2.5-flash-preview-09-2025'),
+            systemPrompts: [buildSystemPrompt(localeTyped)],
             agentLoopStrategy: maxIterations(5),
-            messages: messages
-              .filter((msg: any) => msg.role !== 'system')
-              .map((msg: any) => ({
-                role: msg.role as 'user' | 'assistant',
-                content: msg.content,
-              })),
+            messages,
             abortController,
           })
 
-          // TODO: Store assistant response to database
-          // For now, we're skipping storage to avoid consuming the stream twice
-          // In a production app, you'd want to use stream tee or collect on client side
+          /* ------------------ FIXED: Delta-based collection ------------------ */
+          let assistantResponse = ''
+          let lastLength = 0
 
-          return toServerSentEventsResponse(stream, { abortController })
+          const wrappedStream: AsyncIterable<StreamChunk> = {
+            async *[Symbol.asyncIterator]() {
+              for await (const chunk of stream) {
+                if (
+                  chunk.type === 'content' &&
+                  typeof chunk.content === 'string'
+                ) {
+                  const delta = chunk.content.slice(lastLength)
+                  assistantResponse += delta
+                  lastLength = chunk.content.length
+                }
+
+                yield chunk
+              }
+
+              /* ------------------ Save final assistant message ------------------ */
+              if (assistantResponse.trim()) {
+                const mongoClient = await client.connect()
+                const db = mongoClient.db(env.DATABASE_NAME)
+
+                await insertChatMessage(db, {
+                  role: 'assistant',
+                  content: assistantResponse.trim(),
+                  timestamp: new Date(),
+                })
+              }
+            },
+          }
+
+          return toServerSentEventsResponse(wrappedStream, {
+            abortController,
+          })
         } catch (error: any) {
-          // If request was aborted, return early
-          if (error.name === 'AbortError' || abortController.signal.aborted) {
+          if (error?.name === 'AbortError') {
             return new Response(null, { status: 499 })
           }
-          console.error('Chat error:', error)
+
+          console.error('Chat API error:', error)
+
           return new Response(
             JSON.stringify({ error: 'Failed to process chat request' }),
             {
