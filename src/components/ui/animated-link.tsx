@@ -46,7 +46,11 @@ export const AnimatedLink = ({
       }
 
       // Check if browser supports View Transitions API
-      if (!linkRef.current) {
+      if (
+        !linkRef.current ||
+        !('startViewTransition' in document) ||
+        typeof document.startViewTransition !== 'function'
+      ) {
         // Fallback: let TanStack Router handle navigation normally
         return
       }
