@@ -18,7 +18,6 @@ import type { QueryClient } from '@tanstack/react-query'
 import { getLocale } from '@/paraglide/runtime'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { NavbarComponent } from '@/components/layout/navbar'
-import { Footer } from '@/components/layout/footer'
 import { ChatButton } from '@/components/layout/chat-button'
 import { NotFound } from '@/components/not-found'
 import { Toaster } from '@/components/ui/sonner'
@@ -117,7 +116,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <NavbarComponent />
           <RootProvider>{children}</RootProvider>
-          <Footer />
           <Toaster position="bottom-right" closeButton richColors />
           <ChatButton />
           <TanStackDevtools
