@@ -1,11 +1,13 @@
 import {
   HeadContent,
+  Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
+import { RootProvider } from 'fumadocs-ui/provider/tanstack'
 import AiDevtools from '../lib/ai-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
@@ -23,6 +25,14 @@ import { Toaster } from '@/components/ui/sonner'
 
 interface MyRouterContext {
   queryClient: QueryClient
+}
+
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
+  )
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
@@ -106,7 +116,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
-          <main className="mx-auto px-4 sm:px-6 md:px-8">{children}</main>
+          <main className="mx-auto px-4 sm:px-6 md:px-8">
+            <RootProvider>{children}</RootProvider>
+          </main>
           <Footer />
           <Toaster position="bottom-right" closeButton richColors />
           <ChatButton />

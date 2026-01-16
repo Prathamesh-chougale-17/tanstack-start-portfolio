@@ -13,6 +13,8 @@ import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocsSplatRouteImport } from './routes/docs/$'
+import { Route as ApiSearchRouteImport } from './routes/api/search'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
 import { Route as ApiPortfolioChatRouteImport } from './routes/api.portfolio.chat'
@@ -37,6 +39,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsSplatRoute = DocsSplatRouteImport.update({
+  id: '/docs/$',
+  path: '/docs/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSearchRoute = ApiSearchRouteImport.update({
+  id: '/api/search',
+  path: '/api/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
   id: '/api/$',
   path: '/api/$',
@@ -59,6 +71,8 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/search': typeof ApiSearchRoute
+  '/docs/$': typeof DocsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
@@ -68,6 +82,8 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/search': typeof ApiSearchRoute
+  '/docs/$': typeof DocsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
@@ -78,6 +94,8 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
+  '/api/search': typeof ApiSearchRoute
+  '/docs/$': typeof DocsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
 }
@@ -89,6 +107,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/projects'
     | '/api/$'
+    | '/api/search'
+    | '/docs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +118,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/projects'
     | '/api/$'
+    | '/api/search'
+    | '/docs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
   id:
@@ -107,6 +129,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/projects'
     | '/api/$'
+    | '/api/search'
+    | '/docs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
   fileRoutesById: FileRoutesById
@@ -117,6 +141,8 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ProjectsRoute: typeof ProjectsRoute
   ApiSplatRoute: typeof ApiSplatRoute
+  ApiSearchRoute: typeof ApiSearchRoute
+  DocsSplatRoute: typeof DocsSplatRoute
   ApiPortfolioChatRoute: typeof ApiPortfolioChatRoute
   ApiRpcSplatRoute: typeof ApiRpcSplatRoute
 }
@@ -151,6 +177,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/$': {
+      id: '/docs/$'
+      path: '/docs/$'
+      fullPath: '/docs/$'
+      preLoaderRoute: typeof DocsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/search': {
+      id: '/api/search'
+      path: '/api/search'
+      fullPath: '/api/search'
+      preLoaderRoute: typeof ApiSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/$': {
       id: '/api/$'
       path: '/api/$'
@@ -181,6 +221,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ProjectsRoute: ProjectsRoute,
   ApiSplatRoute: ApiSplatRoute,
+  ApiSearchRoute: ApiSearchRoute,
+  DocsSplatRoute: DocsSplatRoute,
   ApiPortfolioChatRoute: ApiPortfolioChatRoute,
   ApiRpcSplatRoute: ApiRpcSplatRoute,
 }
