@@ -11,8 +11,8 @@ export function HeroSection({
   companyLink,
 }: HeroSectionProps) {
   return (
-    <section className="flex animate-fade-in pt-10 flex-col items-center justify-between gap-8 md:flex-row">
-      <div className="max-w-xl space-y-4">
+    <section className="flex animate-fade-in flex-col items-center justify-between gap-8 md:flex-row">
+      <div className="space-y-4">
         <h1 className="font-bold text-4xl tracking-tight md:text-6xl">
           {intro}
           <span className="text-primary">{name}</span>
