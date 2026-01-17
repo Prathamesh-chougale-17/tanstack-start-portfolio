@@ -20,7 +20,6 @@ export function NavbarComponent() {
 
   // Build nav items from Paraglide messages
   const navItems = [
-    { name: m.navItems_0_title(), link: '/' },
     { name: m.navItems_1_title(), link: '/projects' },
     { name: m.navItems_2_title(), link: '/about' },
     { name: m.navItems_3_title(), link: '/contact' },

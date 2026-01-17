@@ -46,7 +46,7 @@ interface MobileNavHeaderProps {
 
 export const Navbar = ({ children, className, visible }: NavbarProps) => {
   return (
-    <div className={cn('fixed inset-x-0 top-3 z-50 w-full', className)}>
+    <div className={cn('fixed inset-x-0 top-1.5 z-5 w-full', className)}>
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
           ? React.cloneElement(
@@ -179,7 +179,8 @@ export const NavbarLogo = () => {
   return (
     <AnimatedLink
       href="/"
-      className="flex items-center gap-2 px-2 py-1 text-sm font-medium"
+      showActiveIndicator={false}
+      className="flex z-10 items-center cursor-pointer gap-2 px-2 py-1 text-sm font-medium"
     >
       <img
         src="/icons/android-chrome-192x192.png"
