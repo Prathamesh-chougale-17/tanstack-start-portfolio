@@ -130,7 +130,7 @@ function PortfolioHome() {
   ]
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-4 md:pt-12 lg:pt-16">
       <HeroSection
         company={m.hero_company()}
         companyLink={m.hero_companyLink()}

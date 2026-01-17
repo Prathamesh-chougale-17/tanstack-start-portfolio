@@ -69,7 +69,7 @@ export const Route = createFileRoute('/contact')({
 
 function ContactPage() {
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4 md:pt-16 lg:pt-24 space-y-8">
       {/* Section 1: Thought and Social Links */}
       <ThoughtSection />
 

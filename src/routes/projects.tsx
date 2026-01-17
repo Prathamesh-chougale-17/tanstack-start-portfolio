@@ -82,7 +82,7 @@ function ProjectsPage() {
   }, [allProjects])
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4 md:pt-12 lg:pt-16 space-y-8">
       <div>
         <h1 className="font-bold text-4xl tracking-tight">
           {m.projectsPage_title()}
