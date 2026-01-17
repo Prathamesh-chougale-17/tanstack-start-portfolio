@@ -1,0 +1,426 @@
+---
+title: Routing
+description: How backend systems route requests to the right handlers
+---
+
+## What is Routing?
+
+Routing is the mechanism that determines which code should handle an incoming HTTP request based on the URL path and HTTP method. It's the traffic cop of your backend application.
+
+## Basic Routing Concepts
+
+### Path Matching
+
+Routes are defined with patterns that match URLs:
+
+```tsx
+// Simple exact match
+GET /users
+GET /api/posts
+
+// Parameterized routes
+GET /users/:id          // Matches /users/123
+GET /posts/:postId/comments // Matches /posts/45/comments
+
+// Wildcard routes
+GET /*                   // Matches any path
+GET /api/*               // Matches /api/anything
+```
+
+### HTTP Method Matching
+
+Same path, different handlers based on method:
+
+```tsx
+GET    /users  → getUsers()
+POST   /users  → createUser()
+PUT    /users/:id → updateUser()
+DELETE  /users/:id → deleteUser()
+```
+
+## Routing in Popular Frameworks
+
+### Hono
+
+```tsx
+import { Hono } from 'hono'
+
+const app = new Hono()
+
+// Basic routes
+app.get('/', (c) => c.text('Home page'))
+app.get('/about', (c) => c.text('About page'))
+
+// Parameterized routes
+app.get('/users/:id', (c) => {
+  const id = c.req.param('id')
+  return c.json({ userId: id })
+})
+
+// Nested routes
+const userRoutes = new Hono()
+userRoutes.get('/', (c) => c.json({ users: [] }))
+userRoutes.post('/', (c) => c.json({ created: true }))
+userRoutes.get('/:id', (c) => c.json({ user: null }))
+
+app.route('/api/users', userRoutes)
+
+// Middleware on routes
+app.use('/api/*', async (c, next) => {
+  console.log('API request:', c.req.method, c.req.path)
+  await next()
+})
+```
+
+### Express.js
+
+```tsx
+import express from 'express'
+
+const app = express()
+
+// Basic routes
+app.get('/', (req, res) => {
+  res.send('Home page')
+})
+
+// Middleware
+app.use('/api', (req, res, next) => {
+  console.log('API request:', req.method, req.path)
+  next()
+})
+
+// Router for grouping
+const userRouter = express.Router()
+
+userRouter.get('/', (req, res) => {
+  res.json({ users: [] })
+})
+
+userRouter.post('/', (req, res) => {
+  const user = req.body
+  res.json({ created: true })
+})
+
+userRouter.get('/:id', (req, res) => {
+  const { id } = req.params
+  res.json({ userId: id })
+})
+
+app.use('/api/users', userRouter)
+```
+
+### FastAPI (Python)
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+# Basic routes
+@app.get("/")
+def read_root():
+    return {"message": "Home page"}
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int):
+    return {"item_id": item_id}
+
+# Route groups with APIRouter
+from fastapi import APIRouter
+
+users_router = APIRouter(prefix="/api/users")
+
+@users_router.get("/")
+def get_users():
+    return {"users": []}
+
+@users_router.post("/")
+def create_user(user: UserCreate):
+    return {"created": True}
+
+@users_router.get("/{user_id}")
+def get_user(user_id: str):
+    return {"user_id": user_id}
+
+app.include_router(users_router)
+```
+
+## Advanced Routing Patterns
+
+### 1. Route Groups and Prefixes
+
+Organize related routes together:
+
+```tsx
+// Blog routes
+const blogRoutes = new Hono()
+  .get('/', getBlogPosts)
+  .post('/', createBlogPost)
+  .get('/:slug', getBlogPost)
+  .put('/:slug', updateBlogPost)
+  .delete('/:slug', deleteBlogPost)
+
+// User routes
+const userRoutes = new Hono()
+  .get('/', getUsers)
+  .post('/', createUser)
+  .get('/:id', getUser)
+  .put('/:id', updateUser)
+  .delete('/:id', deleteUser)
+
+// Mount with prefix
+app.route('/api/blog', blogRoutes)
+app.route('/api/users', userRoutes)
+```
+
+### 2. Middleware per Route
+
+```tsx
+// Auth middleware
+const authMiddleware = async (c, next) => {
+  const token = c.req.header('Authorization')
+  const user = await verifyToken(token)
+
+  if (!user) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  c.set('user', user)
+  await next()
+}
+
+// Protected routes
+app.get('/api/profile', authMiddleware, (c) => {
+  const user = c.get('user')
+  return c.json({ profile: user })
+})
+
+// Public routes
+app.get('/api/public-data', (c) => {
+  return c.json({ data: 'public' })
+})
+```
+
+### 3. Dynamic Routes and Constraints
+
+```tsx
+// With type constraints
+app.get('/users/:id', (c) => {
+  const id = parseInt(c.req.param('id'))
+  if (isNaN(id)) {
+    return c.json({ error: 'Invalid ID' }, 400)
+  }
+  return c.json({ userId: id })
+})
+
+// Multiple parameters
+app.get('/users/:userId/posts/:postId', (c) => {
+  const { userId, postId } = c.req.param()
+  return c.json({ userId, postId })
+})
+
+// Optional parameters
+app.get('/api/posts/:year?/:month?', (c) => {
+  const { year, month } = c.req.param()
+  return c.json({ year, month })
+})
+```
+
+### 4. Query Parameter Handling
+
+```tsx
+app.get('/api/search', (c) => {
+  const query = c.req.query('q')
+  const page = parseInt(c.req.query('page') || '1')
+  const limit = parseInt(c.req.query('limit') || '10')
+
+  return c.json({
+    query,
+    pagination: { page, limit },
+    results: [],
+  })
+})
+
+// URL: /api/search?q=javascript&page=2&limit=20
+```
+
+## Route Matching Algorithm
+
+### Priority Order
+
+Routes are matched in order of registration:
+
+```tsx
+app.get('/users/:id', (c) => c.text('User ID'))
+app.get('/users/profile', (c) => c.text('Profile'))
+
+// Request to /users/profile
+// Matches: /users/:id (returns "User ID")
+// NOT: /users/profile
+
+// Solution: Specific routes first
+app.get('/users/profile', (c) => c.text('Profile'))
+app.get('/users/:id', (c) => c.text('User ID'))
+```
+
+## RESTful Routing Best Practices
+
+### Resource-Based URLs
+
+```
+GET    /users           → Get all users
+GET    /users/:id       → Get specific user
+POST   /users           → Create user
+PUT    /users/:id       → Update entire user
+PATCH   /users/:id       → Partial update user
+DELETE  /users/:id       → Delete user
+
+GET    /users/:id/posts → Get user's posts
+POST   /users/:id/posts → Create post for user
+```
+
+### Use Nouns, Not Verbs
+
+```tsx
+// Bad
+/getUsers
+/createUser
+/deleteUser/123
+
+// Good
+GET /users
+POST /users
+DELETE /users/123
+```
+
+### Proper Use of HTTP Methods
+
+```tsx
+// Query operations → GET
+app.get('/api/users', getUsers)
+app.get('/api/users/:id', getUser)
+
+// Creation → POST
+app.post('/api/users', createUser)
+
+// Full update → PUT
+app.put('/api/users/:id', replaceUser)
+
+// Partial update → PATCH
+app.patch('/api/users/:id', updateUser)
+
+// Deletion → DELETE
+app.delete('/api/users/:id', deleteUser)
+```
+
+## Nested Routes and Versioning
+
+### API Versioning
+
+```tsx
+// v1 API
+const v1Routes = new Hono()
+v1Routes.get('/users', getUsersV1)
+
+app.route('/api/v1', v1Routes)
+
+// v2 API
+const v2Routes = new Hono()
+v2Routes.get('/users', getUsersV2)
+
+app.route('/api/v2', v2Routes)
+
+// URLs:
+// /api/v1/users
+// /api/v2/users
+```
+
+### Nested Resources
+
+```tsx
+// Users and their posts
+app.get('/api/users/:userId', getUser)
+app.get('/api/users/:userId/posts', getUserPosts)
+app.post('/api/users/:userId/posts', createUserPost)
+app.get('/api/users/:userId/posts/:postId', getUserPost)
+
+// Comments on posts
+app.get('/api/posts/:postId/comments', getComments)
+app.post('/api/posts/:postId/comments', createComment)
+```
+
+## Common Routing Issues
+
+### 1. Route Not Found (404)
+
+```tsx
+// Handle unmatched routes
+app.notFound((c) => {
+  return c.json(
+    {
+      error: 'Route not found',
+      path: c.req.path,
+    },
+    404,
+  )
+})
+```
+
+### 2. Method Not Allowed (405)
+
+```tsx
+// Handle unsupported methods
+app.options('*', (c) => {
+  c.header('Allow', 'GET, POST, PUT, DELETE')
+  return c.text('Method Not Allowed', 405)
+})
+```
+
+### 3. Route Conflicts
+
+```tsx
+// Conflicting routes
+app.get('/api/users/:id', handler1)
+app.get('/api/users/profile', handler2)
+
+// Test both to ensure no conflicts
+// Use specific routes before parameterized ones
+```
+
+## Performance Considerations
+
+### 1. Route Lookup Optimization
+
+Modern routers use efficient lookup algorithms:
+
+- **Radix Tree**: Fast prefix-based lookup
+- **Hash Map**: Constant-time lookups
+- **Compiled Regular Expressions**: Pre-compiled patterns
+
+### 2. Route Grouping
+
+Group similar routes for better organization and performance:
+
+```tsx
+const apiRoutes = new Hono()
+  .route('/users', userRoutes)
+  .route('/posts', postRoutes)
+  .route('/comments', commentRoutes)
+
+app.route('/api', apiRoutes)
+```
+
+## Conclusion
+
+Routing is fundamental to backend development. Good routing practices include:
+
+- Organizing routes logically
+- Using proper HTTP methods
+- Handling parameters and queries correctly
+- Implementing middleware for cross-cutting concerns
+- Following RESTful conventions
+
+A well-designed routing system makes your API intuitive, maintainable, and easy to use.
+
+**Next:** [Serialization and Deserialization](/blogs/backend/4-serialization) - Converting data between formats for storage and transmission.

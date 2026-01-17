@@ -1,0 +1,233 @@
+---
+title: High-Level Understanding of Backend and Frontend
+description: Learn the fundamental differences between frontend and backend development
+---
+
+## Understanding the Split
+
+Modern web applications are typically split into two main parts: **Frontend** and **Backend**. Understanding this separation is crucial for becoming a well-rounded developer.
+
+## Frontend (Client-Side)
+
+The frontend is everything the user sees and interacts with directly in their browser or mobile app.
+
+### Responsibilities
+
+- User Interface (UI) design and implementation
+- User Experience (UX) optimization
+- Client-side state management
+- Rendering HTML, CSS, and JavaScript
+- Handling user interactions and events
+
+### Technologies
+
+- **Frameworks**: React, Vue, Angular, Svelte
+- **Styling**: CSS, Tailwind, styled-components
+- **State**: Redux, Zustand, React Context
+- **Bundlers**: Vite, Webpack, esbuild
+
+```tsx
+// Example: Frontend Component
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    // Fetch data from backend
+    fetch(`/api/users/${userId}`)
+      .then((res) => res.json())
+      .then(setUser)
+  }, [userId])
+
+  if (!user) return <div>Loading...</div>
+
+  return (
+    <div className="profile-card">
+      <img src={user.avatar} alt={user.name} />
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
+    </div>
+  )
+}
+```
+
+## Backend (Server-Side)
+
+The backend is the server-side logic that powers the frontend. It handles business logic, data storage, and communication with other services.
+
+### Responsibilities
+
+- Business logic implementation
+- Data storage and retrieval
+- Authentication and authorization
+- API endpoint management
+- Background job processing
+- Integration with third-party services
+
+### Technologies
+
+- **Languages**: Node.js, Python, Go, Java, Rust
+- **Frameworks**: Express, FastAPI, Hono, tRPC
+- **Databases**: PostgreSQL, MongoDB, MySQL, Redis
+- **Queues**: RabbitMQ, Kafka, Bull
+
+```tsx
+// Example: Backend API Endpoint
+import { Hono } from 'hono'
+import { z } from 'zod'
+
+const app = new Hono()
+
+app.get('/api/users/:id', async (c) => {
+  const userId = c.req.param('id')
+
+  // Business logic
+  const user = await db.users.findById(userId)
+
+  if (!user) {
+    return c.json({ error: 'User not found' }, 404)
+  }
+
+  // Return data to frontend
+  return c.json({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    avatar: user.avatarUrl,
+  })
+})
+```
+
+## Communication Between Frontend and Backend
+
+The frontend and backend communicate over HTTP using various patterns:
+
+### 1. REST API
+
+```
+Frontend                      Backend
+   |                             |
+   |-- GET /api/users -->-------|
+   |<------ JSON Response -------|
+   |
+```
+
+### 2. GraphQL
+
+```graphql
+// Frontend Query
+query GetUser($id: ID!) {
+  user(id: $id) {
+    name
+    email
+    posts {
+      title
+    }
+  }
+}
+```
+
+### 3. RPC (Remote Procedure Call)
+
+```tsx
+// Type-safe function call (looks like local)
+const user = await api.getUser({ id: '123' })
+```
+
+## Key Differences
+
+| Aspect          | Frontend                     | Backend                    |
+| --------------- | ---------------------------- | -------------------------- |
+| **Runs On**     | User's browser/device        | Server                     |
+| **Visible**     | Yes (UI)                     | No (logic only)            |
+| **State**       | UI state, form inputs        | Database, session data     |
+| **Security**    | XSS, CSRF protection         | Authentication, encryption |
+| **Performance** | Rendering speed, bundle size | Response time, throughput  |
+| **Deployment**  | CDN, static hosting          | Cloud servers, containers  |
+
+## Full-Stack Development
+
+A full-stack developer understands both frontend and backend, allowing them to:
+
+1. **Build Complete Features**: Handle end-to-end functionality
+2. **Optimize Communication**: Design efficient APIs
+3. **Debug Effectively**: Trace issues across the stack
+4. **Architect Systems**: Make informed architectural decisions
+
+### Example Flow
+
+```tsx
+// Full-stack feature flow
+
+// 1. Frontend: User submits form
+async function handleLogin(event) {
+  event.preventDefault()
+  const credentials = {
+    email: form.email.value,
+    password: form.password.value,
+  }
+
+  // 2. Call backend API
+  const result = await api.login(credentials)
+
+  // 3. Handle response
+  if (result.success) {
+    localStorage.setItem('token', result.token)
+    router.push('/dashboard')
+  }
+}
+
+// 4. Backend: Validate and authenticate
+app.post('/api/login', async (c) => {
+  const { email, password } = await c.req.json()
+
+  // Validate input
+  const validated = await loginSchema.parseAsync({ email, password })
+
+  // Check credentials
+  const user = await auth.verify(validated)
+
+  // Generate token
+  const token = jwt.sign({ userId: user.id }, JWT_SECRET)
+
+  // Return to frontend
+  return c.json({ success: true, token })
+})
+```
+
+## Modern Trends
+
+### Frontend Trends
+
+- **Server Components**: Moving some logic to server
+- **Edge Computing**: Running code closer to users
+- **JAMstack**: JavaScript, APIs, Markup
+- **PWA**: Progressive Web Apps
+
+### Backend Trends
+
+- **Serverless**: Functions as a service
+- **Microservices**: Distributed architecture
+- **API-First**: Designing APIs before implementation
+- **Type-Safe APIs**: tRPC, oRPC
+
+## Choosing Your Path
+
+While specialization is valuable, understanding both sides makes you a better developer:
+
+### Backend Engineers Should Learn Frontend
+
+- Understand client needs and limitations
+- Design better APIs from client perspective
+- Build better admin panels and dashboards
+
+### Frontend Engineers Should Learn Backend
+
+- Understand data flow and constraints
+- Debug integration issues faster
+- Build more complete features
+
+## Conclusion
+
+The frontend-backend split is fundamental to modern web development. While each side has different concerns and technologies, they work together to create complete user experiences. Understanding both perspectives makes you a more effective developer, regardless of your primary focus.
+
+**Next:** [HTTP Protocol](/blogs/backend/2-http-protocol) - Understanding the protocol that powers web communication.

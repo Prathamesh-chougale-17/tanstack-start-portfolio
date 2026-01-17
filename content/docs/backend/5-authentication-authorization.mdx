@@ -1,0 +1,475 @@
+---
+title: Authentication and Authorization
+description: Securing your applications with proper auth mechanisms
+---
+
+## Authentication vs Authorization
+
+**Authentication**: Verifying **who** someone is (identity).
+
+**Authorization**: Verifying **what** they're allowed to do (permissions).
+
+```
+User Request
+      |
+      |-- Authentication (Who are you?)
+      |  ✓ ID verified
+      |
+      |-- Authorization (What can you do?)
+      |  ✓ Permissions granted
+      |
+      |-- Access Granted
+```
+
+## Authentication Strategies
+
+### 1. Session-Based Authentication
+
+User authenticated once, session ID stored on server and cookie on client.
+
+```tsx
+// Login - Create session
+app.post('/api/login', async (c) => {
+  const { email, password } = await c.req.json()
+
+  // Verify credentials
+  const user = await verifyCredentials(email, password)
+  if (!user) {
+    return c.json({ error: 'Invalid credentials' }, 401)
+  }
+
+  // Create session
+  const sessionId = crypto.randomUUID()
+  await redis.setex(
+    `session:${sessionId}`,
+    3600, // 1 hour
+    JSON.stringify({ userId: user.id }),
+  )
+
+  // Set cookie with session ID
+  return c.json(
+    { success: true },
+    {
+      'Set-Cookie': `session=${sessionId}; HttpOnly; Secure; Path=/; Max-Age=3600`,
+    },
+  )
+})
+
+// Middleware - Verify session
+async function authMiddleware(c: Context, next: Next) {
+  const sessionCookie = c.req.header('Cookie')
+  const sessionId = sessionCookie?.match(/session=([^;]+)/)?.[1]
+
+  if (!sessionId) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  // Get session from Redis
+  const sessionData = await redis.get(`session:${sessionId}`)
+  if (!sessionData) {
+    return c.json({ error: 'Session expired' }, 401)
+  }
+
+  const session = JSON.parse(sessionData)
+  c.set('userId', session.userId)
+  await next()
+}
+
+// Protected route
+app.get('/api/profile', authMiddleware, (c) => {
+  const userId = c.get('userId')
+  const user = await db.users.findById(userId)
+  return c.json({ profile: user })
+})
+
+// Logout
+app.post('/api/logout', async (c) => {
+  const sessionCookie = c.req.header('Cookie')
+  const sessionId = sessionCookie?.match(/session=([^;]+)/)?.[1]
+
+  // Remove from Redis
+  await redis.del(`session:${sessionId}`)
+
+  return c.json(
+    { success: true },
+    {
+      'Set-Cookie': 'session=; HttpOnly; Secure; Path=/; Max-Age=0',
+    },
+  )
+})
+```
+
+### 2. JWT (JSON Web Tokens)
+
+Stateless authentication using signed tokens.
+
+```tsx
+import jwt from 'jsonwebtoken'
+
+const JWT_SECRET = process.env.JWT_SECRET!
+
+// Login - Generate token
+app.post('/api/login', async (c) => {
+  const { email, password } = await c.req.json()
+  const user = await verifyCredentials(email, password)
+
+  if (!user) {
+    return c.json({ error: 'Invalid credentials' }, 401)
+  }
+
+  // Create JWT payload
+  const payload = {
+    userId: user.id,
+    email: user.email,
+    role: user.role,
+  }
+
+  // Sign token (expires in 1 hour)
+  const token = jwt.sign(payload, JWT_SECRET, {
+    expiresIn: '1h',
+  })
+
+  return c.json({ token, user: { id: user.id, name: user.name } })
+})
+
+// Middleware - Verify JWT
+async function jwtMiddleware(c: Context, next: Next) {
+  const authHeader = c.req.header('Authorization')
+  const token = authHeader?.replace('Bearer ', '')
+
+  if (!token) {
+    return c.json({ error: 'No token provided' }, 401)
+  }
+
+  try {
+    // Verify token
+    const decoded = jwt.verify(token, JWT_SECRET) as {
+      userId: string
+      email: string
+      role: string
+    }
+
+    c.set('userId', decoded.userId)
+    c.set('userRole', decoded.role)
+    await next()
+  } catch (error) {
+    return c.json({ error: 'Invalid token' }, 401)
+  }
+}
+
+// Protected route
+app.get('/api/profile', jwtMiddleware, (c) => {
+  const userId = c.get('userId')
+  const user = await db.users.findById(userId)
+  return c.json({ profile: user })
+})
+```
+
+### 3. OAuth 2.0
+
+Third-party authentication (Google, GitHub, etc.).
+
+```tsx
+// Redirect to OAuth provider
+app.get('/api/auth/google', (c) => {
+  const googleAuthUrl =
+    'https://accounts.google.com/o/oauth2/v2/auth?' +
+    'client_id=' +
+    GOOGLE_CLIENT_ID +
+    '&redirect_uri=' +
+    encodeURIComponent('https://example.com/api/auth/google/callback') +
+    '&response_type=code' +
+    '&scope=profile email'
+
+  return c.redirect(googleAuthUrl)
+})
+
+// OAuth callback
+app.get('/api/auth/google/callback', async (c) => {
+  const code = c.req.query('code')
+
+  // Exchange code for access token
+  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    body: JSON.stringify({
+      code,
+      client_id: GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_CLIENT_SECRET,
+      redirect_uri: 'https://example.com/api/auth/google/callback',
+      grant_type: 'authorization_code',
+    }),
+  })
+  const tokens = await tokenResponse.json()
+
+  // Get user info with access token
+  const userResponse = await fetch(
+    'https://www.googleapis.com/oauth2/v1/userinfo',
+    {
+      headers: { Authorization: `Bearer ${tokens.access_token}` },
+    },
+  )
+  const googleUser = await userResponse.json()
+
+  // Create or find user in database
+  const user = await findOrCreateUser(googleUser)
+
+  // Generate JWT or create session
+  const token = jwt.sign({ userId: user.id }, JWT_SECRET)
+
+  return c.redirect(`https://example.com/auth/callback?token=${token}`)
+})
+```
+
+## Authorization Patterns
+
+### 1. Role-Based Access Control (RBAC)
+
+```tsx
+// Define roles
+enum Role {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+  MODERATOR = 'MODERATOR',
+}
+
+// Middleware to check roles
+function requireRole(...allowedRoles: Role[]) {
+  return async (c: Context, next: Next) => {
+    const userRole = c.get('userRole') as Role
+
+    if (!allowedRoles.includes(userRole)) {
+      return c.json({ error: 'Insufficient permissions' }, 403)
+    }
+
+    await next()
+  }
+}
+
+// Protected routes
+app.get('/api/admin/users', requireRole(Role.ADMIN), (c) => {
+  return c.json({ users: [] })
+})
+
+app.get('/api/moderate/posts', requireRole(Role.ADMIN, Role.MODERATOR), (c) => {
+  return c.json({ posts: [] })
+})
+```
+
+### 2. Permission-Based Access Control
+
+```tsx
+// Define permissions
+interface Permission {
+  resource: string
+  action: 'create' | 'read' | 'update' | 'delete'
+}
+
+const permissions = [
+  { resource: 'posts', action: 'create' },
+  { resource: 'posts', action: 'update' },
+  { resource: 'users', action: 'read' },
+]
+
+// User-permission mapping
+const userPermissions = {
+  user1: ['posts:create', 'posts:update', 'users:read'],
+  admin: ['*'], // All permissions
+}
+
+function hasPermission(
+  userId: string,
+  resource: string,
+  action: string,
+): boolean {
+  const perms = userPermissions[userId]
+  return perms?.includes('*') || perms?.includes(`${resource}:${action}`)
+}
+
+// Middleware
+function requirePermission(resource: string, action: string) {
+  return async (c: Context, next: Next) => {
+    const userId = c.get('userId')
+
+    if (!hasPermission(userId, resource, action)) {
+      return c.json({ error: 'Permission denied' }, 403)
+    }
+
+    await next()
+  }
+}
+
+app.post('/api/posts', requirePermission('posts', 'create'), async (c) => {
+  const post = await createPost(await c.req.json())
+  return c.json(post, 201)
+})
+```
+
+### 3. Resource Ownership
+
+```tsx
+// Check if user owns the resource
+async function requireOwnership() {
+  return async (c: Context, next: Next) => {
+    const userId = c.get('userId')
+    const resourceId = c.req.param('id')
+
+    const resource = await db.resources.findById(resourceId)
+
+    if (!resource || resource.ownerId !== userId) {
+      return c.json({ error: 'Resource not found or access denied' }, 404)
+    }
+
+    await next()
+  }
+}
+
+app.delete('/api/posts/:id', requireOwnership(), async (c) => {
+  const id = c.req.param('id')
+  await db.posts.delete(id)
+  return c.json({ deleted: true })
+})
+```
+
+## Security Best Practices
+
+### 1. Password Hashing
+
+```tsx
+import bcrypt from 'bcrypt'
+
+async function hashPassword(password: string): Promise<string> {
+  const salt = await bcrypt.genSalt(10)
+  return bcrypt.hash(password, salt)
+}
+
+async function verifyPassword(
+  password: string,
+  hashedPassword: string,
+): Promise<boolean> {
+  return bcrypt.compare(password, hashedPassword)
+}
+
+// Registration
+app.post('/api/register', async (c) => {
+  const { email, password } = await c.req.json()
+
+  // Hash password before storing
+  const hashedPassword = await hashPassword(password)
+
+  await db.users.create({
+    email,
+    password: hashedPassword, // Never store plain text!
+  })
+
+  return c.json({ success: true })
+})
+```
+
+### 2. HTTPS Only
+
+```tsx
+// Force HTTPS in production
+if (process.env.NODE_ENV === 'production') {
+  app.use('*', (c, next) => {
+    if (c.req.header('x-forwarded-proto') !== 'https') {
+      return c.redirect('https://' + c.req.header('host') + c.req.url, 301)
+    }
+    next()
+  })
+}
+```
+
+### 3. Secure Cookies
+
+```tsx
+// Set secure cookies
+c.header(
+  'Set-Cookie',
+  [
+    'session=abc123',
+    'HttpOnly', // Prevent XSS
+    'Secure', // Only over HTTPS
+    'SameSite=Strict', // Prevent CSRF
+    'Path=/',
+    'Max-Age=3600',
+  ].join('; '),
+)
+```
+
+### 4. Rate Limiting
+
+```tsx
+import rateLimit from 'express-rate-limit'
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per window
+  message: 'Too many attempts, please try again later',
+})
+
+app.use('/api/login', limiter)
+```
+
+## Refresh Tokens
+
+Allow users to get new access tokens without re-authenticating.
+
+```tsx
+// Login returns access and refresh tokens
+app.post('/api/login', async (c) => {
+  const { email, password } = await c.req.json()
+  const user = await verifyCredentials(email, password)
+
+  // Access token (short-lived: 15 minutes)
+  const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, {
+    expiresIn: '15m',
+  })
+
+  // Refresh token (long-lived: 7 days)
+  const refreshToken = jwt.sign(
+    { userId: user.id, tokenType: 'refresh' },
+    REFRESH_SECRET,
+    { expiresIn: '7d' },
+  )
+
+  return c.json({ accessToken, refreshToken })
+})
+
+// Refresh token endpoint
+app.post('/api/refresh', async (c) => {
+  const { refreshToken } = await c.req.json()
+
+  try {
+    const decoded = jwt.verify(refreshToken, REFRESH_SECRET) as {
+      userId: string
+      tokenType: string
+    }
+
+    if (decoded.tokenType !== 'refresh') {
+      return c.json({ error: 'Invalid refresh token' }, 401)
+    }
+
+    // Generate new access token
+    const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
+      expiresIn: '15m',
+    })
+
+    return c.json({ accessToken: newAccessToken })
+  } catch (error) {
+    return c.json({ error: 'Invalid refresh token' }, 401)
+  }
+})
+```
+
+## Conclusion
+
+Authentication and authorization are critical security components:
+
+- **Authentication** verifies identity (sessions, JWT, OAuth)
+- **Authorization** controls access (RBAC, permissions, ownership)
+- **Security practices**: Hash passwords, use HTTPS, secure cookies, rate limiting
+- **Refresh tokens** improve UX without compromising security
+
+Implementing these properly protects your application and user data from unauthorized access.
+
+**Next:** [Validation and Transformation](/blogs/backend/6-validation-transformation) - Ensuring data integrity and proper formatting.

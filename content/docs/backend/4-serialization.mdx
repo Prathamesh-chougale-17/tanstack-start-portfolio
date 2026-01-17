@@ -1,0 +1,466 @@
+---
+title: Serialization and Deserialization
+description: Converting data between formats for storage and transmission
+---
+
+## What are Serialization and Deserialization?
+
+**Serialization**: Converting in-memory data structures to a format that can be stored or transmitted (string/binary).
+
+**Deserialization**: Converting serialized data back to in-memory objects that your code can use.
+
+```
+Application Memory                    Storage/Transmission
+      Object                           JSON String
+      |                                 |
+      |-- Serialize ----------------->|
+      |                                 |
+      |                                 | Store/Transmit
+      |                                 |
+      |<-- Deserialize ------------|
+      |                                 |
+      Object                               JSON String
+```
+
+## JSON (JavaScript Object Notation)
+
+Most common serialization format for web APIs.
+
+### Serialization (Object → JSON)
+
+```tsx
+// JavaScript/TypeScript object
+const user = {
+  id: 1,
+  name: 'John Doe',
+  email: 'john@example.com',
+  active: true,
+  createdAt: new Date('2024-01-01'),
+  preferences: {
+    theme: 'dark',
+    notifications: true,
+  },
+}
+
+// Serialize to JSON string
+const json = JSON.stringify(user, null, 2)
+console.log(json)
+// Output:
+// {
+//   "id": 1,
+//   "name": "John Doe",
+//   "email": "john@example.com",
+//   "active": true,
+//   "createdAt": "2024-01-01T00:00:00.000Z",
+//   "preferences": {
+//     "theme": "dark",
+//     "notifications": true
+//   }
+// }
+```
+
+### Deserialization (JSON → Object)
+
+```tsx
+// JSON string from API/file
+const json = '{"id":1,"name":"John Doe","email":"john@example.com"}'
+
+// Deserialize to JavaScript object
+const user = JSON.parse(json)
+console.log(user.name) // "John Doe"
+console.log(user.email) // "john@example.com"
+
+// Handle parsing errors
+try {
+  const data = JSON.parse(jsonString)
+  return data
+} catch (error) {
+  console.error('Invalid JSON:', error)
+  return null
+}
+```
+
+## Serialization in Backend Frameworks
+
+### Hono Automatic JSON Handling
+
+```tsx
+import { Hono } from 'hono'
+
+const app = new Hono()
+
+// Request body automatically deserialized
+app.post('/api/users', async (c) => {
+  // Hono parses JSON body automatically
+  const userData = await c.req.json()
+
+  console.log(userData.name) // Access parsed object directly
+
+  // Response automatically serialized
+  const user = await createUser(userData)
+  return c.json(user) // Serializes object to JSON
+})
+```
+
+### Express.js Body Parsing
+
+```tsx
+import express from 'express'
+import bodyParser from 'body-parser'
+
+const app = express()
+
+// JSON middleware for automatic deserialization
+app.use(bodyParser.json())
+
+app.post('/api/users', (req, res) => {
+  // Body is already parsed as object
+  const userData = req.body
+
+  console.log(userData.name)
+
+  const user = await createUser(userData)
+
+  // Response serialization with json()
+  res.json(user) // Serializes object to JSON
+})
+```
+
+## Handling Special Data Types
+
+### Dates
+
+Dates aren't natively supported in JSON and need special handling.
+
+```tsx
+// Custom serializer
+function serializeDates(key, value) {
+  if (value instanceof Date) {
+    return value.toISOString()
+  }
+  return value
+}
+
+const data = {
+  id: 1,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+}
+
+const json = JSON.stringify(data, serializeDates, 2)
+// Dates converted to ISO strings
+
+// Custom deserializer
+function deserializeDates(key, value) {
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value)) {
+    return new Date(value)
+  }
+  return value
+}
+
+const obj = JSON.parse(json, deserializeDates)
+// Dates converted back to Date objects
+```
+
+### BigInt
+
+JSON doesn't support BigInt natively.
+
+```tsx
+const data = {
+  id: 9007199254740991n, // BigInt
+}
+
+// JSON.stringify() will throw error
+try {
+  const json = JSON.stringify(data) // Throws TypeError
+} catch (error) {
+  console.error('Cannot serialize BigInt:', error)
+}
+
+// Solution: Convert to string or use replacer
+const json = JSON.stringify(data, (key, value) =>
+  typeof value === 'bigint' ? value.toString() : value,
+)
+```
+
+### Circular References
+
+Objects with circular references can't be serialized.
+
+```tsx
+const obj = { name: 'Object' }
+obj.self = obj // Circular reference
+
+JSON.stringify(obj) // Throws "Converting circular structure to JSON"
+
+// Solution: Use replacer
+const json = JSON.stringify(obj, (key, value) => {
+  if (key === 'self') {
+    return '[Circular]' // Skip circular reference
+  }
+  return value
+})
+```
+
+## Common Serialization Libraries
+
+### Zod Schema-Based Serialization
+
+```tsx
+import { z } from 'zod'
+
+// Define schema with transformations
+const userSchema = z.object({
+  name: z.string().transform((val) => val.trim().toLowerCase()),
+  email: z.string().email(),
+  age: z.string().transform((val) => parseInt(val, 10)),
+  createdAt: z.coerce.date(),
+  preferences: z.object({
+    theme: z.enum(['light', 'dark']),
+    notifications: z
+      .boolean()
+      .transform((val) => (val ? 'enabled' : 'disabled')),
+  }),
+})
+
+// Serialize with validation and transformation
+const userData = {
+  name: '  John Doe  ',
+  email: 'john@example.com',
+  age: '30',
+  createdAt: '2024-01-01',
+  preferences: { theme: 'dark', notifications: true },
+}
+
+const result = userSchema.parse(userData)
+// Output:
+// {
+//   name: 'john doe',           // Trimmed and lowercased
+//   email: 'john@example.com',
+//   age: 30,                      // Converted to number
+//   createdAt: Date object,       // Coerced to Date
+//   preferences: {
+//     theme: 'dark',
+//     notifications: 'enabled'     // Transformed
+//   }
+// }
+```
+
+### Class Transform (class-transformer)
+
+```tsx
+import { Type } from 'class-transformer'
+import { plainToClass, classToPlain } from 'class-transformer'
+
+class UserDto {
+  @Type(() => Number)
+  id: number
+
+  @Type(() => String)
+  name: string
+
+  @Type(() => Date)
+  createdAt: Date
+}
+
+// Deserialize JSON to class instance
+const json = '{"id":1,"name":"John","createdAt":"2024-01-01"}'
+const user = plainToClass(UserDto, json)
+
+console.log(user instanceof UserDto) // true
+
+// Serialize class to plain object
+const plain = classToPlain(user)
+const json = JSON.stringify(plain)
+```
+
+## Edge Cases and Error Handling
+
+### 1. Malformed JSON
+
+```tsx
+// Safe JSON parsing
+function safeJsonParse<T>(json: string): T | null {
+  try {
+    return JSON.parse(json) as T
+  } catch (error) {
+    console.error('JSON parse error:', error)
+    return null
+  }
+}
+
+const data = safeJsonParse('{"invalid json}')
+if (!data) {
+  return ({ error: 'Invalid request body' }, 400)
+}
+```
+
+### 2. Unexpected Data Types
+
+```tsx
+// Type guard
+interface User {
+  id: number
+  name: string
+  email: string
+}
+
+function isUser(obj: unknown): obj is User {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    typeof (obj as User).id === 'number' &&
+    typeof (obj as User).name === 'string' &&
+    typeof (obj as User).email === 'string'
+  )
+}
+
+const data = JSON.parse(jsonBody)
+if (!isUser(data)) {
+  return ({ error: 'Invalid user data' }, 422)
+}
+```
+
+### 3. Large Payloads
+
+```tsx
+// Streaming deserialization for large data
+import { pipeline } from 'node:stream/promises'
+
+app.post('/api/large-upload', async (c) => {
+  const stream = c.req.raw
+
+  // Process in chunks instead of loading entire body
+  let data = ''
+  for await (const chunk of stream) {
+    data += chunk
+    if (data.length > MAX_SIZE) {
+      return c.json({ error: 'Payload too large' }, 413)
+    }
+  }
+
+  const obj = JSON.parse(data)
+  return c.json({ received: true })
+})
+```
+
+## Performance Considerations
+
+### 1. Minify JSON in Production
+
+```tsx
+// Development (pretty)
+const devJson = JSON.stringify(data, null, 2)
+// {
+//   "key": "value"
+// }
+
+// Production (minified)
+const prodJson = JSON.stringify(data)
+// {"key":"value"}
+
+// Use conditionally
+const json =
+  process.env.NODE_ENV === 'production'
+    ? JSON.stringify(data)
+    : JSON.stringify(data, null, 2)
+```
+
+### 2. Use Binary Formats for Large Data
+
+```tsx
+// JSON (text-based, larger)
+const jsonData = JSON.stringify(largeArray) // 100KB
+
+// MessagePack (binary, smaller)
+import msgpack from 'msgpack-lite'
+const msgpackData = msgpack.encode(largeArray) // 60KB
+
+// Protocol Buffers (binary, fastest)
+import protobuf from 'protobufjs'
+const protoData = protobuf.encode(largeArray) // 55KB
+```
+
+### 3. Caching Serialized Data
+
+```tsx
+// Cache serialized data to avoid repeated serialization
+const cache = new Map<object, string>()
+
+function serialize(obj: object): string {
+  if (cache.has(obj)) {
+    return cache.get(obj)!
+  }
+
+  const json = JSON.stringify(obj)
+  cache.set(obj, json)
+  return json
+}
+```
+
+## Best Practices
+
+### 1. Validate Before Deserialization
+
+```tsx
+// Use Zod to validate JSON before processing
+const userSchema = z.object({
+  id: z.number().positive(),
+  name: z.string().min(1),
+  email: z.string().email(),
+})
+
+app.post('/api/users', async (c) => {
+  const jsonBody = await c.req.json()
+
+  // Validate and deserialize in one step
+  const user = userSchema.parse(jsonBody)
+
+  return c.json({ created: true })
+})
+```
+
+### 2. Use Consistent Date Formats
+
+```tsx
+// Always use ISO 8601
+const date = new Date()
+const isoString = date.toISOString() // "2024-01-01T12:00:00.000Z"
+
+// Never store locale-specific strings
+const badFormat = date.toLocaleString() // "1/1/2024, 12:00:00 PM"
+```
+
+### 3. Handle Null and Undefined
+
+```tsx
+const data = {
+  name: null, // Will be null in JSON
+  age: undefined, // Will be omitted in JSON
+  active: false,
+}
+
+const json = JSON.stringify(data)
+// {"name":null,"active":false}
+
+// Use replacer to include undefined
+const json2 = JSON.stringify(data, (key, value) =>
+  value === undefined ? null : value,
+)
+// {"name":null,"age":null,"active":false}
+```
+
+## Conclusion
+
+Serialization and deserialization are crucial for data transmission in web applications. Key points:
+
+- **JSON** is standard format for web APIs
+- **Frameworks** often handle this automatically
+- **Special types** (dates, BigInt) need custom handling
+- **Validate** serialized data before deserializing
+- **Handle errors** gracefully with try-catch
+
+Understanding these concepts ensures reliable data exchange between frontend, backend, and external services.
+
+**Next:** [Authentication and Authorization](/blogs/backend/5-authentication-authorization) - Securing your applications with proper auth mechanisms.
