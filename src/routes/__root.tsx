@@ -21,6 +21,7 @@ import { NavbarComponent } from '@/components/layout/navbar'
 import { ChatButton } from '@/components/layout/chat-button'
 import { NotFound } from '@/components/not-found'
 import { Toaster } from '@/components/ui/sonner'
+import { PWARegister } from '@/components/pwa-register'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -52,12 +53,17 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
       {
         name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
+        content:
+          'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes',
       },
       {
         title: 'Prathamesh Chougale | Software Engineer',
       },
-      // Additional meta tags for better SEO
+      {
+        name: 'description',
+        content:
+          'Full Stack Software Engineer specializing in React, Next.js, TanStack Start, AI & Machine Learning. Explore my portfolio of projects and technical expertise.',
+      },
       {
         name: 'author',
         content: 'Prathamesh Chougale',
@@ -65,6 +71,35 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       {
         name: 'robots',
         content: 'index, follow',
+      },
+      {
+        name: 'theme-color',
+        content: '#000000',
+      },
+      {
+        name: 'apple-mobile-web-app-capable',
+        content: 'yes',
+      },
+      {
+        name: 'apple-mobile-web-app-status-bar-style',
+        content: 'default',
+      },
+      {
+        name: 'apple-mobile-web-app-title',
+        content: 'Prathamesh Chougale',
+      },
+      {
+        property: 'og:title',
+        content: 'Prathamesh Chougale | Software Engineer',
+      },
+      {
+        property: 'og:description',
+        content:
+          'Full Stack Software Engineer specializing in React, Next.js, TanStack Start, AI & Machine Learning',
+      },
+      {
+        property: 'og:type',
+        content: 'website',
       },
     ],
     links: [
@@ -131,6 +166,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               TanStackQueryDevtools,
             ]}
           />
+          <PWARegister />
         </ThemeProvider>
         <Scripts />
       </body>
