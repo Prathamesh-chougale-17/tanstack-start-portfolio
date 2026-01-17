@@ -1,0 +1,197 @@
+---
+title: Node.js Best Practices
+description: Essential practices and patterns for building scalable Node.js applications
+---
+
+## Core Best Practices
+
+### 1. Use Async/Await
+
+Avoid callback hell by using async/await:
+
+```tsx
+// Bad
+fs.readFile('file.txt', (err, data) => {
+  if (err) throw err
+  fs.writeFile('output.txt', data, (err) => {
+    if (err) throw err
+    console.log('Done')
+  })
+})
+
+// Good
+const data = await fs.promises.readFile('file.txt')
+await fs.promises.writeFile('output.txt', data)
+console.log('Done')
+```
+
+### 2. Handle Errors Properly
+
+Always use try-catch with async operations:
+
+```tsx
+try {
+  const result = await someAsyncOperation()
+  return result
+} catch (error) {
+  console.error('Operation failed:', error)
+  throw new AppError('Failed to complete operation', error)
+}
+```
+
+### 3. Use Environment Variables
+
+Never hardcode sensitive data:
+
+```tsx
+import { env } from '@/env'
+
+const dbUrl = env.DATABASE_URL
+const apiKey = env.API_KEY
+```
+
+### 4. Validate Input
+
+Use a validation library like Zod:
+
+```tsx
+import { z } from 'zod'
+
+const userSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(2),
+  age: z.number().min(18),
+})
+
+const result = userSchema.safeParse(req.body)
+if (!result.success) {
+  return { error: result.error }
+}
+```
+
+### 5. Use TypeScript
+
+Enable strict mode for better type safety:
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  }
+}
+```
+
+## Performance Optimization
+
+### 6. Use Streaming
+
+For large files, use streams instead of loading everything into memory:
+
+```tsx
+const readStream = fs.createReadStream('large-file.txt')
+const writeStream = fs.createWriteStream('output.txt')
+
+readStream.pipe(writeStream)
+```
+
+### 7. Cache When Appropriate
+
+Use caching for frequently accessed data:
+
+```tsx
+const cache = new Map()
+
+async function getUser(id) {
+  if (cache.has(id)) {
+    return cache.get(id)
+  }
+  const user = await db.user.findUnique({ where: { id } })
+  cache.set(id, user)
+  return user
+}
+```
+
+### 8. Use Worker Threads
+
+For CPU-intensive tasks:
+
+```tsx
+const {
+  Worker,
+  isMainThread,
+  parentPort,
+  workerData,
+} = require('worker_threads')
+
+if (isMainThread) {
+  const worker = new Worker(__filename, {
+    workerData: { data: 'heavy computation' },
+  })
+  worker.on('message', (result) => {
+    console.log('Result:', result)
+  })
+}
+```
+
+## Security
+
+### 9. Sanitize User Input
+
+```tsx
+import sanitize from 'sanitize-html'
+
+const clean = sanitize(userInput)
+```
+
+### 10. Use HTTPS
+
+Always use HTTPS in production:
+
+```tsx
+const server = https.createServer(
+  {
+    key: fs.readFileSync('private-key.pem'),
+    cert: fs.readFileSync('certificate.pem'),
+  },
+  app,
+)
+```
+
+### 11. Implement Rate Limiting
+
+```tsx
+import rateLimit from 'express-rate-limit'
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+})
+
+app.use(limiter)
+```
+
+## Testing
+
+### 12. Write Tests
+
+Use a testing framework like Vitest:
+
+```tsx
+import { describe, it, expect } from 'vitest'
+
+describe('User service', () => {
+  it('should create a user', async () => {
+    const user = await createUser({
+      name: 'John',
+      email: 'john@example.com',
+    })
+    expect(user).toHaveProperty('id')
+  })
+})
+```
+
+## Conclusion
+
+Following these best practices will help you build more maintainable, secure, and performant Node.js applications. Always keep learning and adapting to new best practices in the ecosystem.

@@ -44,8 +44,7 @@ export const Route = createFileRoute('/blogs/$')({
         { property: 'og:description', content: fm.description },
         {
           property: 'og:image',
-          content:
-            'https://prathamesh-chougale.vercel.app/profile.webp',
+          content: 'https://prathamesh-chougale.vercel.app/profile.webp',
         },
         {
           property: 'og:url',
@@ -57,18 +56,15 @@ export const Route = createFileRoute('/blogs/$')({
         { name: 'twitter:description', content: fm.description },
         {
           name: 'twitter:image',
-          content:
-            'https://prathamesh-chougale.vercel.app/profile.webp',
+          content: 'https://prathamesh-chougale.vercel.app/profile.webp',
         },
         {
           name: 'twitter:url',
           content: `https://prathamesh-chougale.vercel.app/blogs/${fm.path}`,
-        }
+        },
       ],
     }
   },
-
-
 })
 
 const serverLoader = createServerFn({
@@ -81,9 +77,9 @@ const serverLoader = createServerFn({
 
     let cleanPath = page.path.replace(/\.mdx$/, '')
 
-    // if last segment is "index", make it null
-    if (cleanPath === 'index') {
-      cleanPath = ""
+    // if last segment is "index", make it ""
+    if (cleanPath.endsWith('/index') || cleanPath === 'index') {
+      cleanPath = cleanPath.replace(/\/?index$/, '')
     }
     return {
       path: page.path,

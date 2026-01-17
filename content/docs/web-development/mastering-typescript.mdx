@@ -1,0 +1,79 @@
+---
+title: Mastering TypeScript
+description: Advanced TypeScript techniques and best practices for building robust applications
+---
+
+## Advanced TypeScript Concepts
+
+TypeScript is a powerful superset of JavaScript that adds static typing. Let's explore some advanced concepts.
+
+### Generics
+
+Generics allow you to create reusable components that work with a variety of types:
+
+```tsx
+function identity<T>(arg: T): T {
+  return arg
+}
+
+const output = identity<string>('Hello')
+```
+
+### Utility Types
+
+TypeScript provides several utility types to transform types:
+
+#### Partial
+
+Makes all properties optional:
+
+```tsx
+interface User {
+  id: number
+  name: string
+  email: string
+}
+
+function updateUser(id: number, fields: Partial<User>) {
+  // Update only provided fields
+}
+```
+
+#### Pick and Omit
+
+Create new types by picking or omitting properties:
+
+```tsx
+type UserPreview = Pick<User, 'id' | 'name'>
+type UserWithoutEmail = Omit<User, 'email'>
+```
+
+### Conditional Types
+
+Create types that depend on other types:
+
+```tsx
+type NonNullable<T> = T extends null | undefined ? never : T
+```
+
+### Mapped Types
+
+Transform types property by property:
+
+```tsx
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P]
+}
+```
+
+## Best Practices
+
+1. **Always use strict mode** in tsconfig.json
+2. **Avoid `any` type** - use `unknown` when you truly don't know the type
+3. **Use interfaces for object shapes** and types for unions, primitives, or computed types
+4. **Leverage type inference** when possible
+5. **Use const assertions** for immutable literals
+
+## Conclusion
+
+Mastering TypeScript requires practice, but it significantly improves code quality and developer experience in the long run.
