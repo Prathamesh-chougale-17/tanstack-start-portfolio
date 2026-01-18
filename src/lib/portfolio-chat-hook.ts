@@ -4,6 +4,9 @@ import {
   useChat,
 } from '@tanstack/ai-react'
 import { useMemo } from 'react'
+import type { UIMessage } from '@tanstack/ai-react'
+
+export type ChatMessages = Array<UIMessage>
 
 type Locale = 'en' | 'hi' | 'mr'
 

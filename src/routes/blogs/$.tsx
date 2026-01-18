@@ -13,6 +13,7 @@ import { useFumadocsLoader } from 'fumadocs-core/source/client'
 import { Suspense } from 'react'
 import { source } from '@/lib/source'
 import { baseOptions } from '@/lib/layout.shared'
+import { LLMCopyButton, ViewOptions } from '@/components/page-actions'
 
 export const Route = createFileRoute('/blogs/$')({
   component: Page,
@@ -98,12 +99,17 @@ const clientLoader = browserCollections.docs.createClientLoader({
     // you can define props for the component
     props: {
       className?: string
+      markdownUrl: string
     },
   ) {
     return (
       <DocsPage toc={toc} {...props}>
         <DocsTitle>{frontmatter.title}</DocsTitle>
         <DocsDescription>{frontmatter.description}</DocsDescription>
+        <div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
+          <LLMCopyButton markdownUrl={props.markdownUrl} />
+          <ViewOptions markdownUrl={props.markdownUrl} />
+        </div>
         <DocsBody>
           <MDX
             components={{
@@ -124,6 +130,7 @@ function Page() {
       <Suspense>
         {clientLoader.useContent(data.path, {
           className: '',
+          markdownUrl: `https://prathamesh-chougale.vercel.app/blogs/${data.path}`,
         })}
       </Suspense>
     </DocsLayout>

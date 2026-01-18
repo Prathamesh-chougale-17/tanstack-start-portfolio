@@ -46,6 +46,24 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
   notFoundComponent: NotFound,
 
+  server: {
+    handlers: {
+      GET: async ({ request, next }) => {
+        const url = new URL(request.url)
+        // Rewrite /blogs/*.mdx requests to /llms.mdx/blogs/*
+        if (
+          url.pathname.startsWith('/blogs/') &&
+          url.pathname.endsWith('.mdx')
+        ) {
+          const pathWithoutExtension = url.pathname.replace(/\.mdx$/, '')
+          const newPath = `/llms.mdx${pathWithoutExtension}`
+          return Response.redirect(new URL(newPath, url))
+        }
+        return next()
+      },
+    },
+  },
+
   head: () => ({
     meta: [
       {

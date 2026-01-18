@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
-import { Check, Copy, PaperPlaneRight, Trash, X } from '@phosphor-icons/react'
+import {
+  CheckIcon,
+  CopyIcon,
+  PaperPlaneRightIcon,
+  TrashIcon,
+  XIcon,
+} from '@phosphor-icons/react'
 import Markdown from 'react-markdown'
 import { toast } from 'sonner'
+import type { MessagePart } from '@tanstack/ai-client'
 
 import type { ChatMessages } from '@/lib/portfolio-chat-hook'
 import { usePortfolioChat } from '@/lib/portfolio-chat-hook'
 import { getLocale } from '@/paraglide/runtime'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
@@ -121,7 +127,7 @@ function Messages({
                       : 'bg-muted/50 border border-border',
                   )}
                 >
-                  {parts.map((part, index) => {
+                  {parts.map((part: MessagePart, index: number) => {
                     if (part.type === 'text' && part.content) {
                       return (
                         <div
@@ -138,8 +144,10 @@ function Messages({
                 {!isUser && (
                   <button
                     onClick={() => {
-                      const textPart = parts.find((p) => p.type === 'text')
-                      if (textPart && textPart.content) {
+                      const textPart = parts.find(
+                        (p: MessagePart) => p.type === 'text',
+                      )
+                      if (textPart) {
                         onCopy(textPart.content, id)
                       }
                     }}
@@ -147,9 +155,9 @@ function Messages({
                     title="Copy"
                   >
                     {copiedId === id ? (
-                      <Check className="h-3 w-3" />
+                      <CheckIcon className="h-3 w-3" />
                     ) : (
-                      <Copy className="h-3 w-3" />
+                      <CopyIcon className="h-3 w-3" />
                     )}
                   </button>
                 )}
@@ -223,25 +231,23 @@ export function ChatWindow({ onClose }: Props) {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
+          <button
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
             onClick={handleClear}
             disabled={messages.length === 0}
             title="Clear chat"
+            type="button"
           >
-            <Trash className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
+            <TrashIcon className="h-4 w-4" />
+          </button>
+          <button
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-muted hover:text-foreground"
             onClick={onClose}
             title="Close"
+            type="button"
           >
-            <X className="h-4 w-4" />
-          </Button>
+            <XIcon className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
@@ -283,7 +289,7 @@ export function ChatWindow({ onClose }: Props) {
             disabled={!input.trim() || isLoading}
             className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-primary hover:text-primary/80 disabled:text-muted-foreground transition-colors focus:outline-none"
           >
-            <PaperPlaneRight className="w-4 h-4" />
+            <PaperPlaneRightIcon className="w-4 h-4" />
           </button>
         </div>
       </form>
