@@ -1,0 +1,265 @@
+---
+title: HTTP Protocol
+description: Understanding the protocol that powers web communication
+---
+
+## Understanding HTTPS
+
+HTTPS (Hypertext Transfer Protocol Secure) is the base of secure communication on the web. It follows the same request–response model as HTTP but adds strong security using encryption.
+
+### Why HTTPS?
+
+1. **Encryption**: Data encrypted in transit
+2. **Authentication**: Verifies server identity
+3. **Integrity**: Prevents tampering
+
+## 1. The Heart of HTTPS
+
+HTTPS is simply **HTTP + TLS (SSL)**. HTTP handles how data is requested and sent, while TLS makes sure the data is **encrypted and safe**. It operates on two main principles: **statelessness** and the **client–server model**.
+
+| Aspect             | Statelessness                              | Client–Server Model                          |
+| ------------------ | ------------------------------------------ | -------------------------------------------- |
+| Meaning            | Each request is handled independently      | Client requests, server responds             |
+| Memory             | Server does **not** remember past requests | Server processes requests from clients       |
+| State handling     | Managed using cookies, sessions, or JWT    | State logic usually lives on server          |
+| Request dependency | No request depends on previous ones        | Every request depends on client action       |
+| Scalability        | Very easy to scale horizontally            | Easy to scale with load balancers            |
+| Fault tolerance    | Any server can handle any request          | Multiple servers can serve same client       |
+| Example            | HTTP / HTTPS requests                      | Browser ↔ Web Server                         |
+| Real-world analogy | ATM machine (each action is separate)      | Restaurant (customer orders, kitchen serves) |
+
+## 2. OSI Model and Connection Flow
+
+To understand how HTTPS works internally, we look at the **OSI model**.
+
+### The Layer Cake
+
+| Layer | Name         | Example Protocol | Purpose                       |
+| ----: | ------------ | ---------------- | ----------------------------- |
+|     7 | Application  | HTTP / HTTPS     | Requests, responses, headers  |
+|     6 | Presentation | TLS / SSL        | Encryption & decryption       |
+|     5 | Session      | Sockets          | Manages communication session |
+|     4 | Transport    | TCP              | Reliable data transfer        |
+|     3 | Network      | IP               | Routing and addressing        |
+|     2 | Data Link    | Ethernet / Wi-Fi | MAC addressing                |
+|     1 | Physical     | Cables / Radio   | Raw data transmission         |
+
+---
+
+### TCP Connection (3-Way Handshake)
+
+Before HTTPS sends data, **TCP** must connect first.
+
+1. **SYN**  
+   Client → Server  
+   “I want to connect.”
+
+2. **SYN-ACK**  
+   Server → Client  
+   “I accept. Here’s my response.”
+
+3. **ACK**  
+   Client → Server  
+   “Confirmed. Let’s talk.”
+
+✅ Now a reliable TCP connection exists.
+
+---
+
+### TLS Handshake (for HTTPS)
+
+After TCP:
+
+- Client and server exchange keys
+- Encryption rules are decided
+- Secure communication starts
+
+Only **after this** does HTTP data flow.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Database
+    participant AuthService
+
+    Client->>Server: POST /api/login<br/>Body: email, password
+    Server->>AuthService: Verify credentials
+    AuthService->>Database: Find user by email
+    Database-->>AuthService: User record
+    AuthService-->>Server: Auth success<br/>JWT token
+    Server-->>Client: 200 OK<br/>Token + user info
+```
+
+## HTTP Methods
+
+Verbs define the action to be performed on a resource:
+
+| Method     | Purpose          | Description                 | Example Endpoint |
+| ---------- | ---------------- | --------------------------- | ---------------- |
+| **GET**    | Read             | Fetch data from the server  | `/api/users`     |
+| **POST**   | Create           | Create a new resource       | `/api/users`     |
+| **PUT**    | Update (Full)    | Replace the entire resource | `/api/users/123` |
+| **PATCH**  | Update (Partial) | Update only specific fields | `/api/users/123` |
+| **DELETE** | Delete           | Remove a resource           | `/api/users/123` |
+
+## HTTP OPTIONS Method
+
+**HTTP OPTIONS** is used to ask a server **what is allowed** for a URL or resource.
+It does **not** fetch data or change anything. It only gives information.
+
+### Why it is used
+
+- To know **which HTTP methods** are supported (GET, POST, PUT, etc.)
+- To help browsers with **CORS (Cross-Origin Resource Sharing)**
+- To safely check server rules **before** sending real requests
+
+### Simple idea
+
+> “Hey server, what can I do with this endpoint?”
+
+### Example request
+
+```http
+OPTIONS /api/users HTTP/1.1
+Host: example.com
+```
+
+### Example response
+
+```http
+HTTP/1.1 204 No Content
+Allow: GET, POST, OPTIONS
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: Content-Type, Authorization
+```
+
+### Important headers
+
+- **Allow** → methods the server supports
+- **Access-Control-Allow-Methods** → allowed methods for CORS
+- **Access-Control-Allow-Headers** → allowed custom headers
+- **Access-Control-Allow-Origin** → which origins are allowed
+
+### OPTIONS in CORS (very common use)
+
+When:
+
+- frontend and backend are on **different domains**
+- request uses **custom headers** or **non-simple methods**
+
+Browser first sends an **OPTIONS (preflight) request**
+If server allows → browser sends the real request
+If not → request is blocked
+
+### Key points to remember
+
+- OPTIONS is **safe** and **read-only**
+- It does **not modify data**
+- Mostly handled automatically by browsers
+- Very important for **API security and CORS**
+
+## HTTP Versions
+
+| Version  | Key Features                      |
+| -------- | --------------------------------- |
+| HTTP/1.0 | New connection per request        |
+| HTTP/1.1 | Keep-alive, pipelining            |
+| HTTP/2   | Multiplexing, binary, compression |
+| HTTP/3   | QUIC (UDP), faster, secure        |
+
+## HTTP Message Structure: Request vs. Response
+
+HTTP communication relies on a structured text exchange between a client and a server. Both message types share a three-part architecture: a **Start Line**, a block of **Headers**, and a **Message Body**.
+
+## 1. Structural Comparison
+
+The primary difference lies in the first line, which defines the intent (Request) or the outcome (Response).
+
+| Component      | **The Request (Client → Server)**                                                      | **The Response (Server → Client)**                                             |
+| -------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Start Line** | **Request Line**: Method (`PUT`), Path (`/api/users/12345`), and Version (`HTTP/1.1`). | **Status Line**: Version (`HTTP/1.1`), Status Code (`200`), and Reason (`OK`). |
+| **Headers**    | Provide client context, such as `User-Agent`, `Authorization`, and `Cookie`.           | Provide server/content metadata, such as `Server`, `Set-Cookie`, and `Date`.   |
+| **Empty Line** | A mandatory blank line signaling the end of metadata.                                  | A mandatory blank line signaling the end of metadata.                          |
+| **Body**       | Contains data sent to the server (e.g., JSON user details).                            | Contains the requested resource or a status confirmation.                      |
+
+## 2. Header Categories & Purpose
+
+Headers enable **extensibility** and **remote control** by allowing the protocol to pass information without changing its core structure.
+
+- **General Headers:** Apply to the message as a whole (e.g., `Connection: keep-alive`, `Date`).
+- **Request Headers:** Clarify client preferences or identity (e.g., `User-Agent`, `Accept`, `Authorization`).
+- **Representation Headers:** Describe the format and size of the body (e.g., `Content-Type: application/json`, `Content-Length`).
+- **Security Headers:** Enforce safety policies like `Strict-Transport-Security` to prevent attacks.
+
+## 3. Real-World Example
+
+### The Request (PUT)
+
+```http
+PUT /api/users/12345 HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...
+Content-Type: application/json
+Content-Length: 123
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Accept: application/json
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: https://example.com/dashboard
+Cookie: sessionId=abc123xyz456; lang=en-US
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "age": 30
+}
+```
+
+### The Response (200 OK)
+
+```http
+HTTP/1.1 200 OK
+Date: Fri, 20 Sep 2024 12:00:00 GMT
+Content-Type: application/json
+Content-Length: 85
+Server: Apache/2.4.41 (Ubuntu)
+Cache-Control: no-store
+X-Request-ID: abcdef123456
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Set-Cookie: sessionId=abc123xyz456; Path=/; Secure; HttpOnly
+Vary: Accept-Encoding
+Connection: keep-alive
+
+{
+  "message": "User updated successfully",
+  "userId": 12345,
+  "status": "success"
+}
+```
+
+## HTTP Request-Response Cycle
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant Database
+
+    Client->>Server: GET /api/users<br/>Headers: Content-Type: application/json
+    Server->>Server: Validate request
+    Server->>Database: Query users
+    Database-->>Server: User data
+    Server-->>Client: 200 OK<br/>Response: JSON users list
+```
+
+## HTTP Status Codes
+
+| Category                | Codes & Meaning                                                                                                                                                                                                                                                                                      |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1xx – Informational** | **100 Continue** → Server received headers                                                                                                                                                                                                                                                           |
+| **2xx – Success**       | **200 OK** → Request succeeded<br/>**201 Created** → Resource created<br/>**204 No Content** → Success, no response body                                                                                                                                                                             |
+| **3xx – Redirection**   | **301 Moved Permanently** → Permanent redirect<br/>**302 Found** → Temporary redirect<br/>**304 Not Modified** → Cached response valid                                                                                                                                                               |
+| **4xx – Client Error**  | **400 Bad Request** → Invalid request<br/>**401 Unauthorized** → Auth required<br/>**403 Forbidden** → Access denied<br/>**404 Not Found** → Resource missing<br/>**409 Conflict** → State conflict<br/>**422 Unprocessable Entity** → Validation error<br/>**429 Too Many Requests** → Rate limited |
+| **5xx – Server Error**  | **500 Internal Server Error** → Server failure<br/>**502 Bad Gateway** → Upstream error<br/>**503 Service Unavailable** → Server unavailable<br/>**504 Gateway Timeout** → Upstream timeout                                                                                                          |

@@ -13,6 +13,7 @@ import { useFumadocsLoader } from 'fumadocs-core/source/client'
 import { Suspense } from 'react'
 import { source } from '@/lib/source'
 import { baseOptions } from '@/lib/layout.shared'
+import { Mermaid } from '@/components/mermaid'
 
 export const Route = createFileRoute('/blogs/$')({
   component: Page,
@@ -44,7 +45,7 @@ export const Route = createFileRoute('/blogs/$')({
         { property: 'og:description', content: fm.description },
         {
           property: 'og:image',
-          content: 'https://prathamesh-chougale.vercel.app/profile.webp',
+          content: '/profile.webp',
         },
         {
           property: 'og:url',
@@ -56,7 +57,7 @@ export const Route = createFileRoute('/blogs/$')({
         { name: 'twitter:description', content: fm.description },
         {
           name: 'twitter:image',
-          content: 'https://prathamesh-chougale.vercel.app/profile.webp',
+          content: '/profile.webp',
         },
         {
           name: 'twitter:url',
@@ -108,6 +109,7 @@ const clientLoader = browserCollections.docs.createClientLoader({
           <MDX
             components={{
               ...defaultMdxComponents,
+              Mermaid,
             }}
           />
         </DocsBody>
