@@ -44,9 +44,8 @@ export const Route = createFileRoute('/blogs/$')({
     const fm = loaderData.frontmatter
 
     return {
-      title: `${fm.title} | Prathamesh Chougale`,
-
       meta: [
+        { title: `${fm.title} | Prathamesh Chougale` },
         {
           name: 'description',
           content: fm.description,
