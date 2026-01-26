@@ -7,5 +7,5 @@ export default defineConfig({
   },
 })
 export const docs = defineDocs({
-  dir: 'public/blogs',
+  dir: 'content/blogs',
 })
