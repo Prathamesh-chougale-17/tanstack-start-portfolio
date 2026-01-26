@@ -115,14 +115,14 @@ const clientLoader = browserCollections.docs.createClientLoader({
     },
   ) {
     const markdownUrl = props.mdxPath || `/llms.mdx/blogs/${frontmatter.title}`
-    const githubUrl = `https://github.com/pratham-chougale/portfolio-mono/tree/main/tanstack/content/docs/blogs/${frontmatter.title}.mdx`
+    // const githubUrl = `https://github.com/pratham-chougale/portfolio-mono/tree/main/tanstack/content/docs/blogs/${frontmatter.title}.mdx`
 
     return (
       <DocsPage breadcrumb={{ className: 'pt-4' }} toc={toc} {...props}>
         <DocsTitle>{frontmatter.title}</DocsTitle>
         <div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
           <LLMCopyButton markdownUrl={markdownUrl} />
-          <ViewOptions markdownUrl={markdownUrl} githubUrl={githubUrl} />
+          <ViewOptions markdownUrl={markdownUrl} />
         </div>
         <DocsDescription>{frontmatter.description}</DocsDescription>
         <DocsBody>
