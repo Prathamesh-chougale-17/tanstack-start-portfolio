@@ -473,6 +473,7 @@ body="Add your Inkeep API key to environment variables:INKEEP_API_KEY=&#x22;...&
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 return (
+
 <html lang=&#x22;en&#x22;>
 <body>
 {/_ [!code ++] _/}

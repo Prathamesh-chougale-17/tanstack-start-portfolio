@@ -9,7 +9,10 @@ export const Route = createFileRoute('/llms.mdx/blogs/$')({
         const page = source.getPage(slugs)
         if (!page) throw notFound()
 
-        return new Response(await page.data.getText('raw'), {
+        const processed = await page.data.getText('processed')
+        const markdown = `# ${page.data.title}\n\n${processed}`
+
+        return new Response(markdown, {
           headers: {
             'Content-Type': 'text/markdown',
           },

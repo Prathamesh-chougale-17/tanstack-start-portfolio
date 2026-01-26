@@ -20,7 +20,9 @@ export const Route = createFileRoute('/blogs/$')({
   notFoundComponent: () => (
     <div className="flex flex-col items-center justify-center min-h-screen gap-4">
       <h1 className="text-4xl font-bold">Blog Not Found</h1>
-      <p className="text-muted-foreground">The blog post you're looking for doesn't exist.</p>
+      <p className="text-muted-foreground">
+        The blog post you're looking for doesn't exist.
+      </p>
       <a href="/blogs" className="text-primary hover:underline">
         Back to Blogs
       </a>

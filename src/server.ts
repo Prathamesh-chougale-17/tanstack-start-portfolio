@@ -2,7 +2,10 @@ import handler from '@tanstack/react-start/server-entry'
 import { paraglideMiddleware } from './paraglide/server'
 import { rewritePath } from 'fumadocs-core/negotiation'
 
-const { rewrite: rewriteLLM } = rewritePath('/blogs{/*path}.mdx', '/llms.mdx/blogs{/*path}')
+const { rewrite: rewriteLLM } = rewritePath(
+  '/blogs{/*path}.mdx',
+  '/llms.mdx/blogs{/*path}',
+)
 
 // Server-side URL localization/redirects for Paraglide
 export default {
