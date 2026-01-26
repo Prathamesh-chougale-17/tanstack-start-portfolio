@@ -10,11 +10,14 @@ import {
 } from 'fumadocs-ui/layouts/docs/page'
 import defaultMdxComponents from 'fumadocs-ui/mdx'
 import { useFumadocsLoader } from 'fumadocs-core/source/client'
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import { source } from '@/lib/source'
 import { baseOptions } from '@/lib/layout.shared'
-import { Mermaid } from '@/components/mermaid'
 import { LLMCopyButton, ViewOptions } from '@/components/page-actions'
+
+const Mermaid = lazy(() =>
+  import('@/components/mermaid').then((mod) => ({ default: mod.Mermaid }))
+)
 
 export const Route = createFileRoute('/blogs/$')({
   component: Page,
@@ -126,12 +129,20 @@ const clientLoader = browserCollections.docs.createClientLoader({
         </div>
         <DocsDescription>{frontmatter.description}</DocsDescription>
         <DocsBody>
-          <MDX
-            components={{
-              ...defaultMdxComponents,
-              Mermaid,
-            }}
-          />
+          <Suspense
+            fallback={
+              <div className="text-muted-foreground text-sm py-4">
+                Loading content...
+              </div>
+            }
+          >
+            <MDX
+              components={{
+                ...defaultMdxComponents,
+                Mermaid,
+              }}
+            />
+          </Suspense>
         </DocsBody>
       </DocsPage>
     )

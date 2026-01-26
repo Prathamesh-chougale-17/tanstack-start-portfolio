@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Check, Copy, PaperPlaneRight, Trash, X } from '@phosphor-icons/react'
+import { CheckIcon } from '@phosphor-icons/react/dist/ssr/Check'
+import { CopyIcon } from '@phosphor-icons/react/dist/ssr/Copy'
+import { PaperPlaneRightIcon } from '@phosphor-icons/react/dist/ssr/PaperPlaneRight'
+import { TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash'
+import { XIcon } from '@phosphor-icons/react/dist/ssr/X'
 import Markdown from 'react-markdown'
 import { toast } from 'sonner'
 
@@ -147,9 +151,9 @@ function Messages({
                     title="Copy"
                   >
                     {copiedId === id ? (
-                      <Check className="h-3 w-3" />
+                      <CheckIcon className="h-3 w-3" />
                     ) : (
-                      <Copy className="h-3 w-3" />
+                      <CopyIcon className="h-3 w-3" />
                     )}
                   </button>
                 )}
@@ -231,7 +235,7 @@ export function ChatWindow({ onClose }: Props) {
             disabled={messages.length === 0}
             title="Clear chat"
           >
-            <Trash className="h-4 w-4" />
+            <TrashIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
@@ -240,7 +244,7 @@ export function ChatWindow({ onClose }: Props) {
             onClick={onClose}
             title="Close"
           >
-            <X className="h-4 w-4" />
+            <XIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -283,7 +287,7 @@ export function ChatWindow({ onClose }: Props) {
             disabled={!input.trim() || isLoading}
             className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-primary hover:text-primary/80 disabled:text-muted-foreground transition-colors focus:outline-none"
           >
-            <PaperPlaneRight className="w-4 h-4" />
+            <PaperPlaneRightIcon className="w-4 h-4" />
           </button>
         </div>
       </form>

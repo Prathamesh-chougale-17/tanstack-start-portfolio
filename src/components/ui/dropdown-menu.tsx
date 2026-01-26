@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { Menu as MenuPrimitive } from '@base-ui/react/menu'
 
-import { CaretRightIcon, CheckIcon } from '@phosphor-icons/react'
+import { CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight'
+import { CheckIcon } from '@phosphor-icons/react/dist/ssr/Check'
 import { cn } from '@/lib/utils'
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {

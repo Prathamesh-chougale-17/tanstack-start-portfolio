@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react'
-import { ListIcon, XIcon } from '@phosphor-icons/react'
+import { ListIcon } from '@phosphor-icons/react/dist/ssr/List'
+import { XIcon } from '@phosphor-icons/react/dist/ssr/X'
 import { cn } from '@/lib/utils'
 import { AnimatedLink } from '@/components/ui/animated-link'
 

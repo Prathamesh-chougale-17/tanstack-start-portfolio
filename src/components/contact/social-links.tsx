@@ -1,4 +1,3 @@
-import { EnvelopeIcon } from '@phosphor-icons/react'
 import { Icons } from '@/components/icons'
 import * as m from '@/paraglide/messages'
 

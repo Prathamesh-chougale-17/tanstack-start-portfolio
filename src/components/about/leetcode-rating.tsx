@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { WarningCircleIcon } from '@phosphor-icons/react'
+import { WarningCircleIcon } from '@phosphor-icons/react/dist/ssr/WarningCircle'
 import { Icons } from '@/components/icons'
 import { Skeleton } from '@/components/ui/skeleton'
 import {

@@ -1,4 +1,4 @@
-import { MagnifyingGlass } from '@phosphor-icons/react'
+import { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass'
 import { useState } from 'react'
 import type { Project } from '@/types/project'
 import { Button } from '@/components/ui/button'
@@ -66,7 +66,7 @@ export function ProjectFilters({
       <div className="flex-1">
         {/* Search Input */}
         <div className="relative">
-          <MagnifyingGlass className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 transform text-muted-foreground" />
+          <MagnifyingGlassIcon className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 transform text-muted-foreground" />
           <Input
             className="w-full pl-10"
             onChange={(e) => handleSearchChange(e.target.value)}

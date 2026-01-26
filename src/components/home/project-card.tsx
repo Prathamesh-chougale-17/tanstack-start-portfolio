@@ -1,4 +1,5 @@
-import { ArrowSquareOutIcon, CodeIcon } from '@phosphor-icons/react'
+import { ArrowSquareOutIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareOut'
+import { CodeIcon } from '@phosphor-icons/react/dist/ssr/Code'
 import type { Project } from '@/types/home'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

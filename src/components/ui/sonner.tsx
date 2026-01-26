@@ -1,12 +1,10 @@
 import { useTheme } from 'next-themes'
 import { Toaster as Sonner } from 'sonner'
-import {
-  CheckCircleIcon,
-  InfoIcon,
-  SpinnerIcon,
-  WarningIcon,
-  XCircleIcon,
-} from '@phosphor-icons/react'
+import { CheckCircleIcon } from '@phosphor-icons/react/dist/ssr/CheckCircle'
+import { InfoIcon } from '@phosphor-icons/react/dist/ssr/Info'
+import { SpinnerIcon } from '@phosphor-icons/react/dist/ssr/Spinner'
+import { WarningIcon } from '@phosphor-icons/react/dist/ssr/Warning'
+import { XCircleIcon } from '@phosphor-icons/react/dist/ssr/XCircle'
 import type { ToasterProps } from 'sonner'
 
 const Toaster = ({ ...props }: ToasterProps) => {

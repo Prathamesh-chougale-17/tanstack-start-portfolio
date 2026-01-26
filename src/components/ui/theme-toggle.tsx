@@ -1,4 +1,5 @@
-import { MoonIcon, SunIcon } from '@phosphor-icons/react'
+import { MoonIcon } from '@phosphor-icons/react/dist/ssr/Moon'
+import { SunIcon } from '@phosphor-icons/react/dist/ssr/Sun'
 import { useTheme } from 'next-themes'
 import { useCallback, useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'

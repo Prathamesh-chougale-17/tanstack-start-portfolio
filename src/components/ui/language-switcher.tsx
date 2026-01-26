@@ -1,4 +1,4 @@
-import { TranslateIcon } from '@phosphor-icons/react'
+import { TranslateIcon } from '@phosphor-icons/react/dist/ssr/Translate'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,

@@ -1,4 +1,4 @@
-import { ChatCircle } from '@phosphor-icons/react'
+import { ChatCircleIcon } from '@phosphor-icons/react/dist/ssr/ChatCircle'
 import { useState } from 'react'
 import { ChatWindow } from './chat-window'
 import { Button } from '@/components/ui/button'
@@ -17,7 +17,7 @@ export function ChatButton() {
           onClick={() => setIsOpen(true)}
           size="icon"
         >
-          <ChatCircle className="h-6 w-6" />
+          <ChatCircleIcon className="h-6 w-6" />
         </Button>
       )}
     </div>

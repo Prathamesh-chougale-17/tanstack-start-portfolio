@@ -1,4 +1,5 @@
-import { ArrowSquareOut, Code } from '@phosphor-icons/react'
+import { ArrowSquareOutIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareOut'
+import { CodeIcon } from '@phosphor-icons/react/dist/ssr/Code'
 import type { Project } from '@/types/project'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -54,7 +55,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Code className="h-4 w-4" />
+              <CodeIcon className="h-4 w-4" />
               GitHub
             </a>
           </Button>
@@ -67,7 +68,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               rel="noopener noreferrer"
               target="_blank"
             >
-              <ArrowSquareOut className="h-4 w-4" />
+              <ArrowSquareOutIcon className="h-4 w-4" />
               Demo
             </a>
           </Button>
