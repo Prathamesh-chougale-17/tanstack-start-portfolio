@@ -8,4 +8,9 @@ export default defineConfig({
 })
 export const docs = defineDocs({
   dir: 'content/blogs',
+  docs: {
+    postprocess: {
+      includeProcessedMarkdown: true,
+    },
+  },
 })

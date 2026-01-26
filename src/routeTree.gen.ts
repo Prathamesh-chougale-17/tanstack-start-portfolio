@@ -10,18 +10,25 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogsSplatRouteImport } from './routes/blogs/$'
 import { Route as ApiSearchRouteImport } from './routes/api/search'
 import { Route as ApiSplatRouteImport } from './routes/api.$'
+import { Route as LlmsDotmdxBlogsSplatRouteImport } from './routes/llms[.]mdx.blogs.$'
 import { Route as ApiRpcSplatRouteImport } from './routes/api.rpc.$'
 import { Route as ApiPortfolioChatRouteImport } from './routes/api.portfolio.chat'
 
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsFullDottxtRoute = LlmsFullDottxtRouteImport.update({
+  id: '/llms-full.txt',
+  path: '/llms-full.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -54,6 +61,11 @@ const ApiSplatRoute = ApiSplatRouteImport.update({
   path: '/api/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LlmsDotmdxBlogsSplatRoute = LlmsDotmdxBlogsSplatRouteImport.update({
+  id: '/llms.mdx/blogs/$',
+  path: '/llms.mdx/blogs/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
   id: '/api/rpc/$',
   path: '/api/rpc/$',
@@ -69,35 +81,41 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/search': typeof ApiSearchRoute
   '/blogs/$': typeof BlogsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/llms.mdx/blogs/$': typeof LlmsDotmdxBlogsSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/search': typeof ApiSearchRoute
   '/blogs/$': typeof BlogsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/llms.mdx/blogs/$': typeof LlmsDotmdxBlogsSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/projects': typeof ProjectsRoute
   '/api/$': typeof ApiSplatRoute
   '/api/search': typeof ApiSearchRoute
   '/blogs/$': typeof BlogsSplatRoute
   '/api/portfolio/chat': typeof ApiPortfolioChatRoute
   '/api/rpc/$': typeof ApiRpcSplatRoute
+  '/llms.mdx/blogs/$': typeof LlmsDotmdxBlogsSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -105,46 +123,54 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/llms-full.txt'
     | '/projects'
     | '/api/$'
     | '/api/search'
     | '/blogs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
+    | '/llms.mdx/blogs/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/contact'
+    | '/llms-full.txt'
     | '/projects'
     | '/api/$'
     | '/api/search'
     | '/blogs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
+    | '/llms.mdx/blogs/$'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
+    | '/llms-full.txt'
     | '/projects'
     | '/api/$'
     | '/api/search'
     | '/blogs/$'
     | '/api/portfolio/chat'
     | '/api/rpc/$'
+    | '/llms.mdx/blogs/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  LlmsFullDottxtRoute: typeof LlmsFullDottxtRoute
   ProjectsRoute: typeof ProjectsRoute
   ApiSplatRoute: typeof ApiSplatRoute
   ApiSearchRoute: typeof ApiSearchRoute
   BlogsSplatRoute: typeof BlogsSplatRoute
   ApiPortfolioChatRoute: typeof ApiPortfolioChatRoute
   ApiRpcSplatRoute: typeof ApiRpcSplatRoute
+  LlmsDotmdxBlogsSplatRoute: typeof LlmsDotmdxBlogsSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -154,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms-full.txt': {
+      id: '/llms-full.txt'
+      path: '/llms-full.txt'
+      fullPath: '/llms-full.txt'
+      preLoaderRoute: typeof LlmsFullDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -198,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/llms.mdx/blogs/$': {
+      id: '/llms.mdx/blogs/$'
+      path: '/llms.mdx/blogs/$'
+      fullPath: '/llms.mdx/blogs/$'
+      preLoaderRoute: typeof LlmsDotmdxBlogsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/rpc/$': {
       id: '/api/rpc/$'
       path: '/api/rpc/$'
@@ -219,12 +259,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  LlmsFullDottxtRoute: LlmsFullDottxtRoute,
   ProjectsRoute: ProjectsRoute,
   ApiSplatRoute: ApiSplatRoute,
   ApiSearchRoute: ApiSearchRoute,
   BlogsSplatRoute: BlogsSplatRoute,
   ApiPortfolioChatRoute: ApiPortfolioChatRoute,
   ApiRpcSplatRoute: ApiRpcSplatRoute,
+  LlmsDotmdxBlogsSplatRoute: LlmsDotmdxBlogsSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
