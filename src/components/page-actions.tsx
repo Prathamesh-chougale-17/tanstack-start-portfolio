@@ -56,20 +56,20 @@ export function LLMCopyButton({
       className={cn(
         buttonVariants({
           variant: 'secondary',
-          size: 'sm',
-          className: 'gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground',
+          size: 'lg',
+          className: 'gap-2.5 [&_svg]:size-5 [&_svg]:text-fd-muted-foreground font-semibold',
         }),
       )}
       onClick={onClick}
     >
       {checked ? <Check /> : <Copy />}
-      Copy Markdown
+      {isLoading ? 'Copying...' : checked ? 'Copied!' : 'Copy Markdown'}
     </button>
   )
 }
 
 const optionVariants = cva(
-  'text-sm p-2 rounded-lg inline-flex items-center gap-2 hover:text-fd-accent-foreground hover:bg-fd-accent [&_svg]:size-4',
+  'text-base p-3.5 rounded-lg inline-flex items-center gap-3 hover:text-fd-accent-foreground hover:bg-fd-accent transition-colors font-medium w-full [&_svg]:size-5',
 )
 
 export function ViewOptions({
@@ -219,15 +219,15 @@ export function ViewOptions({
         className={cn(
           buttonVariants({
             variant: 'secondary',
-            size: 'sm',
-            className: 'gap-2',
+            size: 'lg',
+            className: 'gap-2 font-semibold',
           }),
         )}
       >
-        Open
-        <ChevronDown className="size-3.5 text-fd-muted-foreground" />
+        Open in AI
+        <ChevronDown className="size-5 text-fd-muted-foreground" />
       </PopoverTrigger>
-      <PopoverContent className="flex flex-col">
+      <PopoverContent className="flex flex-col gap-2 min-w-70">
         {items.map((item) => (
           <a
             key={item.href}
@@ -237,8 +237,8 @@ export function ViewOptions({
             className={cn(optionVariants())}
           >
             {item.icon}
-            {item.title}
-            <ExternalLinkIcon className="text-fd-muted-foreground size-3.5 ms-auto" />
+            <span className="flex-1">{item.title}</span>
+            <ExternalLinkIcon className="text-fd-muted-foreground size-4 ms-auto shrink-0" />
           </a>
         ))}
       </PopoverContent>
