@@ -14,7 +14,9 @@ export const Route = createFileRoute('/llms.mdx/blogs/$')({
 
         return new Response(markdown, {
           headers: {
-            'Content-Type': 'text/markdown',
+            'Content-Type': 'text/markdown; charset=utf-8',
+            'Cache-Control': 'public, max-age=3600',
+            'Access-Control-Allow-Origin': '*',
           },
         })
       },
