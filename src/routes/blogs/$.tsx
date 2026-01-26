@@ -14,8 +14,7 @@ import { Suspense } from 'react'
 import { source } from '@/lib/source'
 import { baseOptions } from '@/lib/layout.shared'
 import { Mermaid } from '@/components/mermaid'
-import { LLMCopyButton } from '@/components/llm-copy-button'
-import { OpenLLMButton } from '@/components/open-llm-button'
+import { LLMCopyButton, ViewOptions } from '@/components/page-actions'
 
 export const Route = createFileRoute('/blogs/$')({
   component: Page,
@@ -115,14 +114,15 @@ const clientLoader = browserCollections.docs.createClientLoader({
       mdxPath?: string
     },
   ) {
-    const markdownUrl = props.mdxPath || `/blogs/${frontmatter.title}.mdx`
+    const markdownUrl = props.mdxPath || `/llms.mdx/blogs/${frontmatter.title}`
+    const githubUrl = `https://github.com/pratham-chougale/portfolio-mono/tree/main/tanstack/content/docs/blogs/${frontmatter.title}.mdx`
 
     return (
       <DocsPage breadcrumb={{ className: 'pt-4' }} toc={toc} {...props}>
         <DocsTitle>{frontmatter.title}</DocsTitle>
         <div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
           <LLMCopyButton markdownUrl={markdownUrl} />
-          <OpenLLMButton markdownUrl={markdownUrl} title={frontmatter.title} />
+          <ViewOptions markdownUrl={markdownUrl} githubUrl={githubUrl} />
         </div>
         <DocsDescription>{frontmatter.description}</DocsDescription>
         <DocsBody>
@@ -140,7 +140,7 @@ const clientLoader = browserCollections.docs.createClientLoader({
 
 function Page() {
   const data = useFumadocsLoader(Route.useLoaderData())
-  const mdxPath = `/blogs/${data.frontmatter.path}.mdx`
+  const mdxPath = `/llms.mdx/blogs/${data.frontmatter.path}`
 
   return (
     <DocsLayout {...baseOptions()} tree={data.pageTree}>
