@@ -119,11 +119,13 @@ const clientLoader = browserCollections.docs.createClientLoader({
     return (
       <DocsPage breadcrumb={{ className: 'pt-4' }} toc={toc} {...props}>
         <DocsTitle>{frontmatter.title}</DocsTitle>
-        <div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
+        <DocsDescription className="mb-2">
+          {frontmatter.description}
+        </DocsDescription>
+        <div className="flex flex-row gap-2 items-center border-b pb-6">
           <LLMCopyButton markdownUrl={markdownUrl} />
           <ViewOptions markdownUrl={markdownUrl} />
         </div>
-        <DocsDescription>{frontmatter.description}</DocsDescription>
         <DocsBody>
           <MDX
             components={{
