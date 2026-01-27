@@ -3,473 +3,785 @@ title: Authentication and Authorization
 description: Securing your applications with proper auth mechanisms
 ---
 
-## Authentication vs Authorization
+## Core Idea
 
-**Authentication**: Verifying **who** someone is (identity).
+- **Authentication** → _Who you are_
+- **Authorization** → _What you are allowed to do_
 
-**Authorization**: Verifying **what** they're allowed to do (permissions).
+Example:
 
-```
-User Request
-      |
-      |-- Authentication (Who are you?)
-      |  ✓ ID verified
-      |
-      |-- Authorization (What can you do?)
-      |  ✓ Permissions granted
-      |
-      |-- Access Granted
-```
+- Login proves you are **Alice** (authentication)
+- Access to `/admin` proves you have **admin role** (authorization)
 
-## Authentication Strategies
+---
 
-### 1. Session-Based Authentication
+## 1. Authentication vs Authorization
 
-User authenticated once, session ID stored on server and cookie on client.
+| Aspect         | Authentication      | Authorization           |
+| -------------- | ------------------- | ----------------------- |
+| Question       | Who are you?        | What can you do?        |
+| Happens when   | Before access       | After identity is known |
+| Data used      | Credentials, tokens | Roles, policies         |
+| Failure result | 401 Unauthorized    | 403 Forbidden           |
 
-```tsx
-// Login - Create session
-app.post('/api/login', async (c) => {
-  const { email, password } = await c.req.json()
+Authentication proves **identity**. Authorization enforces **policy**.
 
-  // Verify credentials
-  const user = await verifyCredentials(email, password)
-  if (!user) {
-    return c.json({ error: 'Invalid credentials' }, 401)
-  }
+---
 
-  // Create session
-  const sessionId = crypto.randomUUID()
-  await redis.setex(
-    `session:${sessionId}`,
-    3600, // 1 hour
-    JSON.stringify({ userId: user.id }),
-  )
+## 2. Historical Evolution of Authentication
 
-  // Set cookie with session ID
-  return c.json(
-    { success: true },
-    {
-      'Set-Cookie': `session=${sessionId}; HttpOnly; Secure; Path=/; Max-Age=3600`,
-    },
-  )
-})
+### 2.1 Mainframe Era
 
-// Middleware - Verify session
-async function authMiddleware(c: Context, next: Next) {
-  const sessionCookie = c.req.header('Cookie')
-  const sessionId = sessionCookie?.match(/session=([^;]+)/)?.[1]
+Early systems were centralized and trusted internal users.
 
-  if (!sessionId) {
-    return c.json({ error: 'Unauthorized' }, 401)
-  }
+- Single machine (mainframe)
+- Users logged in via terminals
+- Passwords stored **as-is** in memory or disk
 
-  // Get session from Redis
-  const sessionData = await redis.get(`session:${sessionId}`)
-  if (!sessionData) {
-    return c.json({ error: 'Session expired' }, 401)
-  }
+**Why it failed:**
 
-  const session = JSON.parse(sessionData)
-  c.set('userId', session.userId)
-  await next()
-}
+- Anyone with file access could read passwords
+- No isolation
+- No network threat model
 
-// Protected route
-app.get('/api/profile', authMiddleware, (c) => {
-  const userId = c.get('userId')
-  const user = await db.users.findById(userId)
-  return c.json({ profile: user })
-})
+---
 
-// Logout
-app.post('/api/logout', async (c) => {
-  const sessionCookie = c.req.header('Cookie')
-  const sessionId = sessionCookie?.match(/session=([^;]+)/)?.[1]
+### 2.2 Password Hashing Era (Security Foundation)
 
-  // Remove from Redis
-  await redis.del(`session:${sessionId}`)
+Instead of storing passwords, systems store **password hashes**.
 
-  return c.json(
-    { success: true },
-    {
-      'Set-Cookie': 'session=; HttpOnly; Secure; Path=/; Max-Age=0',
-    },
-  )
-})
-```
+#### How hashing works
 
-### 2. JWT (JSON Web Tokens)
+1. User creates a password
+2. System generates a random **salt**
+3. `hash = H(password + salt)`
+4. Store `{salt, hash}` only
 
-Stateless authentication using signed tokens.
+During login:
 
-```tsx
-import jwt from 'jsonwebtoken'
+- Input password is hashed again
+- Compared with stored hash
 
-const JWT_SECRET = process.env.JWT_SECRET!
+#### Why salting matters
 
-// Login - Generate token
-app.post('/api/login', async (c) => {
-  const { email, password } = await c.req.json()
-  const user = await verifyCredentials(email, password)
+- Prevents rainbow table attacks
+- Makes same passwords hash differently
 
-  if (!user) {
-    return c.json({ error: 'Invalid credentials' }, 401)
-  }
+#### Modern password hashing algorithms
 
-  // Create JWT payload
-  const payload = {
-    userId: user.id,
-    email: user.email,
-    role: user.role,
-  }
+| Algorithm | Why used             |
+| --------- | -------------------- |
+| bcrypt    | Slow by design       |
+| scrypt    | Memory hard          |
+| argon2    | Modern & recommended |
 
-  // Sign token (expires in 1 hour)
-  const token = jwt.sign(payload, JWT_SECRET, {
-    expiresIn: '1h',
-  })
+---
 
-  return c.json({ token, user: { id: user.id, name: user.name } })
-})
+## 3. PKI (Public Key Infrastructure)
 
-// Middleware - Verify JWT
-async function jwtMiddleware(c: Context, next: Next) {
-  const authHeader = c.req.header('Authorization')
-  const token = authHeader?.replace('Bearer ', '')
+PKI solves the problem: **How do I trust who I’m talking to?**
 
-  if (!token) {
-    return c.json({ error: 'No token provided' }, 401)
-  }
+### Core idea
 
-  try {
-    // Verify token
-    const decoded = jwt.verify(token, JWT_SECRET) as {
-      userId: string
-      email: string
-      role: string
-    }
+- Each entity has a **key pair**
+- Public key is shared
+- Private key is secret
 
-    c.set('userId', decoded.userId)
-    c.set('userRole', decoded.role)
-    await next()
-  } catch (error) {
-    return c.json({ error: 'Invalid token' }, 401)
-  }
-}
+### Certificates
 
-// Protected route
-app.get('/api/profile', jwtMiddleware, (c) => {
-  const userId = c.get('userId')
-  const user = await db.users.findById(userId)
-  return c.json({ profile: user })
-})
-```
+A certificate binds:
 
-### 3. OAuth 2.0
+- Identity (domain / org)
+- Public key
+- Signature of trusted CA
 
-Third-party authentication (Google, GitHub, etc.).
+### Where PKI is used
 
-```tsx
-// Redirect to OAuth provider
-app.get('/api/auth/google', (c) => {
-  const googleAuthUrl =
-    'https://accounts.google.com/o/oauth2/v2/auth?' +
-    'client_id=' +
-    GOOGLE_CLIENT_ID +
-    '&redirect_uri=' +
-    encodeURIComponent('https://example.com/api/auth/google/callback') +
-    '&response_type=code' +
-    '&scope=profile email'
+- HTTPS (TLS)
+- Client authentication
+- Secure APIs
 
-  return c.redirect(googleAuthUrl)
-})
+PKI enables **secure authentication without shared secrets**.
 
-// OAuth callback
-app.get('/api/auth/google/callback', async (c) => {
-  const code = c.req.query('code')
+---
 
-  // Exchange code for access token
-  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    body: JSON.stringify({
-      code,
-      client_id: GOOGLE_CLIENT_ID,
-      client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: 'https://example.com/api/auth/google/callback',
-      grant_type: 'authorization_code',
-    }),
-  })
-  const tokens = await tokenResponse.json()
+## 4. Kerberos (Ticket-Based Authentication)
 
-  // Get user info with access token
-  const userResponse = await fetch(
-    'https://www.googleapis.com/oauth2/v1/userinfo',
-    {
-      headers: { Authorization: `Bearer ${tokens.access_token}` },
-    },
-  )
-  const googleUser = await userResponse.json()
+Kerberos was built for **large internal networks**.
 
-  // Create or find user in database
-  const user = await findOrCreateUser(googleUser)
+### How Kerberos works (simplified)
 
-  // Generate JWT or create session
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET)
+1. User authenticates once to KDC
+2. Receives a **ticket**
+3. Ticket is used to access services
+4. Password never travels again
 
-  return c.redirect(`https://example.com/auth/callback?token=${token}`)
-})
+Kerberos introduced the idea of **temporary tokens**, which inspired modern auth systems.
+
+---
+
+## 5. The Scalability Problem
+
+Modern systems are:
+
+- Distributed
+- Horizontally scaled
+- Cloud-based
+- Mobile-first
+
+### Why classic sessions broke
+
+- Server memory not shared
+- Load balancers route randomly
+- State tied to machine
+
+**Result:** Token-based authentication became necessary.
+
+---
+
+## 6. Session-Based Authentication
+
+### How sessions actually persist data
+
+**Key idea:** The server owns identity state.
+
+#### Login flow
+
+1. User sends credentials
+2. Server validates
+3. Server creates a **session object**
+4. Session stored in persistent store
+5. Session ID sent to client
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant SessionStore as Session Store<br/>(Redis/DB)
+
+    Client->>Server: 1. POST /login<br/>{username, password}
+    Server->>Server: 2. Validate credentials
+    Server->>SessionStore: 3. Create session<br/>{userId, roles, expiry}
+    SessionStore-->>Server: 4. Return sessionId
+    Server-->>Client: 5. Set-Cookie: sessionId=abc123
+
+    Note over Client,SessionStore: Subsequent Requests
+
+    Client->>Server: 6. GET /api/data<br/>Cookie: sessionId=abc123
+    Server->>SessionStore: 7. Lookup session by ID
+    SessionStore-->>Server: 8. Return session data
+    Server->>Server: 9. Authorize request
+    Server-->>Client: 10. Return protected data
+
+    Note over Client,SessionStore: Logout
+
+    Client->>Server: 11. POST /logout
+    Server->>SessionStore: 12. Delete session
+    SessionStore-->>Server: 13. Confirmed
+    Server-->>Client: 14. Clear cookie
 ```
 
-## Authorization Patterns
+#### Example session object
 
-### 1. Role-Based Access Control (RBAC)
-
-```tsx
-// Define roles
-enum Role {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-  MODERATOR = 'MODERATOR',
-}
-
-// Middleware to check roles
-function requireRole(...allowedRoles: Role[]) {
-  return async (c: Context, next: Next) => {
-    const userRole = c.get('userRole') as Role
-
-    if (!allowedRoles.includes(userRole)) {
-      return c.json({ error: 'Insufficient permissions' }, 403)
-    }
-
-    await next()
-  }
-}
-
-// Protected routes
-app.get('/api/admin/users', requireRole(Role.ADMIN), (c) => {
-  return c.json({ users: [] })
-})
-
-app.get('/api/moderate/posts', requireRole(Role.ADMIN, Role.MODERATOR), (c) => {
-  return c.json({ posts: [] })
-})
-```
-
-### 2. Permission-Based Access Control
-
-```tsx
-// Define permissions
-interface Permission {
-  resource: string
-  action: 'create' | 'read' | 'update' | 'delete'
-}
-
-const permissions = [
-  { resource: 'posts', action: 'create' },
-  { resource: 'posts', action: 'update' },
-  { resource: 'users', action: 'read' },
-]
-
-// User-permission mapping
-const userPermissions = {
-  user1: ['posts:create', 'posts:update', 'users:read'],
-  admin: ['*'], // All permissions
-}
-
-function hasPermission(
-  userId: string,
-  resource: string,
-  action: string,
-): boolean {
-  const perms = userPermissions[userId]
-  return perms?.includes('*') || perms?.includes(`${resource}:${action}`)
-}
-
-// Middleware
-function requirePermission(resource: string, action: string) {
-  return async (c: Context, next: Next) => {
-    const userId = c.get('userId')
-
-    if (!hasPermission(userId, resource, action)) {
-      return c.json({ error: 'Permission denied' }, 403)
-    }
-
-    await next()
-  }
-}
-
-app.post('/api/posts', requirePermission('posts', 'create'), async (c) => {
-  const post = await createPost(await c.req.json())
-  return c.json(post, 201)
-})
-```
-
-### 3. Resource Ownership
-
-```tsx
-// Check if user owns the resource
-async function requireOwnership() {
-  return async (c: Context, next: Next) => {
-    const userId = c.get('userId')
-    const resourceId = c.req.param('id')
-
-    const resource = await db.resources.findById(resourceId)
-
-    if (!resource || resource.ownerId !== userId) {
-      return c.json({ error: 'Resource not found or access denied' }, 404)
-    }
-
-    await next()
-  }
-}
-
-app.delete('/api/posts/:id', requireOwnership(), async (c) => {
-  const id = c.req.param('id')
-  await db.posts.delete(id)
-  return c.json({ deleted: true })
-})
-```
-
-## Security Best Practices
-
-### 1. Password Hashing
-
-```tsx
-import bcrypt from 'bcrypt'
-
-async function hashPassword(password: string): Promise<string> {
-  const salt = await bcrypt.genSalt(10)
-  return bcrypt.hash(password, salt)
-}
-
-async function verifyPassword(
-  password: string,
-  hashedPassword: string,
-): Promise<boolean> {
-  return bcrypt.compare(password, hashedPassword)
-}
-
-// Registration
-app.post('/api/register', async (c) => {
-  const { email, password } = await c.req.json()
-
-  // Hash password before storing
-  const hashedPassword = await hashPassword(password)
-
-  await db.users.create({
-    email,
-    password: hashedPassword, // Never store plain text!
-  })
-
-  return c.json({ success: true })
-})
-```
-
-### 2. HTTPS Only
-
-```tsx
-// Force HTTPS in production
-if (process.env.NODE_ENV === 'production') {
-  app.use('*', (c, next) => {
-    if (c.req.header('x-forwarded-proto') !== 'https') {
-      return c.redirect('https://' + c.req.header('host') + c.req.url, 301)
-    }
-    next()
-  })
+```json
+{
+  "sessionId": "s_9fa3...",
+  "userId": 101,
+  "roles": ["admin"],
+  "createdAt": 1700000000,
+  "expiresAt": 1700003600
 }
 ```
 
-### 3. Secure Cookies
+#### Persistence layer evolution
 
-```tsx
-// Set secure cookies
-c.header(
-  'Set-Cookie',
-  [
-    'session=abc123',
-    'HttpOnly', // Prevent XSS
-    'Secure', // Only over HTTPS
-    'SameSite=Strict', // Prevent CSRF
-    'Path=/',
-    'Max-Age=3600',
-  ].join('; '),
+| Storage           | Why it was used | Problem      |
+| ----------------- | --------------- | ------------ |
+| File              | Easy            | Not scalable |
+| Database          | Persistent      | Slower       |
+| Distributed store | Shared          | Complex      |
+| Redis             | Fast + TTL      | Needs infra  |
+
+#### Why Redis works well
+
+- In-memory speed
+- Automatic expiration
+- Shared across servers
+
+**Revocation is instant** → delete session key.
+
+---
+
+## 7. JWT Authentication
+
+### JWT core idea
+
+**Server does NOT store identity.**
+
+The token itself carries the claims.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    participant DB as Database
+
+    Client->>Server: 1. POST /login<br/>{username, password}
+    Server->>DB: 2. Validate credentials
+    DB-->>Server: 3. User found
+    Server->>Server: 4. Create JWT<br/>Sign with secret key
+    Server-->>Client: 5. Return JWT token
+
+    Note over Client,Server: Token Structure:<br/>header.payload.signature
+
+    Note over Client,DB: Subsequent Requests (No DB Lookup!)
+
+    Client->>Server: 6. GET /api/data<br/>Authorization: Bearer JWT
+    Server->>Server: 7. Verify signature<br/>(using secret key)
+    Server->>Server: 8. Check expiry<br/>Decode payload
+    Server->>Server: 9. Authorize from claims<br/>(roles, permissions)
+    Server-->>Client: 10. Return protected data
+
+    Note over Client,Server: Logout (Token remains valid until expiry)
+
+    Client->>Client: 11. Delete token locally
+```
+
+#### JWT structure
+
+| Part      | What it contains   |
+| --------- | ------------------ |
+| Header    | Algorithm, type    |
+| Payload   | User data (claims) |
+| Signature | Tamper protection  |
+
+#### Example JWT breakdown
+
+**Header:**
+
+```json
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
+
+**Payload:**
+
+```json
+{
+  "sub": "101",
+  "role": "admin",
+  "iat": 1700000000,
+  "exp": 1700003600
+}
+```
+
+**Signature:**
+
+```
+HMACSHA256(
+  base64UrlEncode(header) + "." + base64UrlEncode(payload),
+  secret_key
 )
 ```
 
-### 4. Rate Limiting
+#### How JWT persists identity
 
-```tsx
-import rateLimit from 'express-rate-limit'
+- Stored on client
+- Sent on every request
+- Server verifies signature only
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 requests per window
-  message: 'Too many attempts, please try again later',
-})
+No DB lookup. No session store.
 
-app.use('/api/login', limiter)
+#### JWT storage options
+
+| Location         | Risk              |
+| ---------------- | ----------------- |
+| LocalStorage     | XSS risk          |
+| Memory           | Page refresh loss |
+| HTTP-only cookie | Best option       |
+
+---
+
+## 8. JWT vs Session (Why JWT Alone Is Dangerous)
+
+| Problem     | Session   | JWT          |
+| ----------- | --------- | ------------ |
+| Revocation  | Easy      | Hard         |
+| Logout      | Immediate | Needs expiry |
+| Role change | Immediate | Token stale  |
+
+JWT **cannot be revoked unless you track state**.
+
+---
+
+## 9. Hybrid Authentication (REAL WORLD PATTERN)
+
+**This is what large systems actually use.**
+
+### How hybrid works
+
+- Short-lived access token (JWT)
+- Long-lived refresh token (stateful)
+
+Refresh token stored in:
+
+- DB or Redis
+
+Access token expires quickly → limits damage
+Refresh token allows controlled renewal
+
+---
+
+## 10. OAuth: The Problem It Solved
+
+### Before OAuth
+
+You wanted to let an app access your Gmail contacts. The only way:
+
+1. Give the app your Gmail password
+2. App logs in as you
+3. **Problem:** App has full access to everything
+
+**Issues:**
+
+- Password sharing is insecure
+- No way to revoke access
+- App can do anything you can do
+
+### The OAuth Solution
+
+> "Let app access data without sharing password"
+
+Instead of passwords, OAuth uses **temporary, limited-scope tokens**.
+
+---
+
+## 11. OAuth History & Evolution
+
+### OAuth 1.0 (2007-2010)
+
+**Purpose:** Twitter needed 3rd-party apps to post tweets without passwords.
+
+**How it worked:**
+
+- Complex cryptographic signatures
+- HMAC-SHA1 signing every request
+- No JSON support
+
+**Why it failed:**
+
+```
+Complex signature generation:
+oauth_signature = HMAC-SHA1(
+  base_string,
+  consumer_secret + "&" + token_secret
+)
 ```
 
-## Refresh Tokens
+Developers found it too difficult to implement correctly.
 
-Allow users to get new access tokens without re-authenticating.
+---
 
-```tsx
-// Login returns access and refresh tokens
-app.post('/api/login', async (c) => {
-  const { email, password } = await c.req.json()
-  const user = await verifyCredentials(email, password)
+### OAuth 2.0 (2012-Present)
 
-  // Access token (short-lived: 15 minutes)
-  const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, {
-    expiresIn: '15m',
-  })
+**Key changes:**
 
-  // Refresh token (long-lived: 7 days)
-  const refreshToken = jwt.sign(
-    { userId: user.id, tokenType: 'refresh' },
-    REFRESH_SECRET,
-    { expiresIn: '7d' },
-  )
+- Removed signature requirement
+- Requires HTTPS instead
+- Bearer tokens (simple to use)
+- JSON support
+- Multiple grant types
 
-  return c.json({ accessToken, refreshToken })
-})
+**Result:** Industry standard adoption
 
-// Refresh token endpoint
-app.post('/api/refresh', async (c) => {
-  const { refreshToken } = await c.req.json()
+| Platform  | Uses OAuth 2.0 |
+| --------- | -------------- |
+| Google    | ✅             |
+| Facebook  | ✅             |
+| GitHub    | ✅             |
+| Microsoft | ✅             |
+| Spotify   | ✅             |
 
-  try {
-    const decoded = jwt.verify(refreshToken, REFRESH_SECRET) as {
-      userId: string
-      tokenType: string
-    }
+---
 
-    if (decoded.tokenType !== 'refresh') {
-      return c.json({ error: 'Invalid refresh token' }, 401)
-    }
+## 12. OAuth 2.0 Core Concepts
 
-    // Generate new access token
-    const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
-      expiresIn: '15m',
-    })
+### OAuth roles
 
-    return c.json({ accessToken: newAccessToken })
-  } catch (error) {
-    return c.json({ error: 'Invalid refresh token' }, 401)
-  }
-})
+| Role                 | Description       | Example      |
+| -------------------- | ----------------- | ------------ |
+| Resource Owner       | User              | You          |
+| Client               | App               | Mobile app   |
+| Authorization Server | Identity provider | Google OAuth |
+| Resource Server      | API               | Gmail API    |
+
+### Important distinction
+
+OAuth **is NOT authentication by itself** — it's **authorization**.
+
+- Authentication = Who you are
+- Authorization = What you can access
+
+---
+
+## 13. OAuth 2.0 Grant Types
+
+### 13.1 Authorization Code Flow (Most Secure)
+
+Used by: Web apps with backend servers
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Client as Client App
+    participant AuthServer as Auth Server
+    participant API as Resource API
+
+    User->>Client: 1. Click "Login with Google"
+    Client->>AuthServer: 2. Redirect to /authorize<br/>?client_id=ABC&redirect_uri=...
+    AuthServer->>User: 3. Show consent screen
+    User->>AuthServer: 4. Grant permission
+    AuthServer->>Client: 5. Redirect with code=xyz123
+    Client->>AuthServer: 6. POST /token<br/>{code, client_secret}
+    AuthServer-->>Client: 7. Return access_token
+    Client->>API: 8. GET /user/profile<br/>Bearer: access_token
+    API-->>Client: 9. Return user data
 ```
 
-## Conclusion
+**Why it's secure:**
 
-Authentication and authorization are critical security components:
+- Authorization code is temporary (1-time use)
+- Client secret never exposed to browser
+- Access token only on backend
 
-- **Authentication** verifies identity (sessions, JWT, OAuth)
-- **Authorization** controls access (RBAC, permissions, ownership)
-- **Security practices**: Hash passwords, use HTTPS, secure cookies, rate limiting
-- **Refresh tokens** improve UX without compromising security
+---
 
-Implementing these properly protects your application and user data from unauthorized access.
+### 13.2 Implicit Flow (Deprecated)
 
-**Next:** [Validation and Transformation](/blogs/backend/06-validation-transformation) - Ensuring data integrity and proper formatting.
+**Warning:** No longer recommended. Use Authorization Code + PKCE instead.
+
+Used by: Single-page apps (old pattern)
+
+**Why deprecated:**
+
+- Token exposed in URL fragment
+- No client authentication
+- XSS vulnerability
+
+---
+
+### 13.3 Client Credentials Flow
+
+Used by: Server-to-server communication
+
+```mermaid
+sequenceDiagram
+    participant ClientApp as Client App<br/>(Backend Service)
+    participant AuthServer as Auth Server
+    participant API as Resource API
+
+    ClientApp->>AuthServer: 1. POST /token<br/>{client_id, client_secret}
+    AuthServer-->>ClientApp: 2. Return access_token
+    ClientApp->>API: 3. GET /data<br/>Bearer: access_token
+    API-->>ClientApp: 4. Return data
+```
+
+**Use case:**
+
+- Microservices authentication
+- Background jobs
+- Server-to-server APIs
+
+**No user involved** — app authenticates itself.
+
+---
+
+### 13.4 Authorization Code + PKCE
+
+**PKCE** = Proof Key for Code Exchange
+
+Used by: Mobile apps, SPAs (modern pattern)
+
+**Problem PKCE solves:**
+
+- Mobile/SPA apps can't securely store client_secret
+- Attackers could intercept authorization code
+
+**How PKCE works:**
+
+1. Client generates random `code_verifier`
+2. Client creates `code_challenge = SHA256(code_verifier)`
+3. Send `code_challenge` with authorization request
+4. Auth server stores challenge
+5. Client exchanges code + `code_verifier` for token
+6. Server verifies: `SHA256(code_verifier) == code_challenge`
+
+**Result:** Authorization code is useless without the verifier.
+
+---
+
+## 14. OAuth Scopes
+
+Scopes define **what the token can access**.
+
+### Example scopes
+
+| Scope          | Allows              |
+| -------------- | ------------------- |
+| `read:user`    | Read user profile   |
+| `write:repo`   | Create/edit repos   |
+| `admin:org`    | Manage organization |
+| `openid email` | Get user email      |
+
+### In practice
+
+```http
+GET /authorize?
+  client_id=abc123&
+  redirect_uri=https://app.com/callback&
+  scope=read:user write:repo&
+  response_type=code
+```
+
+User sees: "App wants to read your profile and create repos"
+
+---
+
+## 15. OpenID Connect (OIDC)
+
+OAuth 2.0 provides authorization. **OIDC adds authentication**.
+
+### What OIDC adds
+
+| Feature  | What it provides     |
+| -------- | -------------------- |
+| ID Token | User identity (JWT)  |
+| UserInfo | Endpoint for profile |
+| Scopes   | `openid`, `profile`  |
+
+### OIDC flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Client
+    participant IdP as Identity Provider<br/>(Google, Auth0)
+
+    Client->>IdP: 1. Authorize with scope=openid
+    IdP->>User: 2. Login & consent
+    User->>IdP: 3. Approve
+    IdP->>Client: 4. Return authorization code
+    Client->>IdP: 5. Exchange code for tokens
+    IdP-->>Client: 6. Return:<br/>- access_token<br/>- id_token (JWT)<br/>- refresh_token
+    Client->>Client: 7. Verify id_token signature
+    Client->>Client: 8. Extract user identity
+```
+
+### ID Token structure
+
+```json
+{
+  "iss": "https://accounts.google.com",
+  "sub": "110169484474386276334",
+  "aud": "your-client-id",
+  "exp": 1700003600,
+  "iat": 1700000000,
+  "email": "user@example.com",
+  "email_verified": true,
+  "name": "John Doe"
+}
+```
+
+**OIDC = OAuth 2.0 + Identity layer**
+
+---
+
+## 16. Advanced Authentication Models
+
+| Model        | Explanation           |
+| ------------ | --------------------- |
+| Zero Trust   | Verify every request  |
+| Passwordless | Magic links, passkeys |
+| Web3         | Wallet-based identity |
+
+---
+
+## 17. Decentralized & Future Authentication
+
+### Behavioral biometrics
+
+- Typing rhythm
+- Cursor movement
+- Touch pressure
+
+Used as **continuous auth**, not login replacement.
+
+### Post-quantum crypto
+
+- Quantum computers break RSA/ECC
+- New algorithms required
+
+---
+
+## 18. Authorization Models
+
+### Why Authorization Matters
+
+Authentication tells you **who** the user is.
+Authorization determines **what** they can do.
+
+### Common Authorization Models
+
+| Model     | Description                       | Use Case         |
+| --------- | --------------------------------- | ---------------- |
+| **ACL**   | Access Control Lists              | File systems     |
+| **RBAC**  | Role-Based Access Control         | Enterprise apps  |
+| **ABAC**  | Attribute-Based Access Control    | Complex rules    |
+| **ReBAC** | Relationship-Based Access Control | Social platforms |
+
+---
+
+## 19. RBAC (Role-Based Access Control)
+
+### Core Concept
+
+Instead of assigning permissions to each user individually, you assign **roles**.
+
+```mermaid
+graph LR
+    User1[User: Alice] --> Role1[Role: Admin]
+    User2[User: Bob] --> Role2[Role: Editor]
+    User3[User: Charlie] --> Role2[Role: Editor]
+    User4[User: Dave] --> Role3[Role: Viewer]
+
+    Role1 --> P1[Delete Posts]
+    Role1 --> P2[Edit Posts]
+    Role1 --> P3[View Posts]
+
+    Role2 --> P2
+    Role2 --> P3
+
+    Role3 --> P3
+```
+
+**Key idea:** Manage permissions at the role level, not user level.
+
+---
+
+### RBAC Components
+
+| Component      | Definition                      | Example                        |
+| -------------- | ------------------------------- | ------------------------------ |
+| **User**       | Entity performing actions       | alice@company.com              |
+| **Role**       | Named collection of permissions | `admin`, `editor`, `viewer`    |
+| **Permission** | Specific action on resource     | `posts:delete`, `users:create` |
+| **Resource**   | Object being protected          | Post #123, User profile        |
+
+---
+
+### RBAC Request Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant App
+    participant AuthZ as Authorization Engine
+    participant DB
+
+    User->>App: 1. Request: DELETE /posts/123
+    App->>App: 2. Extract user identity<br/>(from session/JWT)
+    App->>DB: 3. Get user roles
+    DB-->>App: 4. roles: ["editor"]
+    App->>AuthZ: 5. Check: Can "editor" delete posts?
+    AuthZ->>DB: 6. Lookup role permissions
+    DB-->>AuthZ: 7. "editor" permissions:<br/>posts:read, posts:write
+    AuthZ->>AuthZ: 8. posts:delete NOT found
+    AuthZ-->>App: 9. Return: DENIED
+    App-->>User: 10. 403 Forbidden
+```
+
+### Hierarchical RBAC
+
+Some roles inherit from others.
+
+```mermaid
+graph TD
+    Admin[Admin] --> Editor[Editor]
+    Editor --> Author[Author]
+    Author --> Viewer[Viewer]
+
+    Admin -.->|inherits all| EditorPerms[Editor Permissions]
+    Editor -.->|inherits all| AuthorPerms[Author Permissions]
+    Author -.->|inherits all| ViewerPerms[Viewer Permissions]
+```
+
+---
+
+### RBAC Best Practices
+
+| Practice                      | Why                             | Example                                 |
+| ----------------------------- | ------------------------------- | --------------------------------------- |
+| **Least Privilege**           | Give minimum needed access      | New user gets `viewer` by default       |
+| **Separation of Duties**      | No single role has full control | Finance role can't approve own requests |
+| **Regular Audits**            | Remove unused roles/permissions | Quarterly access review                 |
+| **Role Explosion Prevention** | Don't create too many roles     | Use groups/teams instead                |
+| **Resource Ownership**        | Users can edit own content      | Author can edit own posts               |
+
+---
+
+### RBAC vs ABAC (When to Use What)
+
+| Scenario                             | Use RBAC | Use ABAC |
+| ------------------------------------ | -------- | -------- |
+| Enterprise application               | ✅       |          |
+| Simple permission model              | ✅       |          |
+| Dynamic rules (time, location)       |          | ✅       |
+| Context-dependent access             |          | ✅       |
+| Regulatory compliance (fine-grained) |          | ✅       |
+
+**ABAC Example:**
+
+```json
+{
+  "rule": "Allow if user.department == resource.department AND time.hour >= 9 AND time.hour <= 17"
+}
+```
+
+RBAC is simpler and works for 90% of applications.
+
+---
+
+### Common RBAC Mistakes
+
+| Mistake                       | Problem                    | Solution                      |
+| ----------------------------- | -------------------------- | ----------------------------- |
+| **Role per user**             | Defeats purpose of RBAC    | Group users into common roles |
+| **Hardcoding roles**          | Hard to change             | Store in database             |
+| **No audit logs**             | Can't track access changes | Log all permission checks     |
+| **Checking on frontend only** | Insecure                   | Always enforce on backend     |
+| **Too many roles**            | Hard to manage             | Combine similar roles         |
+
+---
+
+## 20. Security Practices That Actually Matter
+
+| Area                  | Why                  |
+| --------------------- | -------------------- |
+| Generic errors        | Prevent enumeration  |
+| Constant-time compare | Avoid timing attacks |
+| Token expiry          | Reduce blast radius  |
+| Least privilege       | Minimize damage      |
+
+---
+
+## Final Mental Model (Remember This)
+
+- Sessions → **server owns identity**
+- JWT → **client owns identity**
+- Hybrid → **shared control**
+
+> Most production systems use **hybrid auth**.
+
+---
