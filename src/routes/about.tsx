@@ -69,10 +69,10 @@ export const Route = createFileRoute('/about')({
       },
     ],
   }),
-  loader: async ({ context }) => {
-    // Prefetch LeetCode rating data during SSR for better performance
+  loader: ({ context }) => {
+    // Prefetch LeetCode rating data in background (non-blocking)
     const username = m.leetcode_username()
-    await context.queryClient.prefetchQuery(
+    context.queryClient.prefetchQuery(
       orpc.getLeetcodeRating.queryOptions({
         input: { username },
       }),

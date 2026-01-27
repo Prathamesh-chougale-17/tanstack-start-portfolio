@@ -36,7 +36,7 @@ export function LeetcodeRating() {
   if (error || !data.success || !data.contestRating) {
     return (
       <div className="text-center">
-        <div className="font-bold text-4xl text-primary">1850</div>
+        <div className="mb-2 font-bold text-4xl text-primary">1530</div>
         <div className="flex items-center justify-center gap-2 text-muted-foreground">
           <div className="text-muted-foreground text-sm">LeetCode Rating</div>
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
