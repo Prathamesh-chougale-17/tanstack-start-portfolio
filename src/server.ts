@@ -1,6 +1,6 @@
 import handler from '@tanstack/react-start/server-entry'
-import { paraglideMiddleware } from './paraglide/server'
 import { rewritePath } from 'fumadocs-core/negotiation'
+import { paraglideMiddleware } from './paraglide/server'
 
 const { rewrite: rewriteLLM } = rewritePath(
   '/blogs{/*path}.mdx',
