@@ -3,4 +3,89 @@ title: RESTful Architecture and Best Practices
 description: Building scalable REST APIs
 ---
 
-Coming Soon
+## 1. What is REST?
+
+REST stands for Representational State Transfer.
+
+It is an architectural style for designing networked applications.
+
+In simple words:
+
+REST is a way to design APIs using:
+
+- Resources
+- HTTP methods
+- Standard status codes
+- Stateless communication
+
+---
+
+## 2. Core Principles of REST
+
+### 1. Client–Server Architecture
+
+- Client handles UI
+- Server handles data and logic
+- Both are independent
+
+---
+
+### 2. Stateless
+
+Each request must contain all the information needed.
+
+Server does NOT store session state between requests.
+
+Example:
+
+- Authentication token sent in every request
+
+---
+
+### 3. Resource-Based
+
+Everything is treated as a resource.
+
+Examples:
+
+- users
+- orders
+- products
+- payments
+
+Resources are identified by URLs.
+
+Example:
+
+- `/users`
+- `/users/{userId}`
+
+---
+
+### 4. Uniform Interface
+
+REST APIs follow standard HTTP rules:
+
+- GET → Read
+- POST → Create
+- PUT → Replace
+- PATCH → Partial update
+- DELETE → Remove
+
+---
+
+### 5. Cacheable
+
+Responses should define whether they can be cached.
+
+Use headers like:
+
+- Cache-Control
+- ETag
+
+---
+
+## 3. REST vs RESTful
+
+- REST → architectural style
+- RESTful API → API that follows REST principles

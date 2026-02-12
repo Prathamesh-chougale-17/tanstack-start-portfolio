@@ -3,4 +3,324 @@ title: CRUD Deep Dive
 description: Mastering create, read, update, delete operations
 ---
 
-Coming Soon
+## 1. How an API Should Be Designed
+
+A good API should be:
+
+- Simple to understand
+- Consistent in naming
+- Predictable in behavior
+- Easy to document and test
+
+Always think from the client side (frontend/mobile/other service).
+
+---
+
+## 2. Naming Convention
+
+### Use Nouns (Not Verbs)
+
+APIs represent resources. So use nouns.
+
+Good:
+
+- `/users`
+- `/orders`
+- `/products`
+
+Bad:
+
+- `/getUsers`
+- `/createOrder`
+- `/deleteProduct`
+
+HTTP method already tells the action.
+
+---
+
+### Plural Resource Names
+
+Use plural for collections:
+
+- `/users`
+- `/orders`
+
+Single resource:
+
+- `/users/{userId}`
+
+---
+
+### camelCase in JSON
+
+Follow camelCase in request and response body.
+
+```json
+{
+  "userId": "123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "createdAt": "2026-02-13T10:00:00Z"
+}
+```
+
+Avoid:
+
+- snake_case
+- PascalCase
+- short forms like `usrId`
+
+---
+
+## 3. CRUD Basics
+
+### Create
+
+`POST /users`
+
+- Creates a new resource
+- Not idempotent
+
+Response:
+
+- `201 Created`
+- Location header should point to `/users/{userId}`
+
+---
+
+### Read
+
+`GET /users`
+`GET /users/{userId}`
+
+- Safe
+- Idempotent
+
+Response:
+
+- `200 OK`
+
+---
+
+### Update
+
+Full update:
+
+`PUT /users/{userId}`
+
+- Idempotent
+- Replacing entire resource
+
+Partial update:
+
+`PATCH /users/{userId}`
+
+- Not always idempotent (depends on logic)
+- Updates only provided fields
+
+Response:
+
+- `200 OK`
+
+---
+
+### Delete
+
+`DELETE /users/{userId}`
+
+- Idempotent
+
+Response:
+
+- `204 No Content`
+
+---
+
+## 4. Idempotent vs Non-Idempotent
+
+### Idempotent
+
+Calling it multiple times gives same result.
+
+- GET
+- PUT
+- DELETE
+
+Example:
+
+If you delete user 123 multiple times, state remains deleted.
+
+---
+
+### Non-Idempotent
+
+Calling multiple times changes state each time.
+
+- POST (usually)
+
+Example:
+
+`POST /orders`
+
+Every call creates a new order.
+
+---
+
+## 5. How to Build an API (Step-by-Step)
+
+1. Identify resources (nouns)
+2. Define routes
+3. Choose proper HTTP methods
+4. Define request schema
+5. Define response schema
+6. Define status codes
+7. Add validation
+8. Add authentication
+9. Add documentation
+
+---
+
+## 6. Custom Actions
+
+Sometimes action does not fit pure CRUD.
+
+Use POST for custom actions.
+
+Pattern:
+
+`POST /resource/{id}/actionName`
+
+### Example 1: Activate User
+
+`POST /users/{userId}/activate`
+
+Response:
+
+- `200 OK` (state changed)
+
+---
+
+### Example 2: Clone Order
+
+`POST /orders/{orderId}/clone`
+
+If new order is created:
+
+- `201 Created`
+
+Because new resource is created.
+
+---
+
+### Example 3: Reset Password
+
+`POST /users/{userId}/resetPassword`
+
+- `200 OK`
+
+---
+
+## 7. POST 200 vs 201
+
+### Use 201
+
+When:
+
+- New resource is created
+- Server generates new ID
+
+Example:
+
+Cloning order creates new order.
+
+---
+
+### Use 200
+
+When:
+
+- Only changing state
+- No new resource created
+
+Example:
+
+Activating user.
+
+---
+
+## 8. Error Handling
+
+Use structured errors.
+
+```json
+{
+  "errorCode": "USER_NOT_FOUND",
+  "message": "User not found",
+  "details": []
+}
+```
+
+Common status codes:
+
+- 400 Bad Request
+- 401 Unauthorized
+- 403 Forbidden
+- 404 Not Found
+- 409 Conflict
+- 500 Internal Server Error
+
+---
+
+## 9. Things to Remember
+
+### 1. Interactive Documentation
+
+Use tools like Swagger / OpenAPI.
+
+Clients should be able to try APIs from browser.
+
+---
+
+### 2. Make It Intuitive and Consistent
+
+- Same naming style everywhere
+- Same error format everywhere
+- Same status code rules everywhere
+
+---
+
+### 3. Provide Sane Defaults
+
+- Default pagination limit
+- Default sorting
+- Default values for optional fields
+
+---
+
+### 4. Avoid Abbreviations
+
+Avoid:
+
+- `usr`
+- `cfg`
+- `addr`
+
+Use full words:
+
+- `user`
+- `configuration`
+- `address`
+
+---
+
+## 10. Final Checklist
+
+- Uses nouns
+- Follows REST principles
+- Proper HTTP methods
+- Idempotency understood
+- Clear status codes
+- Consistent camelCase JSON
+- Documented
+- Validated
+- Secured

@@ -3,4 +3,102 @@ title: Business Logic Layer (BLL)
 description: Separating business rules from data access
 ---
 
-Coming Soon
+## What is Business Logic Layer?
+
+Business Logic Layer (BLL) is the part of the application that contains:
+
+- Core rules of the system
+- Validation logic
+- Decision making
+- Calculations
+- Workflows
+
+It is the brain of the application.
+
+---
+
+## Where It Sits in Architecture
+
+Typical layered architecture:
+
+- Controller Layer (API Layer)
+- Business Logic Layer
+- Data Access Layer (Database Layer)
+
+Flow:
+
+Request → Controller → Business Logic → Database → Response
+
+---
+
+## What Should Be Inside BLL?
+
+1. Business rules
+2. Data validation (domain level)
+3. Calculations
+4. Orchestration between multiple services
+5. Transaction handling
+
+Example:
+
+Creating an order:
+
+- Check if user exists
+- Check if product is in stock
+- Calculate total price
+- Apply discount
+- Save order
+- Reduce inventory
+
+All this belongs in Business Logic Layer.
+
+---
+
+## What Should NOT Be Inside BLL?
+
+- HTTP request parsing
+- Response formatting
+- Database queries (raw SQL)
+- Framework-specific code
+
+BLL should not depend on web framework.
+
+---
+
+## Why Separate Business Logic?
+
+1. Reusability
+2. Testability
+3. Clean architecture
+4. Easy maintenance
+5. Separation of concerns
+
+---
+
+## Example (Simple Structure)
+
+Controller:
+
+- Accept request
+- Call service method
+- Return response
+
+Service (Business Logic):
+
+- Validate rules
+- Perform operations
+- Call repository
+
+Repository:
+
+- Handle database queries
+
+---
+
+## Key Principle
+
+Controllers should be thin.
+
+Business logic should be inside services.
+
+If logic grows inside controller, move it to BLL.

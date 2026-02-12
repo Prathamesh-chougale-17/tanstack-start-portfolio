@@ -64,7 +64,7 @@ export const getLeetcodeRating = os
 
       const data = (await res.json()) as LeetCodeGraphQLResponse
 
-      if (!data.data?.matchedUser) {
+      if (!data.data.matchedUser) {
         throw new Error('User not found or API response invalid')
       }
 
