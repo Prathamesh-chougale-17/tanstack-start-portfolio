@@ -23,6 +23,7 @@ import { NotFound } from '@/components/not-found'
 import { Toaster } from '@/components/ui/sonner'
 import { PWARegister } from '@/components/pwa-register'
 import { env } from '@/env'
+
 interface MyRouterContext {
   queryClient: QueryClient
 }
