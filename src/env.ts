@@ -22,6 +22,7 @@ export const env = createEnv({
 
     // AI / 3rd-party APIs
     GEMINI_API_KEY: z.string().min(1),
+    GOOGLE_SITE_VERIFICATION_ID: z.string().min(1),
 
     // Optional
     NODE_ENV: z

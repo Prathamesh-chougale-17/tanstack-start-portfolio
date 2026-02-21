@@ -22,7 +22,7 @@ import { ChatButton } from '@/components/layout/chat-button'
 import { NotFound } from '@/components/not-found'
 import { Toaster } from '@/components/ui/sonner'
 import { PWARegister } from '@/components/pwa-register'
-
+import { env } from '@/env'
 interface MyRouterContext {
   queryClient: QueryClient
 }
@@ -146,6 +146,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang={lang}>
       <head>
         <HeadContent />
+        <meta
+          name="google-site-verification"
+          content={env.GOOGLE_SITE_VERIFICATION_ID}
+        />
       </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
