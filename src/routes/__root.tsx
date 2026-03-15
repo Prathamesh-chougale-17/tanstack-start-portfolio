@@ -149,7 +149,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
         <meta
           name="google-site-verification"
-          content={env.GOOGLE_SITE_VERIFICATION_ID}
+          content={env.VITE_GOOGLE_SITE_VERIFICATION_ID}
         />
       </head>
       <body>

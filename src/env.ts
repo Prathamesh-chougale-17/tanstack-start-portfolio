@@ -22,7 +22,6 @@ export const env = createEnv({
 
     // AI / 3rd-party APIs
     GEMINI_API_KEY: z.string().min(1),
-    GOOGLE_SITE_VERIFICATION_ID: z.string().min(1),
 
     // Optional
     NODE_ENV: z
@@ -34,5 +33,16 @@ export const env = createEnv({
    * Runtime environment values
    * These are automatically validated at startup
    */
-  runtimeEnv: process.env,
+
+  clientPrefix: 'VITE_',
+
+  client: {
+    // Expose the Google Site Verification ID to the client for SEO purposes
+    VITE_GOOGLE_SITE_VERIFICATION_ID: z.string().min(1),
+  },
+  runtimeEnv: {
+    // This is where you can set defaults or transformations for environment variables
+    ...process.env,
+    ...import.meta.env, // Include Vite's environment variables
+  },
 })
