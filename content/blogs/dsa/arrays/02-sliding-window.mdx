@@ -1,0 +1,119 @@
+---
+title: Sliding Window
+description: Interview guide for Sliding Window with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Sliding Window**.
+
+### 1. Intuition
+
+Sliding window is for **contiguous ranges**. Instead of recomputing every subarray, you expand and shrink one active interval while maintaining the needed information.
+
+It exists because many problems ask for the best substring or subarray under a condition.
+
+### 2. How It Works
+
+1. Expand the right pointer
+2. Update window state like sum, counts, or distinct characters
+3. While the window is invalid, shrink from the left
+4. Update the answer whenever the window is valid
+
+### 3. Pattern Recognition
+
+Think sliding window when you see:
+
+- longest substring
+- shortest subarray
+- at most `k` distinct
+- sum or product constraints on contiguous elements
+- substring frequency requirements
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [2, 3, 1, 2, 4, 3], target = 7
+```
+
+Step-by-step execution:
+
+- Extend to `[2, 3, 1, 2]`, sum becomes `8`
+- Window is valid, answer becomes `4`
+- Shrink to `[3, 1, 2]`, sum becomes `6`
+- Extend with `4`, sum becomes `10`, answer becomes `3`
+- Shrink to `[4, 3]`, sum becomes `7`, answer becomes `2`
+
+Final Output:
+
+```text
+minimum length = 2
+```
+
+### 5. Code (C++)
+
+```cpp
+int minSubArrayLen(int target, const vector<int>& nums) {
+  int left = 0;
+  int sum = 0;
+  int answer = INT_MAX;
+
+  for (int right = 0; right < static_cast<int>(nums.size()); right++) {
+    sum += nums[right];
+
+    while (sum >= target) {
+      answer = min(answer, right - left + 1);
+      sum -= nums[left];
+      left++;
+    }
+  }
+
+  return answer == INT_MAX ? 0 : answer;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(1)` for numeric windows, `O(k)` for hash maps
+
+### 7. When to Use
+
+- contiguous sum problems
+- substring character constraints
+- exactly or at most `k` style questions
+
+### 8. Common Mistakes
+
+- shrinking before recording the answer
+- using variable window when negative numbers break monotonicity
+- forgetting to remove counts when characters leave the window
+
+### 9. Variations / Extensions
+
+- fixed-size window
+- variable-size window
+- deque-based window for max or min queries
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Maximum Average Subarray I - fixed-size window
+
+#### Medium
+
+- Minimum Size Subarray Sum - classic variable window
+- Longest Repeating Character Replacement - count-based window
+
+#### Hard
+
+- Minimum Window Substring - advanced frequency window
+
+### 11. Key Takeaways
+
+- Sliding window only works when the window can be updated incrementally
+- Contiguous range is the main hint
+- Fixed and variable windows solve different families of problems
+
+**Back:** [Arrays and Binary Search](/blogs/dsa/arrays)

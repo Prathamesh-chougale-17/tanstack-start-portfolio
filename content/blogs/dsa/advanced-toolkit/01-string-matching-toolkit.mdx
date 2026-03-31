@@ -1,0 +1,112 @@
+---
+title: String Matching Toolkit
+description: Interview guide for KMP, Z algorithm, Rabin-Karp, and Manacher's algorithm
+---
+
+This article covers the main advanced string-matching patterns that show up in interviews and competitive programming.
+
+### 1. Intuition
+
+Advanced string algorithms exist because naive substring matching is often too slow. These algorithms reuse information from previous comparisons so you do not restart from scratch every time.
+
+### 2. How It Works
+
+- KMP builds an LPS array so mismatches jump using pattern structure
+- Z algorithm computes how much the suffix starting at each index matches the prefix
+- Rabin-Karp uses rolling hash to compare substrings quickly
+- Manacher's algorithm expands palindromes in linear time
+
+### 3. Pattern Recognition
+
+Think of this toolkit when you see:
+
+- substring search
+- prefix-suffix reuse
+- repeated pattern detection
+- longest palindromic substring
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+text = "ababcabcabababd"
+pattern = "ababd"
+```
+
+KMP insight:
+
+- on mismatch, do not restart the pattern from index `0`
+- jump to the longest prefix that is also a suffix
+
+Final Output:
+
+```text
+pattern found at index 10
+```
+
+### 5. Code (C++)
+
+```cpp
+vector<int> buildLps(const string& pattern) {
+  vector<int> lps(pattern.size(), 0);
+  int len = 0;
+
+  for (int i = 1; i < static_cast<int>(pattern.size()); ) {
+    if (pattern[i] == pattern[len]) {
+      lps[i++] = ++len;
+    } else if (len > 0) {
+      len = lps[len - 1];
+    } else {
+      lps[i++] = 0;
+    }
+  }
+
+  return lps;
+}
+```
+
+### 6. Complexity Analysis
+
+- KMP: `O(n + m)`
+- Z algorithm: `O(n)`
+- Rabin-Karp: `O(n + m)` average
+- Manacher: `O(n)`
+
+### 7. When to Use
+
+- pattern search in large strings
+- repeated prefix/suffix problems
+- palindrome-heavy tasks
+
+### 8. Common Mistakes
+
+- building the LPS array incorrectly
+- ignoring hash collisions in Rabin-Karp
+- using Manacher when expand-around-center is already enough
+
+### 9. Variations / Extensions
+
+- prefix-function questions
+- shortest palindrome
+- repeated substring pattern
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Find the Index of the First Occurrence in a String
+- Repeated Substring Pattern
+
+#### Hard
+
+- Shortest Palindrome
+- Longest Palindromic Substring
+
+### 11. Key Takeaways
+
+- KMP and Z algorithm are prefix-information reuse engines
+- Rabin-Karp is a hashing approach to string matching
+- Manacher is specialized and worth learning after simpler palindrome methods
+
+**Back:** [Advanced Strings, Bits, Math, and Range Queries](/blogs/dsa/advanced-toolkit)

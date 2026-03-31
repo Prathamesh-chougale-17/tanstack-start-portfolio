@@ -1,0 +1,108 @@
+---
+title: 0/1 Knapsack and Unbounded Knapsack
+description: Interview guide for 0/1 Knapsack and Unbounded Knapsack with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **0/1 Knapsack and Unbounded Knapsack**.
+
+### 1. Intuition
+
+Knapsack asks how to maximize value under a capacity constraint.
+
+- 0/1 knapsack: take each item at most once
+- unbounded knapsack: reuse items unlimited times
+
+### 2. How It Works
+
+For 0/1 knapsack:
+
+1. `dp[i][w]` = best value using first `i` items and capacity `w`
+2. Either skip the item or take it once
+
+For unbounded knapsack:
+
+1. Similar state
+2. When taking the item, stay on the same row or iterate capacity forward
+
+### 3. Pattern Recognition
+
+Think knapsack when you see:
+
+- capacity or budget
+- choose items for best score
+- subset under weight constraint
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+weights = [1, 3, 4], values = [15, 20, 30], capacity = 4
+```
+
+Step-by-step execution:
+
+- Best with capacity `4` is taking weight `4` value `30`
+- Or weight `1 + 3` gives `35`
+
+Final Output:
+
+```text
+35
+```
+
+### 5. Code (C++)
+
+```cpp
+int knapsack01(const vector<int>& weight, const vector<int>& value, int cap) {
+  vector<int> dp(cap + 1, 0);
+
+  for (int i = 0; i < static_cast<int>(weight.size()); i++) {
+    for (int w = cap; w >= weight[i]; w--) {
+      dp[w] = max(dp[w], value[i] + dp[w - weight[i]]);
+    }
+  }
+
+  return dp[cap];
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n * capacity)`
+- Space Complexity: `O(capacity)`
+
+### 7. When to Use
+
+- capacity optimization
+- subset-choice scoring
+- coin change style problems
+
+### 8. Common Mistakes
+
+- iterating capacity in the wrong direction
+- confusing 0/1 with unbounded transitions
+
+### 9. Variations / Extensions
+
+- coin change
+- target sum
+- partition equal subset sum
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Partition Equal Subset Sum
+- Coin Change
+
+#### Hard
+
+- Profitable Schemes
+
+### 11. Key Takeaways
+
+- Loop direction often reveals whether reuse is allowed
+- Knapsack is one of the most reusable DP patterns
+
+**Back:** [Dynamic Programming and Greedy](/blogs/dsa/dynamic-programming-greedy)

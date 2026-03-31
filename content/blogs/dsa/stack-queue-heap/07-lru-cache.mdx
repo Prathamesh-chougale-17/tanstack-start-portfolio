@@ -1,0 +1,137 @@
+---
+title: LRU Cache
+description: Interview guide for LRU Cache with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **LRU Cache**.
+
+### 1. Intuition
+
+An LRU cache must support:
+
+- lookup by key in `O(1)`
+- move recently used item to the front in `O(1)`
+- remove least recently used item in `O(1)`
+
+That is why the classic design is a **hash map + doubly linked list**.
+
+### 2. How It Works
+
+1. Hash map stores `key -> node`
+2. Doubly linked list stores recency order
+3. On `get`, move node to the front
+4. On `put`, insert or update at the front
+5. If capacity is exceeded, remove from the tail
+
+### 3. Pattern Recognition
+
+Think LRU when you see:
+
+- fixed-capacity cache
+- eviction policy
+- least recently used requirement
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+capacity = 2
+put(1, 1), put(2, 2), get(1), put(3, 3)
+```
+
+Step-by-step execution:
+
+- Cache order after first two puts: `2, 1`
+- `get(1)` moves `1` to front: `1, 2`
+- `put(3, 3)` evicts `2`
+
+Final Output:
+
+```text
+cache contains keys 1 and 3
+```
+
+### 5. Code (C++)
+
+```cpp
+class LRUCache {
+ public:
+  explicit LRUCache(int capacity) : capacity_(capacity) {}
+
+  int get(int key) {
+    auto it = pos_.find(key);
+    if (it == pos_.end()) {
+      return -1;
+    }
+    touch(it);
+    return it->second->second;
+  }
+
+  void put(int key, int value) {
+    auto it = pos_.find(key);
+    if (it != pos_.end()) {
+      it->second->second = value;
+      touch(it);
+      return;
+    }
+
+    items_.push_front({key, value});
+    pos_[key] = items_.begin();
+
+    if (static_cast<int>(items_.size()) > capacity_) {
+      auto last = items_.back();
+      pos_.erase(last.first);
+      items_.pop_back();
+    }
+  }
+
+ private:
+  void touch(unordered_map<int, list<pair<int, int>>::iterator>::iterator it) {
+    items_.splice(items_.begin(), items_, it->second);
+  }
+
+  int capacity_;
+  list<pair<int, int>> items_;
+  unordered_map<int, list<pair<int, int>>::iterator> pos_;
+};
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(1)` average for `get` and `put`
+- Space Complexity: `O(capacity)`
+
+### 7. When to Use
+
+- cache design
+- eviction order problems
+- recent-history tracking
+
+### 8. Common Mistakes
+
+- trying to solve it with only a queue or only a hash map
+- forgetting to move updated keys to the front
+
+### 9. Variations / Extensions
+
+- LFU cache
+- MRU cache
+- TTL-aware cache
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- LRU Cache
+
+#### Hard
+
+- LFU Cache
+
+### 11. Key Takeaways
+
+- LRU is a design pattern problem, not just a queue problem
+- Hash map gives lookup, linked list gives order updates
+
+**Back:** [Stack, Queue, and Heap Patterns](/blogs/dsa/stack-queue-heap)

@@ -1,0 +1,121 @@
+---
+title: Two Pointer
+description: Interview guide for Two Pointer with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Two Pointer**.
+
+### 1. Intuition
+
+Two pointer is about using **position** as information. Instead of checking every pair, you place one pointer on the left and one on the right and use the current comparison to safely discard impossible answers.
+
+It exists because many array problems have hidden order. Once the array is sorted, moving one pointer changes the sum or condition in a predictable direction.
+
+### 2. How It Works
+
+1. Initialize `left` and `right`
+2. Evaluate the current pair
+3. Move the pointer that makes progress toward the goal
+4. Stop when pointers cross or the answer is found
+
+### 3. Pattern Recognition
+
+Think of two pointers when the problem mentions:
+
+- sorted array
+- pair with target sum
+- palindrome
+- container width and height
+- remove duplicates in place
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [1, 2, 4, 6, 10], target = 8
+```
+
+Step-by-step execution:
+
+- Iteration 1: `1 + 10 = 11`, too large, move `right`
+- Iteration 2: `1 + 6 = 7`, too small, move `left`
+- Iteration 3: `2 + 6 = 8`, found answer
+
+Final Output:
+
+```text
+indices of 2 and 6
+```
+
+### 5. Code (C++)
+
+```cpp
+pair<int, int> twoSumSorted(const vector<int>& nums, int target) {
+  int left = 0;
+  int right = static_cast<int>(nums.size()) - 1;
+
+  while (left < right) {
+    int sum = nums[left] + nums[right];
+
+    if (sum == target) {
+      return {left, right};
+    }
+    if (sum < target) {
+      left++;
+    } else {
+      right--;
+    }
+  }
+
+  return {-1, -1};
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(1)`
+
+### 7. When to Use
+
+- pair sum in sorted array
+- trapping or maximizing using both ends
+- in-place partitioning
+- fast-slow pointer variation on linked lists
+
+### 8. Common Mistakes
+
+- using it on an unsorted array without sorting or preserving indices
+- moving the wrong pointer
+- forgetting duplicate handling in problems like 3Sum
+
+### 9. Variations / Extensions
+
+- same-direction pointers
+- fast and slow pointers
+- 3Sum with outer loop + two pointer
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Two Sum II - classic sorted pair problem
+- Valid Palindrome - left-right character checks
+
+#### Medium
+
+- Container With Most Water - best area using both ends
+- 3Sum - two pointer inside a sorted loop
+
+#### Hard
+
+- Trapping Rain Water - can be solved with two pointers
+
+### 11. Key Takeaways
+
+- Two pointer is usually about exploiting order
+- Every pointer movement should rule out a whole set of answers
+- Sorted input is the biggest clue
+
+**Back:** [Arrays and Binary Search](/blogs/dsa/arrays)

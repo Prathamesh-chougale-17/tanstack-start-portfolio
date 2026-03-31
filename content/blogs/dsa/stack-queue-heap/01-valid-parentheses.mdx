@@ -1,0 +1,117 @@
+---
+title: Valid Parentheses
+description: Interview guide for Valid Parentheses with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Valid Parentheses**.
+
+### 1. Intuition
+
+A stack is perfect when you need to match an opening symbol with the **most recent** unmatched opening symbol.
+
+### 2. How It Works
+
+1. Push opening brackets
+2. On a closing bracket, check the stack top
+3. If the top does not match, the string is invalid
+4. At the end, the stack must be empty
+
+### 3. Pattern Recognition
+
+Think stack when you see:
+
+- matching pairs
+- undo behavior
+- nested expressions
+- nearest previous unresolved item
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+s = "([{}])"
+```
+
+Step-by-step execution:
+
+- Push `(`
+- Push `[`
+- Push `{`
+- Match `}`
+- Match `]`
+- Match `)`
+
+Final Output:
+
+```text
+true
+```
+
+### 5. Code (C++)
+
+```cpp
+bool isValid(string s) {
+  stack<char> st;
+  unordered_map<char, char> match = {
+    {')', '('},
+    {']', '['},
+    {'}', '{'},
+  };
+
+  for (char ch : s) {
+    if (match.count(ch) == 0) {
+      st.push(ch);
+      continue;
+    }
+
+    if (st.empty() || st.top() != match[ch]) {
+      return false;
+    }
+
+    st.pop();
+  }
+
+  return st.empty();
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(n)`
+
+### 7. When to Use
+
+- brackets and delimiters
+- nested parsing
+- expression validation
+
+### 8. Common Mistakes
+
+- not checking empty stack before `top()`
+- forgetting leftover opening brackets
+
+### 9. Variations / Extensions
+
+- minimum removals to make parentheses valid
+- decode string
+- basic calculator
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Valid Parentheses
+
+#### Medium
+
+- Minimum Remove to Make Valid Parentheses
+- Decode String
+
+### 11. Key Takeaways
+
+- Stack solves last-opened-first-closed structure naturally
+- Matching problems often reduce to push and pop discipline
+
+**Back:** [Stack, Queue, and Heap Patterns](/blogs/dsa/stack-queue-heap)

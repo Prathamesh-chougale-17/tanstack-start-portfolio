@@ -1,0 +1,112 @@
+---
+title: Height, Diameter, Balanced Tree, and Path Sum
+description: Interview guide for Height, Diameter, Balanced Tree, and Path Sum with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Height, Diameter, Balanced Tree, and Path Sum**.
+
+### 1. Intuition
+
+Many tree problems are postorder problems in disguise. You need information from children first, then compute the value for the current node.
+
+### 2. How It Works
+
+1. Recursively solve left and right children
+2. Combine their results at the current node
+3. Update a global answer if needed
+
+### 3. Pattern Recognition
+
+Think postorder when you see:
+
+- height or depth
+- diameter
+- balanced binary tree
+- path sum from children upward
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+    1
+   / \
+  2   3
+ /
+4
+```
+
+Step-by-step execution:
+
+- Height of `4` is `1`
+- Height of `2` is `2`
+- Height of `3` is `1`
+- Diameter through `1` becomes `3`
+
+Final Output:
+
+```text
+height = 3, diameter in edges = 3
+```
+
+### 5. Code (C++)
+
+```cpp
+int diameter = 0;
+
+int height(TreeNode* root) {
+  if (root == nullptr) {
+    return 0;
+  }
+
+  int left = height(root->left);
+  int right = height(root->right);
+  diameter = max(diameter, left + right);
+  return 1 + max(left, right);
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(h)`
+
+### 7. When to Use
+
+- tree height
+- longest path
+- bottom-up validation
+
+### 8. Common Mistakes
+
+- confusing diameter in nodes vs edges
+- recomputing height separately for every node
+
+### 9. Variations / Extensions
+
+- maximum path sum
+- path sum I, II, III
+- balanced binary tree check
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Maximum Depth of Binary Tree
+- Balanced Binary Tree
+
+#### Medium
+
+- Diameter of Binary Tree
+- Path Sum II
+
+#### Hard
+
+- Binary Tree Maximum Path Sum
+
+### 11. Key Takeaways
+
+- Postorder is the default tree DP pattern
+- Return what the parent needs, update globals when necessary
+
+**Back:** [Recursion, Backtracking, and Trees](/blogs/dsa/recursion-backtracking-trees)

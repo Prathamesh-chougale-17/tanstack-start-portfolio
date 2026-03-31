@@ -1,0 +1,107 @@
+---
+title: LIS
+description: Interview guide for LIS with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **LIS**.
+
+### 1. Intuition
+
+LIS asks for the longest subsequence that stays increasing. The key word is **subsequence**, so elements do not need to be contiguous.
+
+### 2. How It Works
+
+Classic DP:
+
+1. `dp[i]` = LIS ending at `i`
+2. Look at all previous `j < i`
+3. If `nums[j] < nums[i]`, try extending `dp[j]`
+
+Optimized:
+
+1. Maintain a `tails` array
+2. Use binary search to place each number
+
+### 3. Pattern Recognition
+
+Think LIS when you see:
+
+- longest increasing subsequence
+- ordering after deletions
+- chain building
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [10, 9, 2, 5, 3, 7, 101, 18]
+```
+
+Step-by-step execution with `tails`:
+
+- `2`
+- `2, 5`
+- `2, 3`
+- `2, 3, 7`
+- `2, 3, 7, 18`
+
+Final Output:
+
+```text
+length = 4
+```
+
+### 5. Code (C++)
+
+```cpp
+int lengthOfLIS(const vector<int>& nums) {
+  vector<int> tails;
+
+  for (int num : nums) {
+    auto it = lower_bound(tails.begin(), tails.end(), num);
+    if (it == tails.end()) {
+      tails.push_back(num);
+    } else {
+      *it = num;
+    }
+  }
+
+  return static_cast<int>(tails.size());
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n log n)`
+- Space Complexity: `O(n)`
+
+### 7. When to Use
+
+- subsequence growth
+- minimum deletions to sort
+- envelope and chain problems
+
+### 8. Common Mistakes
+
+- confusing subsequence with subarray
+- assuming `tails` stores the actual answer sequence
+
+### 9. Variations / Extensions
+
+- Russian Doll Envelopes
+- longest non-decreasing subsequence
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Longest Increasing Subsequence
+- Russian Doll Envelopes
+
+### 11. Key Takeaways
+
+- LIS is a subsequence problem, not a contiguous one
+- The binary-search solution is a high-value interview upgrade
+
+**Back:** [Dynamic Programming and Greedy](/blogs/dsa/dynamic-programming-greedy)

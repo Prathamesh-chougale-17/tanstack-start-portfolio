@@ -1,0 +1,122 @@
+---
+title: Reverse in K Groups
+description: Interview guide for Reverse in K Groups with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Reverse in K Groups**.
+
+### 1. Intuition
+
+This problem combines list traversal with local reversal. You only reverse when a full block of `k` nodes exists, then reconnect the reversed block to the rest of the list.
+
+### 2. How It Works
+
+1. Use a dummy node before head
+2. Find the kth node from the current group start
+3. Reverse the block
+4. Reconnect previous tail and next group head
+5. Continue
+
+### 3. Pattern Recognition
+
+Think of k-group reversal when you see:
+
+- reverse every k nodes
+- reverse fixed-size sublists
+- list batching with rewiring
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+1 -> 2 -> 3 -> 4 -> 5, k = 2
+```
+
+Step-by-step execution:
+
+- Reverse first block `1, 2` to `2, 1`
+- Reverse second block `3, 4` to `4, 3`
+- Leave `5` as is
+
+Final Output:
+
+```text
+2 -> 1 -> 4 -> 3 -> 5
+```
+
+### 5. Code (C++)
+
+```cpp
+ListNode* reverseKGroup(ListNode* head, int k) {
+  ListNode dummy(0, head);
+  ListNode* groupPrev = &dummy;
+
+  while (true) {
+    ListNode* kth = groupPrev;
+    for (int i = 0; i < k && kth != nullptr; i++) {
+      kth = kth->next;
+    }
+
+    if (kth == nullptr) {
+      break;
+    }
+
+    ListNode* groupNext = kth->next;
+    ListNode* prev = groupNext;
+    ListNode* curr = groupPrev->next;
+
+    while (curr != groupNext) {
+      ListNode* nextNode = curr->next;
+      curr->next = prev;
+      prev = curr;
+      curr = nextNode;
+    }
+
+    ListNode* newGroupTail = groupPrev->next;
+    groupPrev->next = kth;
+    groupPrev = newGroupTail;
+  }
+
+  return dummy.next;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(1)`
+
+### 7. When to Use
+
+- group-based reversal
+- block transformations on linked structures
+
+### 8. Common Mistakes
+
+- reversing an incomplete tail group
+- losing `groupNext`
+- reconnecting the wrong nodes after reversal
+
+### 9. Variations / Extensions
+
+- reverse alternate k groups
+- reverse between positions
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Reverse Linked List II
+
+#### Hard
+
+- Reverse Nodes in k-Group
+
+### 11. Key Takeaways
+
+- This is reversal plus careful reconnection
+- Always verify a full block before reversing
+- Store boundaries before changing links
+
+**Back:** [Linked List Patterns](/blogs/dsa/linked-list)

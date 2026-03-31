@@ -1,0 +1,129 @@
+---
+title: Binary Search
+description: Interview guide for Binary Search with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Binary Search**.
+
+### 1. Intuition
+
+Binary search is not really about arrays. It is about **monotonicity**.
+
+If a search space has a clean split such that one side is always invalid and the other side is always valid, binary search can cut the space in half every step.
+
+### 2. How It Works
+
+1. Set `low` and `high`
+2. Compute `mid`
+3. Decide which half can be safely discarded
+4. Repeat until bounds collapse
+
+For lower bound:
+
+- move left if current value is big enough
+- move right otherwise
+
+For upper bound:
+
+- move left if value is greater than target
+- move right otherwise
+
+### 3. Pattern Recognition
+
+Think binary search when you see:
+
+- sorted array
+- first or last occurrence
+- lower bound or upper bound
+- minimum feasible answer
+- maximum value satisfying a condition
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [1, 2, 2, 2, 5], target = 2
+```
+
+Step-by-step execution for lower bound:
+
+- `low = 0`, `high = 5`, `mid = 2`, value `2`, move left
+- `low = 0`, `high = 2`, `mid = 1`, value `2`, move left
+- `low = 0`, `high = 1`, `mid = 0`, value `1`, move right
+
+Final Output:
+
+```text
+first index of 2 = 1
+```
+
+### 5. Code (C++)
+
+```cpp
+int lowerBound(const vector<int>& nums, int target) {
+  int low = 0;
+  int high = static_cast<int>(nums.size());
+
+  while (low < high) {
+    int mid = low + (high - low) / 2;
+
+    if (nums[mid] >= target) {
+      high = mid;
+    } else {
+      low = mid + 1;
+    }
+  }
+
+  return low;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(log n)`
+- Space Complexity: `O(1)`
+
+### 7. When to Use
+
+- direct lookup in sorted arrays
+- boundary finding
+- searching rotated arrays
+- binary search on answer
+
+### 8. Common Mistakes
+
+- infinite loops due to wrong boundary updates
+- confusing `high = mid` with `high = mid - 1`
+- not deciding whether the interval is closed or half-open
+
+### 9. Variations / Extensions
+
+- lower bound and upper bound
+- search in rotated sorted array
+- binary search on answer for capacity, speed, or time
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Binary Search
+- First Bad Version
+
+#### Medium
+
+- Find First and Last Position of Element in Sorted Array
+- Search in Rotated Sorted Array
+- Koko Eating Bananas
+
+#### Hard
+
+- Median of Two Sorted Arrays
+
+### 11. Key Takeaways
+
+- Binary search needs monotonic structure, not just a sorted array
+- Be explicit about your interval convention
+- Boundary problems are often more important than exact match problems
+
+**Back:** [Arrays and Binary Search](/blogs/dsa/arrays)

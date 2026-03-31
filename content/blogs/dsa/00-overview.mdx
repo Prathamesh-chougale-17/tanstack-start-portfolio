@@ -1,0 +1,139 @@
+---
+title: DSA Interview Playbook
+description: A structured DSA series that prioritizes the highest-value interview patterns first and turns the checklist into a practical study plan
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card'
+
+## Why This Series Exists
+
+Data structures and algorithms usually feel overwhelming for one reason: people try to memorize isolated tricks instead of learning reusable patterns.
+
+This series turns your checklist into a practical **blog-style study roadmap**:
+
+- focus first on the highest-frequency interview patterns
+- learn the intuition before the code
+- practice the recognition signals that tell you which algorithm to use
+- revise with compact dry runs, complexity notes, and common mistakes
+- organize everything topic-wise, with separate files for individual algorithms and pattern families
+
+## How to Use These Blogs
+
+Read each article in this order:
+
+1. Start with the **intuition**
+2. Study the **step-by-step flow**
+3. Walk through the **dry run**
+4. Reproduce the **C++ code from memory**
+5. Solve 2 to 4 problems immediately after reading
+
+## Priority Roadmap
+
+If you want the highest return first, follow this order:
+
+1. Arrays, sliding windows, prefix sums, and binary search
+2. Linked lists, stacks, queues, BFS, and heaps
+3. Trees, graphs, DFS, Dijkstra, and Union-Find
+4. Dynamic programming and greedy patterns
+5. Advanced strings, bit manipulation, math, and range-query data structures
+
+## DSA Series
+
+<Cards>
+  <Card
+    title="Arrays and Binary Search"
+    description="Two pointers, sliding windows, prefix sums, Kadane, and the binary search family"
+    href="/blogs/dsa/arrays"
+  />
+  <Card
+    title="Linked List Patterns"
+    description="Reverse, merge, fast-slow pointers, nth-from-end, k-group reversal, and random pointers"
+    href="/blogs/dsa/linked-list"
+  />
+  <Card
+    title="Stack, Queue, and Heap Patterns"
+    description="Valid parentheses, monotonic stack, BFS, deque patterns, heaps, top-k, and LRU thinking"
+    href="/blogs/dsa/stack-queue-heap"
+  />
+  <Card
+    title="Recursion, Backtracking, and Trees"
+    description="Subsets, permutations, N-Queens, traversals, diameter, LCA, serialization, and BSTs"
+    href="/blogs/dsa/recursion-backtracking-trees"
+  />
+  <Card
+    title="Graphs and Union-Find"
+    description="DFS, cycle detection, topological sort, bipartite graphs, Dijkstra, Bellman-Ford, Kruskal, and Prim"
+    href="/blogs/dsa/graphs"
+  />
+  <Card
+    title="Dynamic Programming and Greedy"
+    description="Fibonacci, knapsack, LIS, LCS, grids, trees, interval scheduling, and jump game"
+    href="/blogs/dsa/dynamic-programming-greedy"
+  />
+  <Card
+    title="Advanced Strings, Bits, Math, and Range Queries"
+    description="KMP, Z algorithm, XOR tricks, sieve, fast power, segment tree, and Fenwick tree"
+    href="/blogs/dsa/advanced-toolkit"
+  />
+</Cards>
+
+## What To Master First
+
+These are the patterns that show up again and again in interviews:
+
+- Two Pointer
+- Sliding Window
+- Prefix Sum
+- Kadane's Algorithm
+- Binary Search
+- Reverse Linked List
+- Fast & Slow Pointer
+- Valid Parentheses
+- Monotonic Stack
+- BFS
+- Heap / Top K
+- DFS and Topological Sort
+- Dijkstra
+- Union-Find
+- Fibonacci-style DP
+- Knapsack
+- LIS
+- LCS
+- Activity Selection
+- Jump Game
+
+## Problem-Solving Checklist
+
+Before coding, ask yourself:
+
+1. Is the input **sorted** or can it become sorted?
+2. Is the problem asking about a **subarray or substring**?
+3. Is there a **range sum** or repeated query pattern?
+4. Is the state coming from **previous choices**?
+5. Is this really a **graph in disguise**?
+6. Do I need the **minimum/maximum quickly** over a changing set?
+7. Can I define a **monotonic answer space** and binary-search it?
+
+## Practice Advice
+
+- Spend most of your time on starred topics until they feel automatic
+- Solve the same pattern in multiple disguises
+- After every problem, write one sentence: `Why was this the right pattern?`
+- Keep one revision sheet with only:
+  - recognition hints
+  - core loop
+  - complexity
+  - common bugs
+
+## What This Series Covers Beyond The Starred List
+
+The blogs go deep on the core interview patterns first, then connect them to nearby ideas like:
+
+- difference array after prefix sums
+- search in rotated array after binary search
+- multi-source BFS after normal BFS
+- Kruskal and Prim after Union-Find and heaps
+- space-optimized DP after standard DP
+- Fenwick tree after prefix-thinking becomes too slow
+
+If you can explain the intuition, trace a dry run, and write the core version from memory, you are already far ahead of most interview prep.

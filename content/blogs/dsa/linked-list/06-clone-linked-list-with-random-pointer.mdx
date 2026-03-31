@@ -1,0 +1,104 @@
+---
+title: Clone Linked List With Random Pointer
+description: Interview guide for Clone Linked List With Random Pointer with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Clone Linked List With Random Pointer**.
+
+### 1. Intuition
+
+Each node has two relationships: `next` and `random`. You need a copied node for every original node, then you wire both relationships in the copy.
+
+### 2. How It Works
+
+1. First pass: create copy nodes and map original to clone
+2. Second pass: assign `next` and `random` using the map
+
+### 3. Pattern Recognition
+
+Think of this algorithm when you see:
+
+- deep copy with arbitrary references
+- graph-like structure hidden inside a list
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+7 -> 13 -> 11
+random pointers: null, 7, 13
+```
+
+Step-by-step execution:
+
+- Create copies of all three nodes
+- Use the map to set each copied node's `next` and `random`
+
+Final Output:
+
+```text
+independent deep copy with matching random edges
+```
+
+### 5. Code (C++)
+
+```cpp
+Node* copyRandomList(Node* head) {
+  unordered_map<Node*, Node*> copies;
+  Node* curr = head;
+
+  while (curr != nullptr) {
+    copies[curr] = new Node(curr->val);
+    curr = curr->next;
+  }
+
+  curr = head;
+  while (curr != nullptr) {
+    copies[curr]->next = curr->next ? copies[curr->next] : nullptr;
+    copies[curr]->random = curr->random ? copies[curr->random] : nullptr;
+    curr = curr->next;
+  }
+
+  return head ? copies[head] : nullptr;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(n)`
+
+### 7. When to Use
+
+- deep-copy structures with extra links
+- graph cloning ideas on a smaller structure
+
+### 8. Common Mistakes
+
+- accidentally pointing clones back to original nodes
+- forgetting `nullptr` cases
+- thinking it is only a list problem when it behaves like a graph copy
+
+### 9. Variations / Extensions
+
+- interleaving-node `O(1)` extra space solution
+- Clone Graph
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Copy List with Random Pointer
+
+#### Hard
+
+- Clone Graph
+
+### 11. Key Takeaways
+
+- Random pointer problems are really reference-copy problems
+- Build node copies first, connect them second
+- The map version is the safest interview answer
+
+**Back:** [Linked List Patterns](/blogs/dsa/linked-list)

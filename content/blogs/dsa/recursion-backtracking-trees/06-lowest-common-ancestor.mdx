@@ -1,0 +1,95 @@
+---
+title: Lowest Common Ancestor
+description: Interview guide for Lowest Common Ancestor with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Lowest Common Ancestor**.
+
+### 1. Intuition
+
+The lowest common ancestor of two nodes is the first node where the paths to both targets meet.
+
+### 2. How It Works
+
+1. If the current node is null, return null
+2. If it matches one target, return it
+3. Recurse into left and right
+4. If both sides return non-null, current node is the LCA
+
+### 3. Pattern Recognition
+
+Think LCA when you see:
+
+- nearest shared ancestor
+- relationship between two tree nodes
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+LCA of 5 and 1 in the classic binary tree
+```
+
+Step-by-step execution:
+
+- Left subtree returns `5`
+- Right subtree returns `1`
+- Current root becomes the answer
+
+Final Output:
+
+```text
+root is the LCA
+```
+
+### 5. Code (C++)
+
+```cpp
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+  if (root == nullptr || root == p || root == q) {
+    return root;
+  }
+
+  TreeNode* left = lowestCommonAncestor(root->left, p, q);
+  TreeNode* right = lowestCommonAncestor(root->right, p, q);
+
+  if (left != nullptr && right != nullptr) {
+    return root;
+  }
+
+  return left != nullptr ? left : right;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(h)`
+
+### 7. When to Use
+
+- common ancestor lookup
+- path intersection in trees
+
+### 8. Common Mistakes
+
+- stopping too early when one node is an ancestor of the other
+
+### 9. Variations / Extensions
+
+- LCA in BST
+- binary lifting in large trees
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Lowest Common Ancestor of a Binary Tree
+- Lowest Common Ancestor of a BST
+
+### 11. Key Takeaways
+
+- LCA is a return-value problem: each subtree tells you what it found
+
+**Back:** [Recursion, Backtracking, and Trees](/blogs/dsa/recursion-backtracking-trees)

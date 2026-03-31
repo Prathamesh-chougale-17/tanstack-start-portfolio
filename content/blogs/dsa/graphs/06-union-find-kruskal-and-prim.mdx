@@ -1,0 +1,141 @@
+---
+title: Union-Find, Kruskal, and Prim
+description: Interview guide for Union-Find, Kruskal, and Prim with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Union-Find, Kruskal, and Prim**.
+
+### 1. Intuition
+
+Union-Find maintains groups of connected nodes efficiently. Kruskal uses it to add the smallest edges that do not create a cycle. Prim grows the minimum spanning tree from a starting node using a heap.
+
+### 2. How It Works
+
+Union-Find:
+
+1. Each node starts in its own set
+2. `find` returns the representative
+3. `union` merges two sets
+
+Kruskal:
+
+1. Sort edges by weight
+2. Add an edge if its endpoints are in different sets
+
+Prim:
+
+1. Start from any node
+2. Repeatedly take the minimum outgoing edge to an unvisited node
+
+### 3. Pattern Recognition
+
+Think of this group when you see:
+
+- connectivity under repeated merges
+- account merge
+- redundant connection
+- minimum spanning tree
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+edges = [(0, 1, 1), (1, 2, 2), (0, 2, 5)]
+```
+
+Step-by-step execution for Kruskal:
+
+- Take `(0, 1, 1)`
+- Take `(1, 2, 2)`
+- Skip `(0, 2, 5)` because it creates a cycle
+
+Final Output:
+
+```text
+MST weight = 3
+```
+
+### 5. Code (C++)
+
+```cpp
+class DSU {
+ public:
+  explicit DSU(int n) : parent(n), rank(n, 0) {
+    iota(parent.begin(), parent.end(), 0);
+  }
+
+  int find(int x) {
+    if (parent[x] != x) {
+      parent[x] = find(parent[x]);
+    }
+    return parent[x];
+  }
+
+  bool unite(int a, int b) {
+    a = find(a);
+    b = find(b);
+    if (a == b) {
+      return false;
+    }
+
+    if (rank[a] < rank[b]) {
+      swap(a, b);
+    }
+    parent[b] = a;
+    if (rank[a] == rank[b]) {
+      rank[a]++;
+    }
+    return true;
+  }
+
+ private:
+  vector<int> parent;
+  vector<int> rank;
+};
+```
+
+### 6. Complexity Analysis
+
+- DSU operations: near `O(1)` amortized
+- Kruskal: `O(E log E)`
+- Prim: `O(E log V)` with heap
+
+### 7. When to Use
+
+- dynamic connectivity
+- cycle detection in undirected graphs
+- MST building
+
+### 8. Common Mistakes
+
+- forgetting path compression or union by rank
+- using Kruskal without sorting
+- mixing Prim and Dijkstra mentally because both use heaps
+
+### 9. Variations / Extensions
+
+- redundant connection
+- number of provinces
+- MST over points
+- offline connectivity queries
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Number of Provinces
+- Accounts Merge
+- Min Cost to Connect All Points
+
+#### Hard
+
+- Critical and Pseudo-Critical Edges in Minimum Spanning Tree
+
+### 11. Key Takeaways
+
+- Union-Find is the fastest way to maintain component membership
+- Kruskal chooses edges globally
+- Prim grows the tree locally
+
+**Back:** [Graphs and Union-Find](/blogs/dsa/graphs)

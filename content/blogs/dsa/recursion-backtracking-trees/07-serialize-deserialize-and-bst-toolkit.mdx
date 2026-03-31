@@ -1,0 +1,110 @@
+---
+title: Serialize / Deserialize and BST Toolkit
+description: Interview guide for Serialize / Deserialize and BST Toolkit with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Serialize / Deserialize and BST Toolkit**.
+
+### 1. Intuition
+
+Serialization turns a tree into a string so it can be stored or sent. BST problems rely on the invariant:
+
+```text
+left subtree < root < right subtree
+```
+
+Together, these topics teach you how tree structure and ordering rules can be encoded and restored.
+
+### 2. How It Works
+
+1. Serialize with preorder or level order and explicit null markers
+2. Deserialize by rebuilding nodes in the same order
+3. For BST operations, use the ordering invariant to move left or right
+
+### 3. Pattern Recognition
+
+Think of this group when you see:
+
+- convert tree to string
+- rebuild tree from traversal
+- validate BST
+- kth smallest in BST
+- insert, search, or delete in BST
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+    2
+   / \
+  1   3
+```
+
+Serialized preorder:
+
+```text
+2,1,#,#,3,#,#
+```
+
+For BST validation:
+
+- inorder should be strictly increasing
+
+### 5. Code (C++)
+
+```cpp
+bool validate(TreeNode* root, long long low, long long high) {
+  if (root == nullptr) {
+    return true;
+  }
+
+  if (root->val <= low || root->val >= high) {
+    return false;
+  }
+
+  return validate(root->left, low, root->val) &&
+         validate(root->right, root->val, high);
+}
+```
+
+### 6. Complexity Analysis
+
+- Validation, search, insert: `O(h)` average in BST
+- Serialization and deserialization: `O(n)`
+
+### 7. When to Use
+
+- persist tree structure
+- restore tree later
+- exploit BST ordering
+
+### 8. Common Mistakes
+
+- forgetting null markers during serialization
+- validating BST using only parent comparison instead of valid ranges
+
+### 9. Variations / Extensions
+
+- kth smallest with inorder traversal
+- delete in BST
+- build BST from preorder
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Validate Binary Search Tree
+- Kth Smallest Element in a BST
+- Serialize and Deserialize Binary Tree
+
+#### Hard
+
+- Recover Binary Search Tree
+
+### 11. Key Takeaways
+
+- Serialization must preserve structure, not just values
+- BST questions become easy once you trust the ordering invariant
+
+**Back:** [Recursion, Backtracking, and Trees](/blogs/dsa/recursion-backtracking-trees)

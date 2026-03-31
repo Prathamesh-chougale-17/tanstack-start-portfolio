@@ -1,0 +1,117 @@
+---
+title: Topological Sort
+description: Interview guide for Topological Sort with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Topological Sort**.
+
+### 1. Intuition
+
+Topological sort orders nodes so every prerequisite comes before the task that depends on it. It only works on DAGs, which are directed acyclic graphs.
+
+### 2. How It Works
+
+Kahn's algorithm:
+
+1. Compute indegree of every node
+2. Push all zero-indegree nodes into a queue
+3. Pop nodes and reduce indegree of their neighbors
+4. Any neighbor that becomes zero goes into the queue
+
+### 3. Pattern Recognition
+
+Think topological sort when you see:
+
+- course prerequisites
+- task dependency order
+- build order
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+0 -> 1, 0 -> 2, 1 -> 3, 2 -> 3
+```
+
+Step-by-step execution:
+
+- Start with `0`
+- Then `1` and `2`
+- Then `3`
+
+Final Output:
+
+```text
+[0, 1, 2, 3]
+```
+
+### 5. Code (C++)
+
+```cpp
+vector<int> topoSort(int n, const vector<vector<int>>& graph) {
+  vector<int> indegree(n, 0);
+  for (const auto& edges : graph) {
+    for (int next : edges) {
+      indegree[next]++;
+    }
+  }
+
+  queue<int> q;
+  for (int i = 0; i < n; i++) {
+    if (indegree[i] == 0) {
+      q.push(i);
+    }
+  }
+
+  vector<int> order;
+  while (!q.empty()) {
+    int node = q.front();
+    q.pop();
+    order.push_back(node);
+
+    for (int next : graph[node]) {
+      indegree[next]--;
+      if (indegree[next] == 0) {
+        q.push(next);
+      }
+    }
+  }
+
+  return order;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(V + E)`
+- Space Complexity: `O(V)`
+
+### 7. When to Use
+
+- ordering with prerequisites
+- DAG scheduling
+
+### 8. Common Mistakes
+
+- forgetting that cycles make topological ordering impossible
+- not checking whether all nodes were processed
+
+### 9. Variations / Extensions
+
+- DFS-based topo sort
+- longest path in DAG after topo order
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Course Schedule II
+- Alien Dictionary
+
+### 11. Key Takeaways
+
+- Topological sort is the right answer when dependencies define valid order
+- Zero indegree nodes are tasks ready to run now
+
+**Back:** [Graphs and Union-Find](/blogs/dsa/graphs)

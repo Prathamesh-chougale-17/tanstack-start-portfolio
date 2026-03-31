@@ -1,0 +1,98 @@
+---
+title: Tree Traversal Toolkit
+description: Interview guide for Tree Traversal Toolkit with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Tree Traversal Toolkit**.
+
+### 1. Intuition
+
+Traversal is how you visit nodes in a meaningful order:
+
+- preorder: node before children
+- inorder: left, node, right
+- postorder: children before node
+- level order: breadth-first by depth
+
+### 2. How It Works
+
+1. Pick the traversal that matches the information you need
+2. Recurse or use an explicit stack or queue
+3. Record values in the chosen order
+
+### 3. Pattern Recognition
+
+Think traversal when you see:
+
+- visit all nodes
+- print tree order
+- build or validate BST behavior
+- process nodes level by level
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+    2
+   / \
+  1   3
+```
+
+Step-by-step execution:
+
+- Inorder: `1, 2, 3`
+- Preorder: `2, 1, 3`
+- Postorder: `1, 3, 2`
+- Level order: `2, 1, 3`
+
+### 5. Code (C++)
+
+```cpp
+void inorder(TreeNode* root, vector<int>& result) {
+  if (root == nullptr) {
+    return;
+  }
+
+  inorder(root->left, result);
+  result.push_back(root->val);
+  inorder(root->right, result);
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(h)` recursion stack
+
+### 7. When to Use
+
+- BST sorted order with inorder
+- root-first construction with preorder
+- deletion or accumulation with postorder
+- shortest-level tasks with BFS
+
+### 8. Common Mistakes
+
+- mixing up traversal meanings
+- ignoring null base cases
+
+### 9. Variations / Extensions
+
+- iterative traversals
+- Morris traversal
+- zigzag level order
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Binary Tree Inorder Traversal
+- Binary Tree Level Order Traversal
+
+### 11. Key Takeaways
+
+- Traversal order should match the problem's information flow
+- Inorder is especially important for BST questions
+
+**Back:** [Recursion, Backtracking, and Trees](/blogs/dsa/recursion-backtracking-trees)

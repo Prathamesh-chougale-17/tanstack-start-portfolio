@@ -1,0 +1,123 @@
+---
+title: Fast & Slow Pointer
+description: Interview guide for Fast & Slow Pointer with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Fast & Slow Pointer**.
+
+### 1. Intuition
+
+When two pointers move at different speeds, their relationship reveals list structure. If a fast pointer laps a slow pointer, there is a cycle. If one pointer gets a head start, they can meet at meaningful positions.
+
+### 2. How It Works
+
+1. Start `slow` and `fast`
+2. Move `slow` by one step, `fast` by two steps
+3. If they meet, there is a cycle
+4. To find cycle start, reset one pointer to head and move both one step
+
+### 3. Pattern Recognition
+
+Think fast-slow when you see:
+
+- detect cycle
+- find middle node
+- find cycle entry
+- happy number
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+1 -> 2 -> 3 -> 4 -> 5
+          ^         |
+          |_________|
+```
+
+Step-by-step execution:
+
+- `slow = 2`, `fast = 3`
+- `slow = 3`, `fast = 5`
+- `slow = 4`, `fast = 4`, cycle detected
+- Reset one pointer to head
+- Move both one step until they meet at `3`
+
+Final Output:
+
+```text
+cycle starts at node 3
+```
+
+### 5. Code (C++)
+
+```cpp
+ListNode* detectCycle(ListNode* head) {
+  ListNode* slow = head;
+  ListNode* fast = head;
+
+  while (fast != nullptr && fast->next != nullptr) {
+    slow = slow->next;
+    fast = fast->next->next;
+
+    if (slow == fast) {
+      ListNode* entry = head;
+
+      while (entry != slow) {
+        entry = entry->next;
+        slow = slow->next;
+      }
+
+      return entry;
+    }
+  }
+
+  return nullptr;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(1)`
+
+### 7. When to Use
+
+- cycle detection
+- middle of list
+- finding repeating structure
+
+### 8. Common Mistakes
+
+- forgetting `fast->next` null check
+- assuming meeting point is the entry point
+- off-by-one confusion while finding middle
+
+### 9. Variations / Extensions
+
+- middle of linked list
+- find duplicate number in array
+- happy number
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Middle of the Linked List
+
+#### Medium
+
+- Linked List Cycle II
+- Find the Duplicate Number
+
+#### Hard
+
+- no special hard problem is needed before interviews if this pattern is solid
+
+### 11. Key Takeaways
+
+- Different speeds reveal hidden structure
+- Meeting confirms a cycle, but another phase finds the entry
+- This is one of the highest-value interview patterns
+
+**Back:** [Linked List Patterns](/blogs/dsa/linked-list)

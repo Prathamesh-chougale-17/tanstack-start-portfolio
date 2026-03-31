@@ -1,0 +1,112 @@
+---
+title: Dijkstra
+description: Interview guide for Dijkstra with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Dijkstra**.
+
+### 1. Intuition
+
+Dijkstra finds shortest paths from one source when all edge weights are non-negative. It keeps expanding the currently cheapest known node first.
+
+### 2. How It Works
+
+1. Initialize all distances to infinity except the source
+2. Push the source into a min-heap
+3. Pop the smallest-distance node
+4. Relax all outgoing edges
+5. Push improved distances back into the heap
+
+### 3. Pattern Recognition
+
+Think Dijkstra when you see:
+
+- shortest path
+- weighted graph
+- non-negative edges
+- minimum travel cost or delay
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+0 -> 1 (4), 0 -> 2 (1), 2 -> 1 (2)
+```
+
+Step-by-step execution:
+
+- Distance to `2` becomes `1`
+- Through `2`, distance to `1` becomes `3`
+- That beats the direct edge `4`
+
+Final Output:
+
+```text
+dist[1] = 3
+```
+
+### 5. Code (C++)
+
+```cpp
+vector<int> dijkstra(int n, vector<vector<pair<int, int>>>& graph, int src) {
+  vector<int> dist(n, INT_MAX);
+  priority_queue<pair<int, int>, vector<pair<int, int>>,
+                 greater<pair<int, int>>> pq;
+
+  dist[src] = 0;
+  pq.push({0, src});
+
+  while (!pq.empty()) {
+    auto [cost, node] = pq.top();
+    pq.pop();
+
+    if (cost > dist[node]) {
+      continue;
+    }
+
+    for (auto [next, weight] : graph[node]) {
+      if (dist[node] + weight < dist[next]) {
+        dist[next] = dist[node] + weight;
+        pq.push({dist[next], next});
+      }
+    }
+  }
+
+  return dist;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O((V + E) log V)`
+- Space Complexity: `O(V)`
+
+### 7. When to Use
+
+- weighted shortest path with non-negative edges
+- routing and delay problems
+
+### 8. Common Mistakes
+
+- using Dijkstra with negative weights
+- forgetting stale heap entries
+
+### 9. Variations / Extensions
+
+- multi-source Dijkstra
+- shortest path with state expansion
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Network Delay Time
+- Path With Minimum Effort
+
+### 11. Key Takeaways
+
+- Dijkstra is greedy shortest path under non-negative weights
+- The min-heap is the core engine
+
+**Back:** [Graphs and Union-Find](/blogs/dsa/graphs)

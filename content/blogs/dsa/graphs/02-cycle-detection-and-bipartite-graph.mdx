@@ -1,0 +1,123 @@
+---
+title: Cycle Detection and Bipartite Graph
+description: Interview guide for Cycle Detection and Bipartite Graph with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Cycle Detection and Bipartite Graph**.
+
+### 1. Intuition
+
+Cycle detection asks whether traversal can return to an already active path. Bipartite checking asks whether nodes can be colored using two colors without conflicts.
+
+### 2. How It Works
+
+For cycle detection:
+
+1. Track visited nodes
+2. In directed graphs, also track recursion stack
+3. A back-edge signals a cycle
+
+For bipartite:
+
+1. Color a start node
+2. Give every neighbor the opposite color
+3. Any conflict means the graph is not bipartite
+
+### 3. Pattern Recognition
+
+Think of these when you see:
+
+- can tasks be completed?
+- odd-length cycle
+- two-group partition
+- dependency loop
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+0 - 1 - 2 - 3
+```
+
+Step-by-step execution for bipartite:
+
+- Color `0` red
+- Color `1` blue
+- Color `2` red
+- Color `3` blue
+
+Final Output:
+
+```text
+graph is bipartite
+```
+
+### 5. Code (C++)
+
+```cpp
+bool isBipartite(const vector<vector<int>>& graph) {
+  vector<int> color(graph.size(), -1);
+
+  for (int start = 0; start < static_cast<int>(graph.size()); start++) {
+    if (color[start] != -1) {
+      continue;
+    }
+
+    queue<int> q;
+    q.push(start);
+    color[start] = 0;
+
+    while (!q.empty()) {
+      int node = q.front();
+      q.pop();
+
+      for (int next : graph[node]) {
+        if (color[next] == -1) {
+          color[next] = color[node] ^ 1;
+          q.push(next);
+        } else if (color[next] == color[node]) {
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(V + E)`
+- Space Complexity: `O(V)`
+
+### 7. When to Use
+
+- dependency validation
+- two-team partitioning
+- odd-cycle detection
+
+### 8. Common Mistakes
+
+- using undirected logic on directed graphs
+- forgetting the parent check in undirected DFS cycle detection
+
+### 9. Variations / Extensions
+
+- course schedule cycle detection
+- union-find cycle detection in undirected graphs
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Course Schedule
+- Is Graph Bipartite?
+
+### 11. Key Takeaways
+
+- Directed and undirected cycle detection are different
+- Bipartite graphs are exactly the graphs with no odd cycle
+
+**Back:** [Graphs and Union-Find](/blogs/dsa/graphs)

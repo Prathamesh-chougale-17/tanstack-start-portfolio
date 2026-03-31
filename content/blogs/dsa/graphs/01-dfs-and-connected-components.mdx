@@ -1,0 +1,98 @@
+---
+title: DFS and Connected Components
+description: Interview guide for DFS and Connected Components with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **DFS and Connected Components**.
+
+### 1. Intuition
+
+Depth-first search explores one path as far as possible before backtracking. It is a natural fit for connectivity and structure questions.
+
+### 2. How It Works
+
+1. Start from an unvisited node
+2. Mark it visited
+3. Recurse into each unvisited neighbor
+4. Repeat for all nodes to count connected components
+
+### 3. Pattern Recognition
+
+Think DFS when you see:
+
+- connected components
+- explore all reachable states
+- island counting
+- recursion over adjacency
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+0 -> [1]
+1 -> [0]
+2 -> [3]
+3 -> [2]
+```
+
+Step-by-step execution:
+
+- DFS from `0` visits `0, 1`
+- DFS from `2` visits `2, 3`
+
+Final Output:
+
+```text
+2 connected components
+```
+
+### 5. Code (C++)
+
+```cpp
+void dfs(int node, const vector<vector<int>>& graph, vector<bool>& visited) {
+  visited[node] = true;
+
+  for (int next : graph[node]) {
+    if (!visited[next]) {
+      dfs(next, graph, visited);
+    }
+  }
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(V + E)`
+- Space Complexity: `O(V)`
+
+### 7. When to Use
+
+- connectivity
+- component counting
+- reachability
+
+### 8. Common Mistakes
+
+- forgetting a visited set
+- not restarting DFS for disconnected graphs
+
+### 9. Variations / Extensions
+
+- iterative DFS
+- flood fill
+- number of islands
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Number of Islands
+- Number of Connected Components in an Undirected Graph
+
+### 11. Key Takeaways
+
+- DFS is your default tool for exploring structure
+- Connected components are just repeated DFS or BFS
+
+**Back:** [Graphs and Union-Find](/blogs/dsa/graphs)

@@ -1,0 +1,116 @@
+---
+title: Merge Two Sorted Lists
+description: Interview guide for Merge Two Sorted Lists with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Merge Two Sorted Lists**.
+
+### 1. Intuition
+
+You build the answer in sorted order by always picking the smaller front node. A dummy node makes the code clean because the head stops being a special case.
+
+### 2. How It Works
+
+1. Create a dummy node and a `tail`
+2. Compare the current nodes of both lists
+3. Attach the smaller one to `tail`
+4. Advance the chosen list and the tail
+5. Attach the remaining nodes
+
+### 3. Pattern Recognition
+
+Think merge when you see:
+
+- two sorted linked lists
+- merge k lists
+- divide and conquer on lists
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+l1 = 1 -> 3 -> 5
+l2 = 2 -> 4 -> 6
+```
+
+Step-by-step execution:
+
+- Pick `1`
+- Pick `2`
+- Pick `3`
+- Continue alternating
+
+Final Output:
+
+```text
+1 -> 2 -> 3 -> 4 -> 5 -> 6
+```
+
+### 5. Code (C++)
+
+```cpp
+ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+  ListNode dummy(0);
+  ListNode* tail = &dummy;
+
+  while (l1 != nullptr && l2 != nullptr) {
+    if (l1->val <= l2->val) {
+      tail->next = l1;
+      l1 = l1->next;
+    } else {
+      tail->next = l2;
+      l2 = l2->next;
+    }
+    tail = tail->next;
+  }
+
+  tail->next = (l1 != nullptr) ? l1 : l2;
+  return dummy.next;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n + m)`
+- Space Complexity: `O(1)`
+
+### 7. When to Use
+
+- direct merge
+- merge sort on linked list
+- merge k sorted lists with heap or divide and conquer
+
+### 8. Common Mistakes
+
+- not using a dummy node
+- forgetting to attach the leftover list
+- breaking original nodes accidentally
+
+### 9. Variations / Extensions
+
+- merge k sorted lists
+- sort linked list
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Merge Two Sorted Lists
+
+#### Medium
+
+- Sort List
+- Merge k Sorted Lists
+
+#### Hard
+
+- Merge k Sorted Lists when solved with heap or divide and conquer
+
+### 11. Key Takeaways
+
+- Dummy nodes simplify pointer problems a lot
+- Sorting logic stays local to current heads
+- This pattern appears again in heap-based merging
+
+**Back:** [Linked List Patterns](/blogs/dsa/linked-list)

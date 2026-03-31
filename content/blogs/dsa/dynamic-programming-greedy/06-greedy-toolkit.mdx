@@ -1,0 +1,117 @@
+---
+title: Greedy Toolkit
+description: Interview guide for Greedy Toolkit with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Greedy Toolkit**.
+
+### 1. Intuition
+
+Greedy works when the best local move can be proven to lead toward the global optimum.
+
+Key interview examples:
+
+- activity selection
+- interval scheduling
+- fractional knapsack
+- jump game
+
+### 2. How It Works
+
+1. Sort or scan according to the greedy rule
+2. Take the best local option
+3. Prove that any other local choice cannot improve the final answer
+
+### 3. Pattern Recognition
+
+Think greedy when you see:
+
+- intervals and non-overlap
+- maximize count by sorting on finish time
+- fractional item taking
+- can we reach the end by maintaining best reach?
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+intervals = [[1, 3], [2, 4], [3, 5], [6, 8]]
+```
+
+Step-by-step execution:
+
+- Sort by end time
+- Take `[1, 3]`
+- Skip `[2, 4]`
+- Take `[3, 5]`
+- Take `[6, 8]`
+
+Final Output:
+
+```text
+3 intervals
+```
+
+### 5. Code (C++)
+
+```cpp
+bool canJump(const vector<int>& nums) {
+  int farthest = 0;
+
+  for (int i = 0; i < static_cast<int>(nums.size()); i++) {
+    if (i > farthest) {
+      return false;
+    }
+    farthest = max(farthest, i + nums[i]);
+  }
+
+  return true;
+}
+```
+
+### 6. Complexity Analysis
+
+- Often `O(n log n)` for sorting-based greedy
+- Jump Game is `O(n)`
+
+### 7. When to Use
+
+- interval picking
+- continuous reach tracking
+- value-density sorting
+
+### 8. Common Mistakes
+
+- using greedy where future tradeoffs matter and DP is required
+- not proving why the local rule is safe
+
+### 9. Variations / Extensions
+
+- merge intervals
+- erase overlap intervals
+- Jump Game II
+- meeting rooms
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Assign Cookies
+
+#### Medium
+
+- Jump Game
+- Non-overlapping Intervals
+- Partition Labels
+
+#### Hard
+
+- Jump Game II
+
+### 11. Key Takeaways
+
+- Greedy needs a proof, not just a hunch
+- Interval and reachability problems are common greedy territory
+
+**Back:** [Dynamic Programming and Greedy](/blogs/dsa/dynamic-programming-greedy)

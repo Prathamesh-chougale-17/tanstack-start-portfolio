@@ -1,0 +1,113 @@
+---
+title: BFS
+description: Interview guide for BFS with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **BFS**.
+
+### 1. Intuition
+
+BFS explores layer by layer, so the first time you reach a node, you have used the fewest edges from the source in an unweighted graph.
+
+### 2. How It Works
+
+1. Push the start node into a queue
+2. Mark it visited
+3. Pop from the front
+4. Push all unvisited neighbors
+5. Repeat until the queue is empty
+
+### 3. Pattern Recognition
+
+Think BFS when you see:
+
+- shortest path in an unweighted graph
+- minimum moves
+- level order traversal
+- spreading process
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+graph = 0 -> [1, 2], 1 -> [3], 2 -> [4]
+```
+
+Step-by-step execution:
+
+- Start at `0`
+- Visit level 1: `1`, `2`
+- Visit level 2: `3`, `4`
+
+Final Output:
+
+```text
+level order = [0, 1, 2, 3, 4]
+```
+
+### 5. Code (C++)
+
+```cpp
+vector<int> bfsOrder(const vector<vector<int>>& graph, int start) {
+  vector<int> order;
+  vector<bool> visited(graph.size(), false);
+  queue<int> q;
+
+  q.push(start);
+  visited[start] = true;
+
+  while (!q.empty()) {
+    int node = q.front();
+    q.pop();
+    order.push_back(node);
+
+    for (int next : graph[node]) {
+      if (!visited[next]) {
+        visited[next] = true;
+        q.push(next);
+      }
+    }
+  }
+
+  return order;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(V + E)`
+- Space Complexity: `O(V)`
+
+### 7. When to Use
+
+- unweighted shortest path
+- infection or fire spread
+- minimum operations
+- tree level order traversal
+
+### 8. Common Mistakes
+
+- marking visited too late
+- forgetting multiple sources when the problem starts from many cells
+
+### 9. Variations / Extensions
+
+- multi-source BFS
+- 0-1 BFS
+- bidirectional BFS
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Binary Tree Level Order Traversal
+- Rotting Oranges
+- Word Ladder
+
+### 11. Key Takeaways
+
+- BFS is the default shortest-path tool for unweighted graphs
+- Queue order gives you layers for free
+
+**Back:** [Stack, Queue, and Heap Patterns](/blogs/dsa/stack-queue-heap)

@@ -1,0 +1,111 @@
+---
+title: N-Queens
+description: Interview guide for N-Queens with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **N-Queens**.
+
+### 1. Intuition
+
+N-Queens is the classic backtracking example where every placement changes future possibilities. The trick is not checking the whole board every time. Instead, track used columns and diagonals.
+
+### 2. How It Works
+
+1. Place queens row by row
+2. Skip columns already blocked
+3. Skip diagonals already occupied
+4. Place a queen, recurse, then remove it
+
+### 3. Pattern Recognition
+
+Think of N-Queens when you see:
+
+- place items with attack or conflict rules
+- board search with pruning
+- row-by-row decisions
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+n = 4
+```
+
+Step-by-step execution:
+
+- Place queen in row 0
+- Try safe positions in row 1
+- Prune invalid branches early
+- Continue until four queens are placed
+
+Final Output:
+
+```text
+2 valid configurations
+```
+
+### 5. Code (C++)
+
+```cpp
+void solve(int row, int n, vector<string>& board, vector<vector<string>>& answer,
+           unordered_set<int>& cols, unordered_set<int>& diag1,
+           unordered_set<int>& diag2) {
+  if (row == n) {
+    answer.push_back(board);
+    return;
+  }
+
+  for (int col = 0; col < n; col++) {
+    if (cols.count(col) || diag1.count(row - col) || diag2.count(row + col)) {
+      continue;
+    }
+
+    board[row][col] = 'Q';
+    cols.insert(col);
+    diag1.insert(row - col);
+    diag2.insert(row + col);
+
+    solve(row + 1, n, board, answer, cols, diag1, diag2);
+
+    board[row][col] = '.';
+    cols.erase(col);
+    diag1.erase(row - col);
+    diag2.erase(row + col);
+  }
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: exponential
+- Space Complexity: `O(n)` recursion plus board storage
+
+### 7. When to Use
+
+- constraint satisfaction
+- board placement with pruning
+
+### 8. Common Mistakes
+
+- recomputing board safety each time instead of using sets
+- forgetting diagonal formulas
+
+### 9. Variations / Extensions
+
+- Sudoku solver
+- word search
+
+### 10. LeetCode Practice Problems
+
+#### Hard
+
+- N-Queens
+- Sudoku Solver
+
+### 11. Key Takeaways
+
+- Good backtracking is really good pruning
+- Track constraints directly instead of scanning repeatedly
+
+**Back:** [Recursion, Backtracking, and Trees](/blogs/dsa/recursion-backtracking-trees)

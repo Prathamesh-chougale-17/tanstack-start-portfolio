@@ -1,0 +1,111 @@
+---
+title: LCS and DP on Strings
+description: Interview guide for LCS and DP on Strings with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **LCS and DP on Strings**.
+
+### 1. Intuition
+
+When two strings must be compared character by character, DP often uses:
+
+```text
+dp[i][j] = answer for prefixes ending at i and j
+```
+
+LCS is the classic example.
+
+### 2. How It Works
+
+1. If characters match, extend the diagonal
+2. Otherwise take the best of top or left
+
+### 3. Pattern Recognition
+
+Think this pattern when you see:
+
+- longest common subsequence
+- edit distance
+- string interleaving
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+text1 = "abcde", text2 = "ace"
+```
+
+Step-by-step execution:
+
+- `a` matches `a`
+- `c` matches `c`
+- `e` matches `e`
+
+Final Output:
+
+```text
+LCS length = 3
+```
+
+### 5. Code (C++)
+
+```cpp
+int longestCommonSubsequence(string a, string b) {
+  int n = static_cast<int>(a.size());
+  int m = static_cast<int>(b.size());
+  vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
+
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      if (a[i - 1] == b[j - 1]) {
+        dp[i][j] = 1 + dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+  }
+
+  return dp[n][m];
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n * m)`
+- Space Complexity: `O(n * m)` or `O(m)` optimized
+
+### 7. When to Use
+
+- compare two strings
+- sequence alignment
+- edit operations
+
+### 8. Common Mistakes
+
+- mixing substring and subsequence logic
+- off-by-one indexing in DP table
+
+### 9. Variations / Extensions
+
+- edit distance
+- longest palindromic subsequence
+- distinct subsequences
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Longest Common Subsequence
+- Delete Operation for Two Strings
+
+#### Hard
+
+- Edit Distance
+
+### 11. Key Takeaways
+
+- Many string DPs reduce to prefix-vs-prefix state
+- Table layout matters as much as recurrence
+
+**Back:** [Dynamic Programming and Greedy](/blogs/dsa/dynamic-programming-greedy)

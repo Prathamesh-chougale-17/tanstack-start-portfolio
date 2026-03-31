@@ -1,0 +1,118 @@
+---
+title: Prefix Sum
+description: Interview guide for Prefix Sum with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Prefix Sum**.
+
+### 1. Intuition
+
+Prefix sum stores the total from the start up to each index. Then any range sum becomes:
+
+```text
+sum(l..r) = prefix[r + 1] - prefix[l]
+```
+
+It exists because repeated range queries are too slow if you recompute each sum directly.
+
+### 2. How It Works
+
+1. Build a prefix array
+2. Each position stores all values before it
+3. Answer ranges by subtraction
+4. Add a hash map if you need counts of prefix sums
+
+### 3. Pattern Recognition
+
+Think prefix sum when you see:
+
+- range sum queries
+- number of subarrays with target sum
+- balance of zeros and ones
+- cumulative score or frequency
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [3, 1, 4, 1, 5]
+query = sum(1..3)
+```
+
+Step-by-step execution:
+
+- Prefix becomes `[0, 3, 4, 8, 9, 14]`
+- Range `1..3` means `prefix[4] - prefix[1]`
+- `9 - 3 = 6`
+
+Final Output:
+
+```text
+6
+```
+
+### 5. Code (C++)
+
+```cpp
+vector<int> buildPrefix(const vector<int>& nums) {
+  vector<int> prefix(nums.size() + 1, 0);
+
+  for (int i = 0; i < static_cast<int>(nums.size()); i++) {
+    prefix[i + 1] = prefix[i] + nums[i];
+  }
+
+  return prefix;
+}
+
+int rangeSum(const vector<int>& prefix, int left, int right) {
+  return prefix[right + 1] - prefix[left];
+}
+```
+
+### 6. Complexity Analysis
+
+- Build Time: `O(n)`
+- Query Time: `O(1)`
+- Space Complexity: `O(n)`
+
+### 7. When to Use
+
+- immutable range-sum queries
+- subarray count problems
+- cumulative score differences
+
+### 8. Common Mistakes
+
+- mixing 0-based and 1-based prefix indexing
+- forgetting to initialize prefix with a leading zero
+- using `int` where `long long` is needed
+
+### 9. Variations / Extensions
+
+- prefix XOR
+- 2D prefix sums
+- difference array for range updates
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Range Sum Query - Immutable
+
+#### Medium
+
+- Subarray Sum Equals K
+- Continuous Subarray Sum
+
+#### Hard
+
+- Count of Range Sum
+
+### 11. Key Takeaways
+
+- Prefix sum converts repeated range work into one preprocessing pass
+- A hash map on prefix sums unlocks many counting problems
+- Difference arrays are the update-side cousin of prefix sums
+
+**Back:** [Arrays and Binary Search](/blogs/dsa/arrays)

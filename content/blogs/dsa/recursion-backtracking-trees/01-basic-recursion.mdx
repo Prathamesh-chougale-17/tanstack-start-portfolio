@@ -1,0 +1,102 @@
+---
+title: Basic Recursion
+description: Interview guide for Basic Recursion with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Basic Recursion**.
+
+### 1. Intuition
+
+Recursion solves a problem by assuming you can solve a **smaller version** of the same problem.
+
+The real skill is not "using recursion." The real skill is defining:
+
+- the smallest solvable case
+- what one call should do
+- how a call hands the rest to smaller calls
+
+### 2. How It Works
+
+1. Define the base case
+2. Do one unit of work
+3. Recurse on a smaller input
+4. Combine results on the way back
+
+### 3. Pattern Recognition
+
+Think recursion when you see:
+
+- tree traversal
+- subsets and permutations
+- divide and conquer
+- naturally nested structure
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+factorial(4)
+```
+
+Step-by-step execution:
+
+- `factorial(4) = 4 * factorial(3)`
+- `factorial(3) = 3 * factorial(2)`
+- `factorial(2) = 2 * factorial(1)`
+- `factorial(1) = 1`
+
+Final Output:
+
+```text
+24
+```
+
+### 5. Code (C++)
+
+```cpp
+int factorial(int n) {
+  if (n <= 1) {
+    return 1;
+  }
+
+  return n * factorial(n - 1);
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: depends on branching and depth
+- Space Complexity: recursion stack depth
+
+### 7. When to Use
+
+- nested structures
+- tree and graph DFS
+- backtracking and divide-and-conquer
+
+### 8. Common Mistakes
+
+- weak or missing base case
+- not shrinking the problem
+- forgetting recursion stack cost
+
+### 9. Variations / Extensions
+
+- tail recursion
+- memoized recursion
+- recursive tree DP
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Fibonacci Number
+- Maximum Depth of Binary Tree
+
+### 11. Key Takeaways
+
+- Every recursive function needs a clear contract
+- Base case and progress are the two non-negotiables
+
+**Back:** [Recursion, Backtracking, and Trees](/blogs/dsa/recursion-backtracking-trees)

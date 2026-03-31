@@ -1,0 +1,119 @@
+---
+title: DP on Grids and Trees
+description: Interview guide for DP on Grids and Trees with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **DP on Grids and Trees**.
+
+### 1. Intuition
+
+Grid DP is about moving through coordinates with stored best answers. Tree DP is about returning exactly what the parent needs from each subtree.
+
+### 2. How It Works
+
+Grid DP:
+
+1. Define `dp[r][c]`
+2. Transition from allowed previous cells
+
+Tree DP:
+
+1. Recurse on children
+2. Combine child answers
+
+### 3. Pattern Recognition
+
+Think grid DP when you see:
+
+- paths in a matrix
+- minimum path cost
+- obstacle navigation
+
+Think tree DP when you see:
+
+- choose or skip nodes
+- best score inside each subtree
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+grid = [[1, 3, 1], [1, 5, 1], [4, 2, 1]]
+```
+
+Step-by-step execution:
+
+- Best path accumulates from top and left
+- Final cell gets minimum total `7`
+
+Final Output:
+
+```text
+7
+```
+
+### 5. Code (C++)
+
+```cpp
+int minPathSum(vector<vector<int>>& grid) {
+  int rows = static_cast<int>(grid.size());
+  int cols = static_cast<int>(grid[0].size());
+  vector<vector<int>> dp(rows, vector<int>(cols, 0));
+
+  dp[0][0] = grid[0][0];
+
+  for (int r = 1; r < rows; r++) {
+    dp[r][0] = dp[r - 1][0] + grid[r][0];
+  }
+
+  for (int c = 1; c < cols; c++) {
+    dp[0][c] = dp[0][c - 1] + grid[0][c];
+  }
+
+  for (int r = 1; r < rows; r++) {
+    for (int c = 1; c < cols; c++) {
+      dp[r][c] = min(dp[r - 1][c], dp[r][c - 1]) + grid[r][c];
+    }
+  }
+
+  return dp[rows - 1][cols - 1];
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(rows * cols)` for grid examples
+- Space Complexity: `O(rows * cols)` or optimized
+
+### 7. When to Use
+
+- unique paths
+- minimum path sum
+- house robber on tree
+
+### 8. Common Mistakes
+
+- forgetting boundaries on first row or first column
+- using DFS without memoization when states repeat
+
+### 9. Variations / Extensions
+
+- unique paths
+- dungeon game
+- house robber III
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Unique Paths
+- Minimum Path Sum
+- House Robber III
+
+### 11. Key Takeaways
+
+- Grid DP is coordinate-state DP
+- Tree DP is return-value DP on recursive structure
+
+**Back:** [Dynamic Programming and Greedy](/blogs/dsa/dynamic-programming-greedy)

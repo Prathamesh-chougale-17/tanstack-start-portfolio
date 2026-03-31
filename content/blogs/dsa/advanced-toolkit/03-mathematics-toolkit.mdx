@@ -1,0 +1,109 @@
+---
+title: Mathematics Toolkit
+description: Interview guide for GCD, sieve of Eratosthenes, and fast exponentiation
+---
+
+This article covers the compact math algorithms that appear surprisingly often in coding interviews.
+
+### 1. Intuition
+
+These algorithms matter because they reduce repeated arithmetic work:
+
+- GCD removes repeated subtraction by using remainders
+- sieve marks composites once instead of checking each number separately
+- fast exponentiation squares results instead of multiplying linearly
+
+### 2. How It Works
+
+- Euclidean algorithm: `gcd(a, b) = gcd(b, a % b)`
+- sieve: mark multiples starting from each prime
+- binary exponentiation: if exponent bit is set, multiply answer; square base every step
+
+### 3. Pattern Recognition
+
+Think of this toolkit when you see:
+
+- co-prime or divisor logic
+- prime counting
+- modular arithmetic
+- large powers
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+gcd(48, 18)
+```
+
+Step-by-step execution:
+
+- `48 % 18 = 12`
+- `18 % 12 = 6`
+- `12 % 6 = 0`
+
+Final Output:
+
+```text
+6
+```
+
+### 5. Code (C++)
+
+```cpp
+long long fastPower(long long base, long long exp) {
+  long long answer = 1;
+
+  while (exp > 0) {
+    if (exp & 1LL) {
+      answer *= base;
+    }
+    base *= base;
+    exp >>= 1;
+  }
+
+  return answer;
+}
+```
+
+### 6. Complexity Analysis
+
+- GCD: `O(log min(a, b))`
+- Sieve: `O(n log log n)`
+- Fast exponentiation: `O(log exp)`
+
+### 7. When to Use
+
+- fraction simplification
+- divisor relationships
+- primality preprocessing
+- repeated power queries
+
+### 8. Common Mistakes
+
+- not using modular multiplication when numbers get huge
+- marking sieve multiples inefficiently
+
+### 9. Variations / Extensions
+
+- modular exponentiation
+- extended Euclidean algorithm
+- smallest prime factor sieve
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Power of Two
+- Count Primes
+
+#### Medium
+
+- Pow(x, n)
+
+### 11. Key Takeaways
+
+- These math tools are small, fast, and extremely reusable
+- Fast exponentiation is a must-know pattern for large exponents
+
+**Back:** [Advanced Strings, Bits, Math, and Range Queries](/blogs/dsa/advanced-toolkit)

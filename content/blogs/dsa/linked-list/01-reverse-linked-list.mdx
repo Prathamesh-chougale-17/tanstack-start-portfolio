@@ -1,0 +1,112 @@
+---
+title: Reverse Linked List
+description: Interview guide for Reverse Linked List with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Reverse Linked List**.
+
+### 1. Intuition
+
+Reversal means flipping every arrow. At each node, you redirect its `next` pointer to the previous node and move forward.
+
+It exists because many advanced linked list problems reduce to this primitive step.
+
+### 2. How It Works
+
+1. Keep three pointers: `prev`, `curr`, `nextNode`
+2. Save the next node
+3. Reverse the current link
+4. Advance all pointers
+
+### 3. Pattern Recognition
+
+Think of reversal when you see:
+
+- reverse a list
+- reverse part of a list
+- palindrome linked list
+- reverse nodes in k groups
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+1 -> 2 -> 3 -> null
+```
+
+Step-by-step execution:
+
+- Reverse `1`, list becomes `1 -> null`
+- Reverse `2`, list becomes `2 -> 1 -> null`
+- Reverse `3`, list becomes `3 -> 2 -> 1 -> null`
+
+Final Output:
+
+```text
+3 -> 2 -> 1 -> null
+```
+
+### 5. Code (C++)
+
+```cpp
+ListNode* reverseList(ListNode* head) {
+  ListNode* prev = nullptr;
+  ListNode* curr = head;
+
+  while (curr != nullptr) {
+    ListNode* nextNode = curr->next;
+    curr->next = prev;
+    prev = curr;
+    curr = nextNode;
+  }
+
+  return prev;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(1)`
+
+### 7. When to Use
+
+- full reversal
+- partial reversal
+- reversing while comparing halves
+
+### 8. Common Mistakes
+
+- losing the next node before reversing
+- returning `head` instead of `prev`
+- not handling empty or single-node lists
+
+### 9. Variations / Extensions
+
+- reverse between positions
+- reverse in k groups
+- recursive reversal
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Reverse Linked List
+
+#### Medium
+
+- Reverse Linked List II
+- Palindrome Linked List
+
+#### Hard
+
+- Reverse Nodes in k-Group
+
+### 11. Key Takeaways
+
+- Reversal is the base operation behind many list problems
+- Save `next` before changing links
+- Keep the loop invariant clear: `prev` is already reversed
+
+**Back:** [Linked List Patterns](/blogs/dsa/linked-list)

@@ -1,0 +1,113 @@
+---
+title: Fibonacci-Style DP
+description: Interview guide for Fibonacci-Style DP with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Fibonacci-Style DP**.
+
+### 1. Intuition
+
+DP starts when the same subproblems repeat. Fibonacci is the easiest example:
+
+```text
+f(n) = f(n - 1) + f(n - 2)
+```
+
+Without memory, recursion repeats work. DP stores solved states once.
+
+### 2. How It Works
+
+1. Define the state
+2. Define the transition
+3. Set base cases
+4. Fill memo or table
+
+### 3. Pattern Recognition
+
+Think DP when you see:
+
+- optimal answer from previous smaller answers
+- overlapping subproblems
+- recurrence relation
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+n = 5
+```
+
+Step-by-step execution:
+
+- `dp[0] = 0`
+- `dp[1] = 1`
+- `dp[2] = 1`
+- `dp[3] = 2`
+- `dp[4] = 3`
+- `dp[5] = 5`
+
+Final Output:
+
+```text
+5
+```
+
+### 5. Code (C++)
+
+```cpp
+int fib(int n) {
+  if (n <= 1) {
+    return n;
+  }
+
+  vector<int> dp(n + 1, 0);
+  dp[1] = 1;
+
+  for (int i = 2; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2];
+  }
+
+  return dp[n];
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(n)` or `O(1)` with optimization
+
+### 7. When to Use
+
+- linear recurrence
+- staircase, house robber, decode ways
+
+### 8. Common Mistakes
+
+- weak state definition
+- wrong base cases
+- forgetting space optimization when only recent states matter
+
+### 9. Variations / Extensions
+
+- memoization
+- tabulation
+- rolling variables
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Fibonacci Number
+- Min Cost Climbing Stairs
+
+#### Medium
+
+- House Robber
+
+### 11. Key Takeaways
+
+- DP starts with state, transition, and base case
+- Fibonacci is the simplest lens for learning the pattern
+
+**Back:** [Dynamic Programming and Greedy](/blogs/dsa/dynamic-programming-greedy)

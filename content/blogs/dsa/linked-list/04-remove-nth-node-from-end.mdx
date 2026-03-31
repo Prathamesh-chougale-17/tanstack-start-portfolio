@@ -1,0 +1,103 @@
+---
+title: Remove Nth Node from End
+description: Interview guide for Remove Nth Node from End with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Remove Nth Node from End**.
+
+### 1. Intuition
+
+Instead of computing length first, create a fixed gap of `n` nodes between two pointers. When the fast pointer reaches the end, the slow pointer is right before the node to remove.
+
+### 2. How It Works
+
+1. Use a dummy node before head
+2. Move `fast` forward `n` steps
+3. Move `fast` and `slow` together
+4. When `fast` reaches the end, delete `slow->next`
+
+### 3. Pattern Recognition
+
+Think of this pattern when you see:
+
+- kth node from end
+- need one pass
+- gap between pointers
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+1 -> 2 -> 3 -> 4 -> 5, n = 2
+```
+
+Step-by-step execution:
+
+- Advance `fast` two steps
+- Move both pointers together
+- `slow` stops at `3`
+- Remove `4`
+
+Final Output:
+
+```text
+1 -> 2 -> 3 -> 5
+```
+
+### 5. Code (C++)
+
+```cpp
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+  ListNode dummy(0, head);
+  ListNode* fast = &dummy;
+  ListNode* slow = &dummy;
+
+  for (int i = 0; i < n; i++) {
+    fast = fast->next;
+  }
+
+  while (fast->next != nullptr) {
+    fast = fast->next;
+    slow = slow->next;
+  }
+
+  slow->next = slow->next->next;
+  return dummy.next;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(1)`
+
+### 7. When to Use
+
+- remove kth from end
+- locate a node relative to the tail in one pass
+
+### 8. Common Mistakes
+
+- not using a dummy node when deleting the head
+- moving `fast` the wrong number of steps
+- dereferencing `fast->next` without checking
+
+### 9. Variations / Extensions
+
+- return kth from end
+- partition by distance from end
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Remove Nth Node From End of List
+
+### 11. Key Takeaways
+
+- Pointer gap is the core idea
+- Dummy nodes protect the head case
+- One-pass linked list questions often hide this pattern
+
+**Back:** [Linked List Patterns](/blogs/dsa/linked-list)

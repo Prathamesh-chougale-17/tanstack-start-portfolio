@@ -1,0 +1,121 @@
+---
+title: Heap Toolkit
+description: Interview guide for Heap Toolkit with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Heap Toolkit**.
+
+### 1. Intuition
+
+A heap is for problems where you repeatedly need the smallest or largest element without fully sorting everything.
+
+This one pattern covers:
+
+- heapify
+- kth largest or smallest
+- top k frequent
+- merge k sorted lists or arrays
+- median from data stream
+
+### 2. How It Works
+
+1. Choose a min-heap or max-heap
+2. Push candidates
+3. Pop the best priority item
+4. Keep heap size small if only top `k` matters
+
+### 3. Pattern Recognition
+
+Think heap when you see:
+
+- top k
+- kth largest
+- repeatedly extract min or max
+- merge many sorted streams
+- online median
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [3, 2, 1, 5, 6, 4], k = 2
+```
+
+Step-by-step execution with min-heap of size `k`:
+
+- Push `3, 2`
+- Push `1`, pop smallest, heap stays size `2`
+- Push `5`, pop smallest
+- Continue until heap contains the two largest elements
+
+Final Output:
+
+```text
+2nd largest = 5
+```
+
+### 5. Code (C++)
+
+```cpp
+int findKthLargest(const vector<int>& nums, int k) {
+  priority_queue<int, vector<int>, greater<int>> minHeap;
+
+  for (int num : nums) {
+    minHeap.push(num);
+    if (static_cast<int>(minHeap.size()) > k) {
+      minHeap.pop();
+    }
+  }
+
+  return minHeap.top();
+}
+```
+
+### 6. Complexity Analysis
+
+- Kth Largest: `O(n log k)`
+- Heapify: `O(n)`
+- Space Complexity: usually `O(k)` or `O(n)` depending on usage
+
+### 7. When to Use
+
+- streaming top-k
+- merge k sorted lists
+- scheduling by priority
+- median with two heaps
+
+### 8. Common Mistakes
+
+- using the wrong heap type
+- sorting the whole array when `k` is small
+- forgetting that median stream needs both balance and order
+
+### 9. Variations / Extensions
+
+- max-heap and min-heap pair for median from data stream
+- heap of frequencies for top k frequent elements
+- node heap for merge k sorted lists
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Last Stone Weight
+
+#### Medium
+
+- Kth Largest Element in an Array
+- Top K Frequent Elements
+- Merge k Sorted Lists
+
+#### Hard
+
+- Find Median from Data Stream
+
+### 11. Key Takeaways
+
+- Heaps are about repeated best-item access, not full ordering
+- Many interview problems only need the heap to stay size `k`
+
+**Back:** [Stack, Queue, and Heap Patterns](/blogs/dsa/stack-queue-heap)

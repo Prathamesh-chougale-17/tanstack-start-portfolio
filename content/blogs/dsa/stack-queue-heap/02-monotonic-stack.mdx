@@ -1,0 +1,113 @@
+---
+title: Monotonic Stack
+description: Interview guide for Monotonic Stack with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Monotonic Stack**.
+
+### 1. Intuition
+
+A monotonic stack keeps elements in increasing or decreasing order so that when a new element arrives, you can quickly resolve **next greater**, **next smaller**, or **previous smaller** relationships.
+
+### 2. How It Works
+
+1. Traverse the array
+2. While the stack violates the chosen monotonic order, pop
+3. Use popped or remaining indices to answer the question
+4. Push the current index
+
+### 3. Pattern Recognition
+
+Think monotonic stack when you see:
+
+- next greater element
+- previous smaller element
+- nearest taller or smaller neighbor
+- histogram and skyline style questions
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [2, 1, 2, 4, 3]
+```
+
+Step-by-step execution for next greater element:
+
+- Push index of `2`
+- `1` is smaller, keep stack
+- `2` pops `1`, next greater of `1` is `2`
+- `4` pops `2` and `2`
+- `3` stays because `4` is greater
+
+Final Output:
+
+```text
+next greater = [4, 2, 4, -1, -1]
+```
+
+### 5. Code (C++)
+
+```cpp
+vector<int> nextGreaterElements(const vector<int>& nums) {
+  vector<int> answer(nums.size(), -1);
+  stack<int> st;
+
+  for (int i = 0; i < static_cast<int>(nums.size()); i++) {
+    while (!st.empty() && nums[st.top()] < nums[i]) {
+      answer[st.top()] = nums[i];
+      st.pop();
+    }
+    st.push(i);
+  }
+
+  return answer;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(n)`
+- Space Complexity: `O(n)`
+
+### 7. When to Use
+
+- nearest greater or smaller queries
+- index relationships in one pass
+- histogram-like range expansion
+
+### 8. Common Mistakes
+
+- storing values instead of indices when index information is needed
+- using the wrong inequality for duplicates
+- forgetting circular-array handling when required
+
+### 9. Variations / Extensions
+
+- next greater element
+- previous smaller element
+- daily temperatures
+- stock span
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Next Greater Element I
+
+#### Medium
+
+- Daily Temperatures
+- Online Stock Span
+
+#### Hard
+
+- Sum of Subarray Minimums
+
+### 11. Key Takeaways
+
+- Monotonic stack is about resolving elements when the right witness appears
+- Indices are usually more useful than raw values
+
+**Back:** [Stack, Queue, and Heap Patterns](/blogs/dsa/stack-queue-heap)

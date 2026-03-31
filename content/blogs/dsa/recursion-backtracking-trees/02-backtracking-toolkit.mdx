@@ -1,0 +1,106 @@
+---
+title: Backtracking Toolkit
+description: Interview guide for Backtracking Toolkit with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Backtracking Toolkit**.
+
+### 1. Intuition
+
+Backtracking explores choices, goes deeper, and undoes the choice before trying the next option.
+
+It exists because some problems require trying structured combinations rather than computing a direct formula.
+
+### 2. How It Works
+
+1. Maintain a current path
+2. If the path forms a complete answer, record it
+3. For each candidate choice:
+4. Add the choice
+5. Recurse
+6. Remove the choice
+
+### 3. Pattern Recognition
+
+Think backtracking when you see:
+
+- generate all subsets
+- permutations
+- combination sum
+- choose or skip decisions
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [1, 2]
+```
+
+Step-by-step execution for subsets:
+
+- Start with `[]`
+- Choose `1`, path becomes `[1]`
+- Choose `2`, path becomes `[1, 2]`
+- Backtrack to `[1]`, then `[]`
+- Choose `2`, path becomes `[2]`
+
+Final Output:
+
+```text
+[[], [1], [1, 2], [2]]
+```
+
+### 5. Code (C++)
+
+```cpp
+void dfs(int index, const vector<int>& nums, vector<int>& path,
+         vector<vector<int>>& answer) {
+  answer.push_back(path);
+
+  for (int i = index; i < static_cast<int>(nums.size()); i++) {
+    path.push_back(nums[i]);
+    dfs(i + 1, nums, path, answer);
+    path.pop_back();
+  }
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: usually exponential
+- Space Complexity: recursion depth plus output size
+
+### 7. When to Use
+
+- enumeration of valid configurations
+- combination and permutation generation
+- constrained search
+
+### 8. Common Mistakes
+
+- forgetting to undo the choice
+- using the wrong next index
+- recording references instead of copies
+
+### 9. Variations / Extensions
+
+- subsets
+- permutations
+- combination sum
+- letter combinations of a phone number
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Subsets
+- Permutations
+- Combination Sum
+
+### 11. Key Takeaways
+
+- Backtracking is choose, explore, undo
+- The path and the next starting index define the search space
+
+**Back:** [Recursion, Backtracking, and Trees](/blogs/dsa/recursion-backtracking-trees)

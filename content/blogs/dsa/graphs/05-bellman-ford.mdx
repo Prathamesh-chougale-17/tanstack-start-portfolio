@@ -1,0 +1,100 @@
+---
+title: Bellman-Ford
+description: Interview guide for Bellman-Ford with intuition, dry run, C++ code, complexity, and practice problems
+---
+
+This article covers the intuition, workflow, dry run, C++ implementation, complexity, and interview usage for **Bellman-Ford**.
+
+### 1. Intuition
+
+Bellman-Ford relaxes every edge repeatedly. If you can still improve a distance after `V - 1` rounds, a negative cycle exists.
+
+### 2. How It Works
+
+1. Set source distance to zero
+2. Repeat `V - 1` times:
+3. Relax every edge
+4. Do one extra pass to detect negative cycles
+
+### 3. Pattern Recognition
+
+Think Bellman-Ford when you see:
+
+- shortest path with negative weights
+- detect arbitrage or negative cycle
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+0 -> 1 (5), 1 -> 2 (-2), 0 -> 2 (10)
+```
+
+Step-by-step execution:
+
+- Round 1 updates `1` to `5` and `2` to `3`
+- Round 2 makes no better change
+
+Final Output:
+
+```text
+dist[2] = 3
+```
+
+### 5. Code (C++)
+
+```cpp
+vector<int> bellmanFord(int n, const vector<array<int, 3>>& edges, int src) {
+  vector<int> dist(n, INT_MAX);
+  dist[src] = 0;
+
+  for (int i = 0; i < n - 1; i++) {
+    bool changed = false;
+    for (auto [u, v, w] : edges) {
+      if (dist[u] != INT_MAX && dist[u] + w < dist[v]) {
+        dist[v] = dist[u] + w;
+        changed = true;
+      }
+    }
+    if (!changed) {
+      break;
+    }
+  }
+
+  return dist;
+}
+```
+
+### 6. Complexity Analysis
+
+- Time Complexity: `O(V * E)`
+- Space Complexity: `O(V)`
+
+### 7. When to Use
+
+- negative weights
+- cycle detection
+
+### 8. Common Mistakes
+
+- forgetting overflow checks on `INT_MAX`
+- assuming it is faster than Dijkstra
+
+### 9. Variations / Extensions
+
+- SPFA
+- currency arbitrage modeling
+
+### 10. LeetCode Practice Problems
+
+#### Medium
+
+- Cheapest Flights Within K Stops
+
+### 11. Key Takeaways
+
+- Bellman-Ford is slower but handles negative edges safely
+- The extra relaxation round is what exposes negative cycles
+
+**Back:** [Graphs and Union-Find](/blogs/dsa/graphs)

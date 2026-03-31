@@ -1,0 +1,107 @@
+---
+title: Bit Manipulation
+description: Interview guide for XOR tricks, bitmasking, and subset generation using bits
+---
+
+This article covers the core bitwise patterns that frequently turn brute force into elegant constant-time logic.
+
+### 1. Intuition
+
+Bits let you compress state and perform operations at the level of individual binary decisions.
+
+Important facts:
+
+- `x ^ x = 0`
+- `x ^ 0 = x`
+- `x & (x - 1)` removes the lowest set bit
+- a bitmask can represent membership in a set
+
+### 2. How It Works
+
+- use XOR for missing-number and single-number tricks
+- use bitmasks to encode subset membership
+- iterate from `0` to `(1 << n) - 1` to generate all subsets
+
+### 3. Pattern Recognition
+
+Think bit manipulation when you see:
+
+- every number appears twice except one
+- subset enumeration
+- compact state representation
+- parity and power-of-two checks
+
+### 4. Dry Run Example
+
+Input:
+
+```text
+nums = [4, 1, 2, 1, 2]
+```
+
+Step-by-step execution:
+
+- `4 ^ 1 ^ 2 ^ 1 ^ 2`
+- pairs cancel
+- answer is `4`
+
+### 5. Code (C++)
+
+```cpp
+int singleNumber(const vector<int>& nums) {
+  int answer = 0;
+
+  for (int num : nums) {
+    answer ^= num;
+  }
+
+  return answer;
+}
+```
+
+### 6. Complexity Analysis
+
+- XOR tricks: `O(n)` time, `O(1)` space
+- subset generation: `O(n * 2^n)`
+
+### 7. When to Use
+
+- unique-element problems
+- subset DP
+- state compression
+
+### 8. Common Mistakes
+
+- confusing bitwise operators with logical operators
+- overflow from shifting too far
+- forgetting to parenthesize bit expressions
+
+### 9. Variations / Extensions
+
+- counting set bits
+- bitmask DP
+- maximum XOR
+
+### 10. LeetCode Practice Problems
+
+#### Easy
+
+- Single Number
+- Number of 1 Bits
+
+#### Medium
+
+- Subsets
+- Single Number II
+
+#### Hard
+
+- Maximum XOR of Two Numbers in an Array
+
+### 11. Key Takeaways
+
+- XOR is one of the most useful interview tricks
+- Bitmasks are excellent for subset state representation
+- Low-level facts become high-level shortcuts in the right problem
+
+**Back:** [Advanced Strings, Bits, Math, and Range Queries](/blogs/dsa/advanced-toolkit)
