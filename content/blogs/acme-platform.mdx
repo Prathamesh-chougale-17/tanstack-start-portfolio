@@ -1,6 +1,6 @@
 ---
-title: "Acme Platform: A Production-Grade SaaS Starter for Full-Stack TypeScript Teams"
-description: "A detailed walkthrough of Acme Platform, a Turborepo-powered SaaS monorepo with Next.js, Hono, Better Auth, Drizzle, BullMQ, and built-in observability."
+title: 'Acme Platform'
+description: 'A detailed walkthrough of Acme Platform, a Turborepo-powered SaaS monorepo with Next.js, Hono, Better Auth, Drizzle, BullMQ, and built-in observability.'
 tags:
   - TypeScript
   - SaaS
@@ -51,16 +51,16 @@ That structure turns the starter into a real platform skeleton. The frontend doe
 
 ## The Stack
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | Next.js 16 App Router, React 19, Tailwind CSS, TanStack Query |
-| API | Hono on Node.js, versioned routes, Zod validation, OpenAPI docs |
-| Auth | Better Auth with email/password, organizations, RBAC, invitations, password reset |
-| Database | PostgreSQL, Drizzle ORM, SQL migrations, repository functions |
-| Async jobs | Redis, BullMQ, typed queues, worker process |
-| Observability | Grafana, Loki, Tempo, Prometheus, OpenTelemetry, optional Sentry |
-| Tooling | pnpm workspaces, Turborepo, ESLint, Prettier, Husky, Vitest, Playwright |
-| Distribution | `create-acme-platform` CLI release workflow |
+| Layer         | Technology                                                                        |
+| ------------- | --------------------------------------------------------------------------------- |
+| Frontend      | Next.js 16 App Router, React 19, Tailwind CSS, TanStack Query                     |
+| API           | Hono on Node.js, versioned routes, Zod validation, OpenAPI docs                   |
+| Auth          | Better Auth with email/password, organizations, RBAC, invitations, password reset |
+| Database      | PostgreSQL, Drizzle ORM, SQL migrations, repository functions                     |
+| Async jobs    | Redis, BullMQ, typed queues, worker process                                       |
+| Observability | Grafana, Loki, Tempo, Prometheus, OpenTelemetry, optional Sentry                  |
+| Tooling       | pnpm workspaces, Turborepo, ESLint, Prettier, Husky, Vitest, Playwright           |
+| Distribution  | `create-acme-platform` CLI release workflow                                       |
 
 This is a modern TypeScript stack, but it is not novelty-driven. Each tool has a clear job. Next.js owns the user-facing app. Hono owns the API boundary. Better Auth owns auth and organizations. Drizzle owns database access. BullMQ owns durable background work. Turborepo owns the workspace task graph.
 
@@ -410,11 +410,11 @@ pnpm dev
 
 The main local services are:
 
-| Service | URL |
-| --- | --- |
-| Web | `http://localhost:3000` |
-| API | `http://localhost:3001` |
-| Grafana | `http://localhost:3002` |
+| Service    | URL                     |
+| ---------- | ----------------------- |
+| Web        | `http://localhost:3000` |
+| API        | `http://localhost:3001` |
+| Grafana    | `http://localhost:3002` |
 | Prometheus | `http://localhost:9090` |
 
 For day-to-day work, the common commands are simple:
@@ -491,4 +491,3 @@ It does not stop at rendering React components. It gives you authentication, org
 The result is a starter that can carry a team past the prototype phase. You can begin with a working product surface, a versioned API, a real database model, and a local operations story. From there, the work becomes product-specific instead of platform-specific.
 
 That is what a good starter should do: remove the repeated groundwork, expose the important decisions, and leave enough room for the product to become its own thing.
-
