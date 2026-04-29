@@ -1,6 +1,6 @@
 ---
 title: Blogs
-description: Technical articles and guides about web development, TypeScript, and modern frameworks
+description: Technical articles, backend guides, SaaS architecture notes, and DSA interview prep
 ---
 
 import { Card, Cards } from 'fumadocs-ui/components/card'
@@ -9,71 +9,487 @@ import { Card, Cards } from 'fumadocs-ui/components/card'
 
 <Cards>
   <Card
-    title="Why I Use oRPC in Most of My Projects"
-    description="A simple explanation of why oRPC became my default choice for building APIs"
-    href="/blogs/why-do-i-use-orpc"
-  />
-  <Card
-    title="Getting Started with React Server Components"
-    description="A comprehensive guide to understanding and using React Server Components for better performance"
-    href="/blogs/react-server-components"
+    title="Acme Platform: A Production-Grade SaaS Starter for Full-Stack TypeScript Teams"
+    description="A detailed walkthrough of Acme Platform, a Turborepo-powered SaaS monorepo with Next.js, Hono, Better Auth, Drizzle, BullMQ, and built-in observability."
+    href="/blogs/acme-platform"
   />
 </Cards>
 
-## Web Development
-
-Explore my articles on frontend development, modern frameworks, and best practices.
+## Learning Paths
 
 <Cards>
   <Card
-    title="Getting Started with React"
-    description="A comprehensive guide to beginning your React journey and understanding core concepts"
-    href="/blogs/web-development/getting-started-with-react"
+    title="Backend Development Complete Guide"
+    description="Comprehensive 31-article series covering backend development from fundamentals to production systems"
+    href="/blogs/backend/00-overview"
   />
   <Card
-    title="Mastering TypeScript"
-    description="Advanced TypeScript techniques and best practices for building robust applications"
-    href="/blogs/web-development/mastering-typescript"
+    title="DSA Interview Playbook"
+    description="A structured DSA roadmap covering arrays, linked lists, stacks, queues, trees, graphs, dynamic programming, greedy, and advanced patterns"
+    href="/blogs/dsa/00-overview"
   />
 </Cards>
 
 ## Backend Development
 
-Deep dives into server-side technologies, API design, and backend architecture.
+### Getting Started
 
 <Cards>
   <Card
-    title="Backend Development Complete Guide"
-    description="Comprehensive 31-article series covering backend development from basics to advanced systems"
-    href="/blogs/backend/00-overview"
+    title="High-Level Understanding of Backend and Frontend"
+    description="Learn the fundamental differences between frontend and backend development"
+    href="/blogs/backend/01-high-level-understanding"
+  />
+  <Card
+    title="HTTP Protocol"
+    description="Understanding the protocol that powers web communication"
+    href="/blogs/backend/01-core/02-http-protocol"
+  />
+  <Card
+    title="Routing"
+    description="How backend servers decide which code to run for a given URL"
+    href="/blogs/backend/01-core/03-routing"
+  />
+  <Card
+    title="Serialization and Deserialization"
+    description="Converting data between formats for storage and transmission"
+    href="/blogs/backend/01-core/04-serialization"
+  />
+  <Card
+    title="Authentication and Authorization"
+    description="Securing your applications with proper auth mechanisms"
+    href="/blogs/backend/01-core/05-authentication-authorization"
+  />
+  <Card
+    title="Validation and Transformation"
+    description="Ensuring data integrity and proper formatting"
+    href="/blogs/backend/01-core/06-validation-transformation"
   />
 </Cards>
 
-## DSA & Interview Prep
-
-Structured learning paths for data structures, algorithms, and interview-heavy problem-solving patterns.
+### Architecture and Design
 
 <Cards>
   <Card
-    title="DSA Interview Playbook"
-    description="A complete blog series covering arrays, linked lists, trees, graphs, dynamic programming, greedy, and advanced interview topics"
-    href="/blogs/dsa/00-overview"
+    title="Middlewares"
+    description="Building modular request processing pipelines"
+    href="/blogs/backend/02-architecture-and-design/07-middlewares"
+  />
+  <Card
+    title="Request Context"
+    description="Managing context across request lifecycles"
+    href="/blogs/backend/02-architecture-and-design/08-request-context"
+  />
+  <Card
+    title="Handlers, Controllers, and Services"
+    description="Organizing your application logic"
+    href="/blogs/backend/02-architecture-and-design/09-handlers-controllers-services"
+  />
+  <Card
+    title="CRUD Deep Dive"
+    description="Mastering create, read, update, delete operations"
+    href="/blogs/backend/02-architecture-and-design/10-crud-deep-dive"
+  />
+  <Card
+    title="RESTful Architecture and Best Practices"
+    description="Building scalable REST APIs"
+    href="/blogs/backend/02-architecture-and-design/11-restful-architecture"
+  />
+  <Card
+    title="Business Logic Layer (BLL)"
+    description="Separating business rules from data access"
+    href="/blogs/backend/02-architecture-and-design/12-business-logic-layer"
   />
 </Cards>
 
-## AI & Machine Learning
-
-Articles on artificial intelligence, machine learning fundamentals, and integrating AI into web applications.
+### Advanced Topics
 
 <Cards>
   <Card
-    title="Getting Started with Machine Learning"
-    description="An introduction to machine learning concepts and practical implementation"
-    href="/blogs/ai-ml/getting-started-with-ml"
+    title="Database Basics, Schema Design, Performance, and PostgreSQL Deep Dive"
+    description="Everything you need to know about databases"
+    href="/blogs/backend/03-advanced-topics/13-database-basics"
   />
   <Card
-    title="AI in Web Development"
-    description="How artificial intelligence is transforming modern web development workflows"
-    href="/blogs/ai-ml/ai-in-web-development"
+    title="Caching"
+    description="Improving performance with caching strategies"
+    href="/blogs/backend/03-advanced-topics/14-caching"
+  />
+  <Card
+    title="Transactional Emails"
+    description="Handling email communications reliably"
+    href="/blogs/backend/03-advanced-topics/15-transactional-emails"
+  />
+  <Card
+    title="Task Queuing and Scheduling"
+    description="Processing background jobs efficiently"
+    href="/blogs/backend/03-advanced-topics/16-task-queuing"
+  />
+  <Card
+    title="Full Text Search and Elasticsearch"
+    description="Implementing powerful search functionality"
+    href="/blogs/backend/03-advanced-topics/17-full-text-search"
+  />
+  <Card
+    title="Error Handling"
+    description="Graceful error management in production systems"
+    href="/blogs/backend/03-advanced-topics/18-error-handling"
+  />
+</Cards>
+
+### Production and Operations
+
+<Cards>
+  <Card
+    title="Config Management"
+    description="Managing application configuration across environments"
+    href="/blogs/backend/04-production-and-operations/19-config-management"
+  />
+  <Card
+    title="Logging, Monitoring, and Observability"
+    description="Understanding your system in production"
+    href="/blogs/backend/04-production-and-operations/20-logging-monitoring"
+  />
+  <Card
+    title="Graceful Shutdown"
+    description="Ensuring clean application shutdown"
+    href="/blogs/backend/04-production-and-operations/21-graceful-shutdown"
+  />
+  <Card
+    title="Security"
+    description="Comprehensive security practices for backend systems"
+    href="/blogs/backend/04-production-and-operations/22-security"
+  />
+  <Card
+    title="Scaling and Performance"
+    description="Techniques for scaling your applications"
+    href="/blogs/backend/04-production-and-operations/23-scaling-performance"
+  />
+  <Card
+    title="Concurrency and Parallelism"
+    description="Handling multiple operations efficiently"
+    href="/blogs/backend/04-production-and-operations/24-concurrency-parallelism"
+  />
+</Cards>
+
+### Specialized Topics
+
+<Cards>
+  <Card
+    title="Object Storage and Large Files"
+    description="Handling file uploads and storage"
+    href="/blogs/backend/05-specialized-topics/25-object-storage"
+  />
+  <Card
+    title="Real-Time Backend Systems"
+    description="Building real-time features with WebSockets"
+    href="/blogs/backend/05-specialized-topics/26-real-time-systems"
+  />
+  <Card
+    title="Testing and Code Quality"
+    description="Ensuring reliability through testing"
+    href="/blogs/backend/05-specialized-topics/27-testing-code-quality"
+  />
+  <Card
+    title="12-Factor App"
+    description="Building cloud-native applications"
+    href="/blogs/backend/05-specialized-topics/28-12-factor-app"
+  />
+  <Card
+    title="OpenAPI Standards and Tools"
+    description="Documenting and standardizing your APIs"
+    href="/blogs/backend/05-specialized-topics/29-openapi-standards"
+  />
+  <Card
+    title="Webhooks"
+    description="Implementing event-driven integrations"
+    href="/blogs/backend/05-specialized-topics/30-webhooks"
+  />
+  <Card
+    title="DevOps for Backend Engineers"
+    description="Modern DevOps practices for backend development"
+    href="/blogs/backend/05-specialized-topics/31-devops"
+  />
+</Cards>
+
+## DSA Interview Prep
+
+### Topic Collections
+
+<Cards>
+  <Card
+    title="Arrays and Binary Search"
+    description="Two pointers, sliding windows, prefix sums, Kadane, and the binary search family"
+    href="/blogs/dsa/arrays"
+  />
+  <Card
+    title="Linked List Patterns"
+    description="Reverse, merge, fast-slow pointers, nth-from-end, k-group reversal, and random pointers"
+    href="/blogs/dsa/linked-list"
+  />
+  <Card
+    title="Stack, Queue, and Heap Patterns"
+    description="Valid parentheses, monotonic stack, BFS, deque patterns, heaps, top-k, and LRU thinking"
+    href="/blogs/dsa/stack-queue-heap"
+  />
+  <Card
+    title="Recursion, Backtracking, and Trees"
+    description="Subsets, permutations, N-Queens, traversals, diameter, LCA, serialization, and BSTs"
+    href="/blogs/dsa/recursion-backtracking-trees"
+  />
+  <Card
+    title="Graphs and Union-Find"
+    description="DFS, cycle detection, topological sort, bipartite graphs, Dijkstra, Bellman-Ford, Kruskal, and Prim"
+    href="/blogs/dsa/graphs"
+  />
+  <Card
+    title="Dynamic Programming and Greedy"
+    description="Fibonacci, knapsack, LIS, LCS, grids, trees, interval scheduling, and jump game"
+    href="/blogs/dsa/dynamic-programming-greedy"
+  />
+  <Card
+    title="Advanced Strings, Bits, Math, and Range Queries"
+    description="KMP, Z algorithm, XOR tricks, sieve, fast power, segment tree, and Fenwick tree"
+    href="/blogs/dsa/advanced-toolkit"
+  />
+</Cards>
+
+### Arrays and Binary Search
+
+<Cards>
+  <Card
+    title="Two Pointer"
+    description="Interview guide for Two Pointer with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/arrays/01-two-pointer"
+  />
+  <Card
+    title="Sliding Window"
+    description="Interview guide for Sliding Window with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/arrays/02-sliding-window"
+  />
+  <Card
+    title="Prefix Sum"
+    description="Interview guide for Prefix Sum with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/arrays/03-prefix-sum"
+  />
+  <Card
+    title="Kadane's Algorithm"
+    description="Interview guide for Kadane's Algorithm with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/arrays/04-kadane-s-algorithm"
+  />
+  <Card
+    title="Binary Search"
+    description="Interview guide for Binary Search with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/arrays/05-binary-search"
+  />
+</Cards>
+
+### Linked List Patterns
+
+<Cards>
+  <Card
+    title="Reverse Linked List"
+    description="Interview guide for Reverse Linked List with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/linked-list/01-reverse-linked-list"
+  />
+  <Card
+    title="Fast & Slow Pointer"
+    description="Interview guide for Fast & Slow Pointer with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/linked-list/02-fast-slow-pointer"
+  />
+  <Card
+    title="Merge Two Sorted Lists"
+    description="Interview guide for Merge Two Sorted Lists with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/linked-list/03-merge-two-sorted-lists"
+  />
+  <Card
+    title="Remove Nth Node from End"
+    description="Interview guide for Remove Nth Node from End with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/linked-list/04-remove-nth-node-from-end"
+  />
+  <Card
+    title="Reverse in K Groups"
+    description="Interview guide for Reverse in K Groups with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/linked-list/05-reverse-in-k-groups"
+  />
+  <Card
+    title="Clone Linked List With Random Pointer"
+    description="Interview guide for Clone Linked List With Random Pointer with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/linked-list/06-clone-linked-list-with-random-pointer"
+  />
+</Cards>
+
+### Stack, Queue, and Heap Patterns
+
+<Cards>
+  <Card
+    title="Valid Parentheses"
+    description="Interview guide for Valid Parentheses with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/stack-queue-heap/01-valid-parentheses"
+  />
+  <Card
+    title="Monotonic Stack"
+    description="Interview guide for Monotonic Stack with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/stack-queue-heap/02-monotonic-stack"
+  />
+  <Card
+    title="Largest Rectangle in Histogram"
+    description="Interview guide for Largest Rectangle in Histogram with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/stack-queue-heap/03-largest-rectangle-in-histogram"
+  />
+  <Card
+    title="BFS"
+    description="Interview guide for BFS with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/stack-queue-heap/04-bfs"
+  />
+  <Card
+    title="Sliding Window Maximum (Deque)"
+    description="Interview guide for Sliding Window Maximum (Deque) with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/stack-queue-heap/05-sliding-window-maximum-deque"
+  />
+  <Card
+    title="Heap Toolkit"
+    description="Interview guide for Heap Toolkit with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/stack-queue-heap/06-heap-toolkit"
+  />
+  <Card
+    title="LRU Cache"
+    description="Interview guide for LRU Cache with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/stack-queue-heap/07-lru-cache"
+  />
+</Cards>
+
+### Recursion, Backtracking, and Trees
+
+<Cards>
+  <Card
+    title="Basic Recursion"
+    description="Interview guide for Basic Recursion with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/recursion-backtracking-trees/01-basic-recursion"
+  />
+  <Card
+    title="Backtracking Toolkit"
+    description="Interview guide for Backtracking Toolkit with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/recursion-backtracking-trees/02-backtracking-toolkit"
+  />
+  <Card
+    title="N-Queens"
+    description="Interview guide for N-Queens with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/recursion-backtracking-trees/03-n-queens"
+  />
+  <Card
+    title="Tree Traversal Toolkit"
+    description="Interview guide for Tree Traversal Toolkit with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/recursion-backtracking-trees/04-tree-traversal-toolkit"
+  />
+  <Card
+    title="Height, Diameter, Balanced Tree, and Path Sum"
+    description="Interview guide for Height, Diameter, Balanced Tree, and Path Sum with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/recursion-backtracking-trees/05-height-diameter-balanced-tree-and-path-sum"
+  />
+  <Card
+    title="Lowest Common Ancestor"
+    description="Interview guide for Lowest Common Ancestor with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/recursion-backtracking-trees/06-lowest-common-ancestor"
+  />
+  <Card
+    title="Serialize / Deserialize and BST Toolkit"
+    description="Interview guide for Serialize / Deserialize and BST Toolkit with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/recursion-backtracking-trees/07-serialize-deserialize-and-bst-toolkit"
+  />
+</Cards>
+
+### Graphs and Union-Find
+
+<Cards>
+  <Card
+    title="DFS and Connected Components"
+    description="Interview guide for DFS and Connected Components with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/graphs/01-dfs-and-connected-components"
+  />
+  <Card
+    title="Cycle Detection and Bipartite Graph"
+    description="Interview guide for Cycle Detection and Bipartite Graph with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/graphs/02-cycle-detection-and-bipartite-graph"
+  />
+  <Card
+    title="Topological Sort"
+    description="Interview guide for Topological Sort with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/graphs/03-topological-sort"
+  />
+  <Card
+    title="Dijkstra"
+    description="Interview guide for Dijkstra with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/graphs/04-dijkstra"
+  />
+  <Card
+    title="Bellman-Ford"
+    description="Interview guide for Bellman-Ford with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/graphs/05-bellman-ford"
+  />
+  <Card
+    title="Union-Find, Kruskal, and Prim"
+    description="Interview guide for Union-Find, Kruskal, and Prim with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/graphs/06-union-find-kruskal-and-prim"
+  />
+</Cards>
+
+### Dynamic Programming and Greedy
+
+<Cards>
+  <Card
+    title="Fibonacci-Style DP"
+    description="Interview guide for Fibonacci-Style DP with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/dynamic-programming-greedy/01-fibonacci-style-dp"
+  />
+  <Card
+    title="0/1 Knapsack and Unbounded Knapsack"
+    description="Interview guide for 0/1 Knapsack and Unbounded Knapsack with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/dynamic-programming-greedy/02-0-1-knapsack-and-unbounded-knapsack"
+  />
+  <Card
+    title="LIS"
+    description="Interview guide for LIS with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/dynamic-programming-greedy/03-lis"
+  />
+  <Card
+    title="LCS and DP on Strings"
+    description="Interview guide for LCS and DP on Strings with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/dynamic-programming-greedy/04-lcs-and-dp-on-strings"
+  />
+  <Card
+    title="DP on Grids and Trees"
+    description="Interview guide for DP on Grids and Trees with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/dynamic-programming-greedy/05-dp-on-grids-and-trees"
+  />
+  <Card
+    title="Greedy Toolkit"
+    description="Interview guide for Greedy Toolkit with intuition, dry run, C++ code, complexity, and practice problems"
+    href="/blogs/dsa/dynamic-programming-greedy/06-greedy-toolkit"
+  />
+</Cards>
+
+### Advanced Toolkit
+
+<Cards>
+  <Card
+    title="String Matching Toolkit"
+    description="Interview guide for KMP, Z algorithm, Rabin-Karp, and Manacher's algorithm"
+    href="/blogs/dsa/advanced-toolkit/01-string-matching-toolkit"
+  />
+  <Card
+    title="Bit Manipulation"
+    description="Interview guide for XOR tricks, bitmasking, and subset generation using bits"
+    href="/blogs/dsa/advanced-toolkit/02-bit-manipulation"
+  />
+  <Card
+    title="Mathematics Toolkit"
+    description="Interview guide for GCD, sieve of Eratosthenes, and fast exponentiation"
+    href="/blogs/dsa/advanced-toolkit/03-mathematics-toolkit"
+  />
+  <Card
+    title="Range Query Data Structures"
+    description="Interview guide for segment trees and Fenwick trees for range queries and updates"
+    href="/blogs/dsa/advanced-toolkit/04-range-query-data-structures"
   />
 </Cards>

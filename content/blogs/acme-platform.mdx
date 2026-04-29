@@ -1,0 +1,494 @@
+---
+title: "Acme Platform: A Production-Grade SaaS Starter for Full-Stack TypeScript Teams"
+description: "A detailed walkthrough of Acme Platform, a Turborepo-powered SaaS monorepo with Next.js, Hono, Better Auth, Drizzle, BullMQ, and built-in observability."
+tags:
+  - TypeScript
+  - SaaS
+  - Monorepo
+  - Next.js
+  - Hono
+  - Drizzle
+  - Better Auth
+  - Observability
+---
+
+# Acme Platform: A Production-Grade SaaS Starter for Full-Stack TypeScript Teams
+
+Most starter projects are useful for the first afternoon and painful by the second week.
+
+They usually show how to render a page, connect a database, and maybe sign in a user. But the moment a real product begins to form, the missing pieces appear quickly: environment validation, role-based access control, migrations, background jobs, audit logs, local observability, release automation, shared contracts, test setup, and a clean way to scale the codebase without turning every folder into a junk drawer.
+
+Acme Platform is built for that exact gap.
+
+It is not just a "hello world" template with a few dependencies installed. It is a production-grade SaaS monorepo starter that gives a team the shape of a real application from day one: a Next.js frontend, a Hono API, Better Auth for authentication and organizations, PostgreSQL with Drizzle ORM, Redis-backed jobs with BullMQ, shared UI primitives, typed API contracts, and a local observability stack with Grafana, Loki, Tempo, Prometheus, and OpenTelemetry.
+
+The important part is not just the list of technologies. The important part is how they are arranged. Acme Platform has clear ownership boundaries, workspace-internal packages, versioned API routes, typed DTOs, service and repository layers, and escape hatches for optional infrastructure. That combination makes it a useful foundation for serious product work.
+
+## What Acme Platform Gives You
+
+At a high level, Acme Platform is a full-stack TypeScript SaaS starter built as a pnpm and Turborepo monorepo.
+
+The workspace contains three applications:
+
+- `apps/web`: the Next.js frontend, authentication route handler, protected pages, onboarding flow, member workspace, health dashboard, and typed API client.
+- `apps/api`: the Hono API service, versioned routes under `/api/v1`, OpenAPI documentation, request middleware, metrics endpoint, services, and worker entrypoint.
+- `apps/web-e2e`: the Playwright smoke test suite.
+
+It also contains shared packages for the core platform concerns:
+
+- `@acme/auth`: Better Auth configuration, session resolution, RBAC helpers, and auth mail delivery.
+- `@acme/db`: Drizzle schema, migrations, database client, and repository functions.
+- `@acme/shared`: Zod schemas, DTOs, response envelopes, constants, and shared types.
+- `@acme/jobs`: BullMQ queues, workers, typed job payloads, and domain event fan-out.
+- `@acme/config`: Zod-powered environment validation.
+- `@acme/logger`: Pino logging with optional Loki shipping.
+- `@acme/observability`: OpenTelemetry bootstrap and span helpers.
+- `@acme/ui`: shadcn-based shared React component primitives.
+- `@acme/cli`: the source for the `create-acme-platform` scaffolding CLI.
+- `@acme/eslint-config` and `@acme/typescript-config`: shared linting and TypeScript presets.
+
+That structure turns the starter into a real platform skeleton. The frontend does not own database logic. The API does not hand-roll auth. Shared DTOs live in one place. Drizzle stays behind repositories. Observability is a package, not a scattering of one-off setup code. This matters because the first technical debt in a SaaS product is often architectural ambiguity.
+
+## The Stack
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js 16 App Router, React 19, Tailwind CSS, TanStack Query |
+| API | Hono on Node.js, versioned routes, Zod validation, OpenAPI docs |
+| Auth | Better Auth with email/password, organizations, RBAC, invitations, password reset |
+| Database | PostgreSQL, Drizzle ORM, SQL migrations, repository functions |
+| Async jobs | Redis, BullMQ, typed queues, worker process |
+| Observability | Grafana, Loki, Tempo, Prometheus, OpenTelemetry, optional Sentry |
+| Tooling | pnpm workspaces, Turborepo, ESLint, Prettier, Husky, Vitest, Playwright |
+| Distribution | `create-acme-platform` CLI release workflow |
+
+This is a modern TypeScript stack, but it is not novelty-driven. Each tool has a clear job. Next.js owns the user-facing app. Hono owns the API boundary. Better Auth owns auth and organizations. Drizzle owns database access. BullMQ owns durable background work. Turborepo owns the workspace task graph.
+
+## Why a Monorepo Makes Sense Here
+
+SaaS products naturally develop shared concerns.
+
+The web app needs the same DTOs that the API returns. Auth logic needs the database schema. The API and worker need the same queue definitions. The frontend and API both need validated environment configuration. Tests need stable imports and shared package boundaries.
+
+Acme Platform uses pnpm workspaces with this shape:
+
+```txt
+apps/
+  api/
+  web/
+  web-e2e/
+
+packages/
+  auth/
+  config/
+  db/
+  jobs/
+  logger/
+  observability/
+  shared/
+  ui/
+  cli/
+  eslint-config/
+  typescript-config/
+```
+
+The root `package.json` delegates most commands to Turborepo:
+
+```bash
+pnpm dev
+pnpm build
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm test:e2e
+```
+
+That means each app and package can define its own local scripts while the root workspace understands how to run the entire system. It also means affected builds and tests can become much faster as the project grows.
+
+The layer rules are intentionally simple:
+
+```txt
+apps/*        -> can import packages/*
+packages/*    -> can import other packages/*, without circular dependencies
+packages/db   -> owns persistence
+packages/auth -> owns session logic
+apps/*        -> never import from each other
+```
+
+This is the kind of constraint that pays off quietly. New code has an obvious place to live. Teams can add features without constantly renegotiating where the business logic belongs.
+
+## The Frontend: Next.js as the Product Surface
+
+The web app lives in `apps/web` and uses the Next.js App Router. It is not just a placeholder homepage. It includes a practical operating surface for the starter:
+
+- A platform overview page.
+- Sign in, sign up, forgot password, reset password, and invite acceptance flows.
+- An onboarding flow for creating or selecting a workspace.
+- A users workspace for organization members, pending invitations, and audit activity.
+- A health dashboard that reads from the Hono API.
+- A Better Auth route handler mounted under `/api/auth/*`.
+- A same-origin API proxy route for `/api/v1/*`.
+
+The decision to keep the Better Auth handler on the same origin as the frontend is important. Cookie-based sessions are simpler and safer when the auth route and the browser app live under the same origin. The web app also uses middleware in `proxy.ts` to perform fast cookie-based redirects before rendering protected routes.
+
+For server state, the frontend uses TanStack Query. Pages and components call typed query helpers, and the API client consumes contracts from `@acme/shared`. That means the frontend is not guessing the shape of a backend response. It shares the same Zod-backed vocabulary as the API.
+
+One of the strongest examples is the members workspace. It handles:
+
+- Current organization context.
+- Role-aware member management.
+- Owner/admin-only invitations.
+- Pending invitation display.
+- Audit activity display.
+- Timeout-aware invitation handling.
+- Refresh states, skeleton states, and error states.
+
+That is the difference between a demo screen and a starter that already understands product workflows.
+
+## The API: Hono, Versioned Routes, and Typed Boundaries
+
+The API service lives in `apps/api` and is built with Hono. Routes are mounted under `/api/v1`, which gives the backend a clean versioned contract from the start.
+
+The API exposes routes for:
+
+- Health checks.
+- Current user/session information.
+- Onboarding state.
+- Workspace creation.
+- Member listing.
+- Invitation creation, preview, and acceptance.
+- Audit logs.
+- Webhook endpoint management.
+- Diagnostic logging and error routes for local verification.
+- OpenAPI JSON and API reference docs.
+- Prometheus metrics at `/metrics`.
+
+The route handlers follow a familiar but disciplined shape:
+
+1. Resolve authentication with middleware.
+2. Validate request params, query strings, or JSON bodies with Zod.
+3. Enforce RBAC where needed.
+4. Delegate business logic to service functions.
+5. Use repository functions for persistence.
+6. Return a consistent response envelope.
+
+For example, invitation creation is protected by a role check. Only owners and admins can create invitations. The route validates the payload with `CreateInvitationInputSchema`, captures request metadata for auditing, and delegates to the user service. The handler itself stays focused on HTTP concerns.
+
+This separation makes the API easier to test and evolve. When product logic changes, it belongs in a service. When database logic changes, it belongs in a repository. When the HTTP contract changes, it belongs at the route boundary and in shared schemas.
+
+## Shared Contracts: One Vocabulary Across the Platform
+
+The `@acme/shared` package is small but central.
+
+It defines transport-neutral Zod schemas and TypeScript types for the entities the platform exchanges across boundaries: users, organizations, members, invitations, audit logs, webhook endpoints, onboarding state, auth inputs, workspace creation inputs, and health checks.
+
+For example, the shared package defines schemas such as:
+
+- `CurrentUserDtoSchema`
+- `UsersWorkspaceDtoSchema`
+- `OnboardingStateDtoSchema`
+- `CreateInvitationInputSchema`
+- `CreateWorkspaceInputSchema`
+- `WebhookEndpointDtoSchema`
+- `HealthDtoSchema`
+
+The API can validate and serialize against these schemas. The frontend can infer TypeScript types from the same source. That keeps the codebase honest without requiring a separate contract generation step for every small change.
+
+This is especially useful in a monorepo because shared contracts can evolve alongside the implementation. If a DTO changes, TypeScript helps point out the frontend and backend places that need attention.
+
+## Authentication and Organizations
+
+Authentication is usually where starter templates either over-simplify or over-complicate things. Acme Platform uses Better Auth and wraps the platform-specific auth behavior in `@acme/auth`.
+
+The auth package owns:
+
+- Better Auth server configuration.
+- Database-backed sessions.
+- Organization support.
+- Role constants.
+- RBAC helpers.
+- Shared session resolution.
+- Auth mail delivery for account and invitation workflows.
+
+The roles are straightforward:
+
+- `owner`
+- `admin`
+- `member`
+
+The important design choice is that apps do not call Better Auth directly everywhere. The web route handler uses the exported auth server configuration, while protected API routes use a shared `resolveSession(headers)` helper. RBAC checks go through `checkPermission` or route-level role middleware.
+
+This gives the platform a single auth model instead of several slightly different ones.
+
+The user journey also reflects how real SaaS apps work. A new user can sign up, create a workspace, receive invitations, accept an invite, select an active organization, and then manage or view members depending on their role. That is a much richer foundation than a single user table and a login form.
+
+## Database Access with Drizzle
+
+The database package, `@acme/db`, owns persistence.
+
+It includes:
+
+- Drizzle client setup.
+- Schema definitions.
+- Better Auth-generated auth tables.
+- Application tables for audit logs and webhooks.
+- SQL migrations.
+- Repository functions for typed reads and writes.
+
+The project deliberately avoids an active-record style where models are scattered across the app. Instead, apps and services call plain repository functions. That keeps SQL-related decisions inside the database package and makes it easier to reason about what code is allowed to touch persistence.
+
+The schema includes core SaaS entities such as:
+
+- Users
+- Sessions
+- Organizations
+- Members
+- Invitations
+- Audit logs
+- Webhook endpoints
+- Webhook deliveries
+
+Drizzle is a good fit here because it is SQL-first and TypeScript-native. Migrations are explicit, schema lives in code, and there is no separate query engine process to manage.
+
+For local development, database setup is wired through root scripts:
+
+```bash
+pnpm auth:generate
+pnpm db:generate
+pnpm db:migrate
+pnpm db:studio
+```
+
+That makes the auth schema, application schema, and migration workflow visible instead of magical.
+
+## Async Jobs and Domain Events
+
+Many SaaS workflows should not block an HTTP request.
+
+Sending invitation emails, delivering outgoing webhooks, and reacting to organization events are good examples. Acme Platform handles this through `@acme/jobs`, Redis, BullMQ, and a separate worker entrypoint in `apps/api/src/worker.ts`.
+
+The jobs package owns:
+
+- Queue creation.
+- Worker creation.
+- Typed job payload schemas.
+- Feature flag helpers.
+- Domain event fan-out.
+
+The worker runs separately from the HTTP server in production, which keeps queue processing from blocking request handling. That separation is a production-minded choice that many starters skip.
+
+The platform also degrades gracefully. If Redis is not configured, async features can be disabled at runtime. For example, invitation emails can be sent inline instead of being enqueued, and outgoing webhook fan-out can be disabled without breaking the rest of the app.
+
+A typical async invitation flow looks like this:
+
+```txt
+POST /api/v1/invitations
+  -> validate input
+  -> check owner/admin role
+  -> create invitation
+  -> write audit log
+  -> enqueue invitation email job when enabled
+  -> worker sends email through the auth mailer
+```
+
+The domain event flow follows the same philosophy. When organization access changes, the app can write an audit log and emit an internal domain event. If outgoing webhooks are enabled, the worker can load registered endpoints, sign deliveries, retry failures, and record delivery state.
+
+This gives the starter an event-aware backbone without forcing every deployment to run the full async stack immediately.
+
+## Observability from Day One
+
+Observability is one of the most impressive parts of this project because it is treated as core infrastructure, not an afterthought.
+
+The local Docker setup includes:
+
+- Grafana for exploring logs, metrics, and traces.
+- Loki for log aggregation.
+- Tempo for traces.
+- Prometheus for metrics.
+- OpenTelemetry Collector for receiving spans and forwarding telemetry.
+
+The API always exposes Prometheus metrics at:
+
+```txt
+http://localhost:3001/metrics
+```
+
+Logs are produced with Pino through `@acme/logger`. When `API_LOG_TO_LOKI=true`, logs can be shipped to Loki. Otherwise, they stay in the terminal, which is a sensible default for development.
+
+Traces are initialized through `@acme/observability`. When `OTEL_EXPORTER_OTLP_ENDPOINT` is present, OpenTelemetry starts and sends spans to the collector. When it is absent, the package becomes a no-op.
+
+That no-op behavior matters. Optional infrastructure should not make the entire app fragile.
+
+There is also optional Sentry wiring for both the API and web app. It activates only when DSNs are present and the environment is not development. Authenticated requests enrich the Sentry scope with user and organization context without logging secrets.
+
+For a starter project, this is a big deal. A team can inspect request rates, p95 latency, logs by route, traces by service, and error behavior locally before any cloud observability vendor enters the picture.
+
+## Environment Validation
+
+Environment variables are easy to get wrong and hard to debug when validation is weak.
+
+Acme Platform solves this with `@acme/config`, which uses Zod schemas to validate runtime configuration. The API imports validated API environment values. The web app imports validated web environment values. If required variables are missing or malformed, the process fails early with a clear error.
+
+This is a small piece of the system, but it dramatically improves developer experience. Instead of chasing vague database or auth errors at runtime, developers get a direct signal that configuration is incomplete.
+
+The repo includes `.env.example` files at the root and under both apps:
+
+```txt
+.env.example
+apps/api/.env.example
+apps/web/.env.example
+```
+
+The setup flow is explicit:
+
+```bash
+cp .env.example .env
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+```
+
+Both the web and API apps must share the same `BETTER_AUTH_SECRET`, which is exactly the kind of operational detail a good starter should make visible.
+
+## The UI Package
+
+The `@acme/ui` package contains shared React component primitives based on shadcn-style components and Tailwind CSS.
+
+It exports components through path exports such as:
+
+```txt
+@acme/ui/components/button
+@acme/ui/components/dialog
+@acme/ui/components/table
+```
+
+It also exposes global styles and a utility helper for class name composition.
+
+This package gives the frontend a coherent component base without locking the entire platform into a heavy design system too early. It is enough structure to keep screens consistent and enough flexibility to let a product develop its own visual identity.
+
+The existing app screens use this package for alerts, badges, buttons, inputs, selects, tables, skeletons, avatars, and other operational UI pieces. That helps the starter feel like a product surface rather than a dependency showcase.
+
+## The CLI: Turning the Repo into a Scaffolder
+
+Acme Platform is not only a repository you can clone. It also includes a CLI package for publishing `create-acme-platform`.
+
+The root README shows the intended installation flow:
+
+```bash
+npm create acme-platform@latest my-app
+pnpm create acme-platform my-app
+npx create-acme-platform my-app --with-skills
+```
+
+The CLI package owns scaffold operations such as:
+
+- Copying the template into a target directory.
+- Validating and patching the package name.
+- Copying `.env.example` files into local `.env` files.
+- Removing optional observability code when requested.
+- Removing optional jobs infrastructure when requested.
+- Installing optional agent skills from `skills-lock.json`.
+
+The release workflow builds the CLI with tsup, verifies the generated package, and prepares it for npm publishing. Root scripts such as `release:patch`, `release:minor`, `release:build-package`, and `release:verify` make that process repeatable.
+
+This turns the project from a one-off starter into a distributable platform template.
+
+## Developer Workflow
+
+A new developer can get the project running with a predictable sequence:
+
+```bash
+pnpm install
+cp .env.example .env
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+docker compose up -d
+pnpm auth:generate
+pnpm db:generate
+pnpm db:migrate
+pnpm dev
+```
+
+The main local services are:
+
+| Service | URL |
+| --- | --- |
+| Web | `http://localhost:3000` |
+| API | `http://localhost:3001` |
+| Grafana | `http://localhost:3002` |
+| Prometheus | `http://localhost:9090` |
+
+For day-to-day work, the common commands are simple:
+
+```bash
+pnpm dev
+pnpm build
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm test:e2e
+pnpm format
+```
+
+The project uses Vitest for workspace tests and Playwright for browser smoke tests. That gives teams fast unit-level feedback and a path for verifying the full web experience.
+
+## What Makes This Starter Different
+
+The standout quality of Acme Platform is that it thinks beyond the first page load.
+
+It includes the concerns that usually arrive after the initial prototype:
+
+- Multi-tenant organization workflows.
+- Role-aware access control.
+- Invitation lifecycle management.
+- Shared API contracts.
+- Database migrations.
+- Audit logs.
+- Webhook endpoints.
+- Background workers.
+- Metrics, logs, and traces.
+- Optional Sentry integration.
+- Release automation.
+- Internal package boundaries.
+- End-to-end smoke tests.
+
+It also avoids making every optional concern mandatory. Jobs can degrade when Redis is absent. Observability can no-op when OTLP is not configured. Logging can stay local unless Loki is enabled. That is a very practical posture for a starter: include production capabilities, but do not make development brittle.
+
+## Design Lessons from the Project
+
+There are a few architectural lessons worth taking from Acme Platform even if you do not use the starter directly.
+
+First, shared contracts are worth the small upfront cost. A package like `@acme/shared` prevents the frontend and backend from drifting apart. Zod schemas provide runtime validation and TypeScript inference from the same source.
+
+Second, auth should be centralized. By putting Better Auth configuration, session resolution, RBAC helpers, and mail delivery in `@acme/auth`, the platform avoids multiple auth models competing with each other.
+
+Third, the database layer should have ownership. `@acme/db` owns schema, migrations, and repositories, which keeps persistence out of route handlers and frontend code.
+
+Fourth, async work deserves its own process. A worker entrypoint may feel like extra structure early on, but it gives background jobs a clean operational boundary as the product grows.
+
+Fifth, observability is easier to adopt when it is part of local development. If developers can see logs, traces, and metrics on their machine, production debugging becomes less mysterious later.
+
+## Where This Project Fits
+
+Acme Platform is a strong fit for teams building:
+
+- B2B SaaS products.
+- Admin dashboards.
+- Internal platforms.
+- Multi-tenant applications.
+- Products that need organizations, members, invitations, and RBAC.
+- TypeScript-first systems with separate frontend and API services.
+- Applications that need background jobs and webhooks early.
+- Starters or templates intended for repeatable project creation.
+
+It may be more structure than a tiny side project needs. But for a serious SaaS foundation, that structure is exactly the point. The project gives you decisions, boundaries, and operational defaults before the application becomes large enough for those choices to be painful.
+
+## Final Thoughts
+
+Acme Platform is valuable because it treats a SaaS starter like a real system.
+
+It does not stop at rendering React components. It gives you authentication, organizations, typed contracts, database migrations, background jobs, auditability, observability, package boundaries, release tooling, and a CLI for scaffolding new projects. More importantly, it connects those pieces in a way that feels intentional.
+
+The result is a starter that can carry a team past the prototype phase. You can begin with a working product surface, a versioned API, a real database model, and a local operations story. From there, the work becomes product-specific instead of platform-specific.
+
+That is what a good starter should do: remove the repeated groundwork, expose the important decisions, and leave enough room for the product to become its own thing.
+
